@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>
+    </SchemaVersion>
+    <ProjectGuid>{A7BB8738-7DD6-45A0-90C9-FC346648FBF3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ggcReceipt</RootNamespace>
+    <AssemblyName>ggcReceipt</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>C:\GGC_Systems\vb.net\RetMgySys\</OutputPath>
+    <DocumentationFile>ggcReceipt.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>ggcReceipt.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Text</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="adodb, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.7.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>X:\GGC_Systems\vb.net\RetMgySys\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Renci.SshNet, Version=2020.0.1.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>..\RetailPOS\packages\SSH.NET.2020.0.1\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="WinSCPnet, Version=1.14.0.13797, Culture=neutral, PublicKeyToken=2271ec4a3c56d0bf, processorArchitecture=MSIL">
+      <HintPath>..\RetailPOS\packages\WinSCP.6.1.2\lib\net40\WinSCPnet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CheckPayment.vb" />
+    <Compile Include="CreditCardneo.vb" />
+    <Compile Include="Forms\frmPayCredit.designer.vb">
+      <DependentUpon>frmPayCredit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPayCredit.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmRLCUploaded.Designer.vb">
+      <DependentUpon>frmRLCUploaded.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmRLCUploaded.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmRLC.Designer.vb">
+      <DependentUpon>frmRLC.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmRLC.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PRN_RLC_Reading.vb" />
+    <Compile Include="PRN_Charge.vb" />
+    <Compile Include="CreditCard.vb" />
+    <Compile Include="Forms\frmPayCheck.designer.vb">
+      <DependentUpon>frmPayCheck.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPayCheck.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmPayCreditNeo.designer.vb">
+      <DependentUpon>frmPayCreditNeo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPayCreditNeo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmPayGC.designer.vb">
+      <DependentUpon>frmPayGC.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPayGC.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmPay.designer.vb">
+      <DependentUpon>frmPay.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPay.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GiftCertificate.vb" />
+    <Compile Include="Forms\modMain.vb" />
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PRN_Billing.vb" />
+    <Compile Include="PRN_CancelledReceipt.vb" />
+    <Compile Include="PRN_Order.vb" />
+    <Compile Include="PRN_Receipt.vb" />
+    <Compile Include="PRN_Return.vb" />
+    <Compile Include="PRN_TZ_Reading.vb" />
+    <Compile Include="RawPrint.vb" />
+    <Compile Include="Payment.vb" />
+    <Compile Include="Receipt.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\frmPayCheck.resx">
+      <DependentUpon>frmPayCheck.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPayCredit.resx">
+      <DependentUpon>frmPayCredit.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPayCreditNeo.resx">
+      <DependentUpon>frmPayCreditNeo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPayGC.resx">
+      <DependentUpon>frmPayGC.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPay.resx">
+      <DependentUpon>frmPay.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmRLC.resx">
+      <DependentUpon>frmRLC.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmRLCUploaded.resx">
+      <DependentUpon>frmRLCUploaded.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Resources\BACKGROUND 1.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\abstract_dark_wood_textures_backgrounds_1280x720.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mainbackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ggcAppDriver\ggcAppDriver.vbproj">
+      <Project>{6FA248F3-A2BA-43DF-BE98-032E11714DB5}</Project>
+      <Name>ggcAppDriver</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ggcRetailParams\ggcRetailParams\ggcRetailParams.vbproj">
+      <Project>{4883f473-c0b0-4266-a9ac-8e4bca3c4cb7}</Project>
+      <Name>ggcRetailParams</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="..\RetailPOS\packages\WinSCP.5.19.3\build\WinSCP.targets" Condition="Exists('..\RetailPOS\packages\WinSCP.5.19.3\build\WinSCP.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\RetailPOS\packages\WinSCP.5.19.3\build\WinSCP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\RetailPOS\packages\WinSCP.5.19.3\build\WinSCP.targets'))" />
+    <Error Condition="!Exists('..\RetailPOS\packages\WinSCP.6.1.2\build\WinSCP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\RetailPOS\packages\WinSCP.6.1.2\build\WinSCP.targets'))" />
+  </Target>
+  <Import Project="..\RetailPOS\packages\WinSCP.6.1.2\build\WinSCP.targets" Condition="Exists('..\RetailPOS\packages\WinSCP.6.1.2\build\WinSCP.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
