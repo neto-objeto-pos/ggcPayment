@@ -43,7 +43,7 @@ Public Class clsSOA
 
     Private Const p_sMasTable As String = "Billing_Master"
     Private Const p_sDetTable As String = "Billing_Detail"
-    Private Const p_sMsgHeadr As String = "Billing of Statement"
+    Private Const p_sMsgHeadr As String = "Statement of Account's"
 
     Public Event MasterRetrieved(ByVal Index As Integer,
                                   ByVal Value As Object)
@@ -78,7 +78,6 @@ Public Class clsSOA
                         End If
                         Return p_oOthersx.sClientNm
                     Case 80 ' sAddressx
-
                         Return p_oOthersx.sAddressx
 
                     Case Else
@@ -485,21 +484,23 @@ Public Class clsSOA
 
 
         If p_oDTMaster(0).Item("sSourceCd") = "" Then
-            MsgBox("Source Info seem to be Empty! Please check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
+            MsgBox("Source Info seems to be Empty! Please check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
             Return False
         End If
 
         If p_oDTMaster(0).Item("sClientID") = "" Then
-            MsgBox("Client Info seem to be Empty! Please check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
+            MsgBox("Client Info seems to be Empty! Please check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
             Return False
         End If
 
-        If p_oDTDetail.Rows.Count = 0 Then
-            MsgBox("Details seem to be Empty! Please check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
-            Return False
-        End If
+        'If p_oDTDetail.Rows.Count = 0 Then
+        '    MsgBox("Detail seems to be Empty! Please check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
+        '    Return False
+        'End If
         Return True
     End Function
+
+
 
     'Public Function OpenTransaction(String)
     Public Function OpenTransaction(ByVal fsTransNox As String) As Boolean
@@ -517,6 +518,41 @@ Public Class clsSOA
 
         p_nEditMode = xeEditMode.MODE_READY
         Return True
+    End Function
+
+    Public Function AddDetail(ByVal lnRow As Integer) As Boolean
+        Try
+            Dim newDetailRow As DataRow = p_oDTDetail.Rows.Add()
+
+            With p_oBillDetail.Rows(lnRow)
+                newDetailRow("sTransNox") = p_oDTMaster.Rows(0)("sTransNox")
+                newDetailRow("nEntryNox") = p_oDTDetail.Rows.Count
+                newDetailRow("sSourceNo") = .Item("sTransNox")
+                newDetailRow("nAmountxx") = .Item("nAmountxx")
+                newDetailRow("cPaidxxxx") = 0
+            End With
+
+            Return True
+        Catch ex As Exception
+            MsgBox("Error Exception :" + ex.Message, MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
+            Return False
+        End Try
+    End Function
+
+    Public Function RemoveDetail(ByVal rowIndex As Integer) As Boolean
+        Try
+            If rowIndex >= 0 AndAlso rowIndex < p_oDTDetail.Rows.Count Then
+                ' Remove the row at the specified index
+                p_oDTDetail.Rows.RemoveAt(rowIndex)
+                Return True
+            Else
+                MsgBox("No Detail to remove! Please check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
+                Return False
+            End If
+        Catch ex As Exception
+            MsgBox("Error Exception :" + ex.Message, MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
+            Return False
+        End Try
     End Function
 
     Private Function getSQ_Detail() As String

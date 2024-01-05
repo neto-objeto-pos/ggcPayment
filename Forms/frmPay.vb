@@ -4,7 +4,6 @@ Imports System.Windows.Forms
 
 Public Class frmPay
     Private WithEvents poReceipt As Receipt
-
     Private pnLoadx As Integer
     Private pbLoaded As Boolean
     Private pbCancelled As Boolean
@@ -29,18 +28,8 @@ Public Class frmPay
         End If
     End Sub
 
-    Private Sub frmPayGC_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
-        Select Case e.KeyCode
-            Case Keys.Escape
-                Me.Close()
-                Me.Dispose()
-                pbCancelled = True
-            Case Keys.Return, Keys.Down
-                SetNextFocus()
-            Case Keys.Up
-                SetPreviousFocus()
-        End Select
-    End Sub
+
+
 
     Private Sub frmPay_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         setVisible()
@@ -53,15 +42,26 @@ Public Class frmPay
             If poReceipt.OpenBySource() Then
                 clearFields()
             End If
-
+            isDelivery()
             pnLoadx = 1
-        End If
+            End If
     End Sub
 
     Private Sub frmPay_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
         setVisible()
     End Sub
+    Private Sub isDelivery()
+        If poReceipt.TranType = "2" Then
+            cmdButton01.Enabled = False
+            cmdButton02.Enabled = False
+            cmdButton03.Enabled = False
+            cmdButton04.Enabled = False
+            txtAmount.Enabled = False
+        Else
+            cmdButton05.Enabled = False
+        End If
 
+    End Sub
     Private Sub cmdButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Dim loChk As Button
         Dim lbCloseForm As Boolean
@@ -79,13 +79,13 @@ Public Class frmPay
                 Else
                     'we accept no cash payment
                     'If CDec(txtAmount.Text) <= 0.0 Then
-                    '    MsgBox("Invalid Amount Tendered..." & vbCrLf & _
+                    '    MsgBox("Invalid Amount Tendered..." & vbCrLf &
                     '            "Please Verify your entry then try again...", MsgBoxStyle.Critical, "WARNING")
                     '    GoTo endProc
                     'End If
                 End If
 
-                If p_nCheck + p_nCreditCard + p_nGiftCert + p_nCash + p_nSchargex >= CDec(lblBill.Text) Then
+                If p_nCheck + p_nCreditCard + p_nGiftCert + p_nCash + p_nSchargex + p_nDelivery >= CDec(lblBill.Text) Then
                     pbCancelled = False
                     Me.Close()
                     Me.Dispose()
@@ -114,6 +114,12 @@ Public Class frmPay
                     Me.Close()
                     Me.Dispose()
                 End If
+            Case 5 'Delivery
+                poReceipt.showDeliverys(lbCloseForm)
+                'If lbCloseForm Then
+                '    'Me.Close()
+                '    'Me.Dispose()
+                'End If
         End Select
 endProc:
         Exit Sub
@@ -150,22 +156,23 @@ endProc:
         Me.Visible = True
     End Sub
 
+
     Private Sub computeChange()
         Dim lnBill As Decimal = CDec(lblBill.Text)
 
-        If p_nGiftCert > 0 And p_nTendered + p_nCheck + p_nCreditCard = 0 Then 'GC payment only
+        If p_nGiftCert > 0 And p_nTendered + p_nCheck + p_nCreditCard + p_nDelivery = 0 Then 'GC payment only
             lblChange.Text = "0.00"
-        ElseIf p_nGiftCert > 0 And p_nTendered + p_nCheck + p_nCreditCard > 0 Then 'GC + Others
+        ElseIf p_nGiftCert > 0 And p_nTendered + p_nCheck + p_nCreditCard + p_nDelivery > 0 Then 'GC + Others
             lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard) - (lnBill - p_nGiftCert), 2)
-        ElseIf p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert <> 0 Then
+        ElseIf p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery <> 0 Then
             If p_nGiftCert > 0 Then
                 If p_nGiftCert > lnBill Then
                     lblChange.Text = "0.00"
                 Else
-                    lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert) - lnBill, 2)
+                    lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery) - lnBill, 2)
                 End If
             Else
-                lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert) - lnBill, 2)
+                lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery) - lnBill, 2)
             End If
         Else
             lblChange.Text = "0.00"
@@ -175,7 +182,8 @@ endProc:
         lblCreditCard.Text = FormatNumber(p_nCreditCard, 2)
         lblCheck.Text = FormatNumber(p_nCheck, 2)
         lblGiftCheck.Text = FormatNumber(p_nGiftCert, 2)
-        lblTotal.Text = FormatNumber(p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert, 2)
+        lblDelivery.Text = FormatNumber(p_nDelivery, 2)
+        lblTotal.Text = FormatNumber(p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery, 2)
     End Sub
 
     Private Sub clearFields()

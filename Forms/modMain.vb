@@ -7,6 +7,7 @@ Module modMain
     Public p_nCreditCard As Decimal
     Public p_nCheck As Decimal
     Public p_nGiftCert As Decimal
+    Public p_nDelivery As Decimal
     Public p_nSalesAmt As Decimal
     Public p_nDiscount As Decimal
     Public p_nTendered As Decimal
@@ -15,11 +16,13 @@ Module modMain
     Public p_oDtaGCert As DataTable
     Public p_oDtaCheck As DataTable
     Public p_oDtaCCard As DataTable
+    Public p_oDtaDlvery As DataTable
 
     Public p_oFormPayCredit As frmPayCredit
     Public p_oFormCheck As frmPayCheck
     Public p_oFormGC As frmPayGC
     Public p_oFormPay As frmPay
+    Public p_oFormDelivery As frmPayDelivery
 
     Private Declare Sub keybd_event Lib "user32.dll" (ByVal bVk As Byte, ByVal bScan As Byte, ByVal dwFlags As UInteger, ByVal dwExtraInfo As UInteger)
     'Sub Main()
@@ -162,6 +165,9 @@ Module modMain
                 Case 4 'gc
                     p_oFormGC.TopMost = True
                     p_oFormGC.Show()
+                Case 5 'Delivery
+                    p_oFormDelivery.TopMost = True
+                    p_oFormDelivery.Show()
             End Select
         Else
             Select Case lnForm
@@ -173,6 +179,8 @@ Module modMain
                     p_oFormCheck.Hide()
                 Case 4 'gc
                     p_oFormGC.Hide()
+                Case 5 'gc
+                    p_oFormDelivery.Hide()
             End Select
         End If
     End Sub

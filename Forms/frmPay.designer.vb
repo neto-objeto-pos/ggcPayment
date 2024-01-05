@@ -29,6 +29,7 @@ Partial Class frmPay
         Me.Label2 = New System.Windows.Forms.Label()
         Me.pnlMain = New System.Windows.Forms.Panel()
         Me.pnlButtons = New System.Windows.Forms.Panel()
+        Me.cmdButton05 = New System.Windows.Forms.Button()
         Me.cmdButton03 = New System.Windows.Forms.Button()
         Me.cmdButton00 = New System.Windows.Forms.Button()
         Me.cmdButton01 = New System.Windows.Forms.Button()
@@ -53,6 +54,8 @@ Partial Class frmPay
         Me.Label4 = New System.Windows.Forms.Label()
         Me.txtAmount = New System.Windows.Forms.TextBox()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.Label10 = New System.Windows.Forms.Label()
+        Me.lblDelivery = New System.Windows.Forms.Label()
         Me.pnlBill.SuspendLayout()
         Me.pnlMain.SuspendLayout()
         Me.pnlButtons.SuspendLayout()
@@ -136,6 +139,7 @@ Partial Class frmPay
         'pnlButtons
         '
         Me.pnlButtons.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        Me.pnlButtons.Controls.Add(Me.cmdButton05)
         Me.pnlButtons.Controls.Add(Me.cmdButton03)
         Me.pnlButtons.Controls.Add(Me.cmdButton00)
         Me.pnlButtons.Controls.Add(Me.cmdButton01)
@@ -147,6 +151,21 @@ Partial Class frmPay
         Me.pnlButtons.Size = New System.Drawing.Size(379, 34)
         Me.pnlButtons.TabIndex = 7
         '
+        'cmdButton05
+        '
+        Me.cmdButton05.BackColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
+        Me.cmdButton05.FlatAppearance.BorderSize = 0
+        Me.cmdButton05.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.cmdButton05.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdButton05.ForeColor = System.Drawing.Color.White
+        Me.cmdButton05.Location = New System.Drawing.Point(300, 2)
+        Me.cmdButton05.Margin = New System.Windows.Forms.Padding(2)
+        Me.cmdButton05.Name = "cmdButton05"
+        Me.cmdButton05.Size = New System.Drawing.Size(69, 25)
+        Me.cmdButton05.TabIndex = 12
+        Me.cmdButton05.Text = "DELIVERY"
+        Me.cmdButton05.UseVisualStyleBackColor = False
+        '
         'cmdButton03
         '
         Me.cmdButton03.BackColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
@@ -154,7 +173,7 @@ Partial Class frmPay
         Me.cmdButton03.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.cmdButton03.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdButton03.ForeColor = System.Drawing.Color.White
-        Me.cmdButton03.Location = New System.Drawing.Point(257, 2)
+        Me.cmdButton03.Location = New System.Drawing.Point(183, 2)
         Me.cmdButton03.Margin = New System.Windows.Forms.Padding(2)
         Me.cmdButton03.Name = "cmdButton03"
         Me.cmdButton03.Size = New System.Drawing.Size(53, 25)
@@ -169,7 +188,7 @@ Partial Class frmPay
         Me.cmdButton00.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.cmdButton00.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdButton00.ForeColor = System.Drawing.Color.White
-        Me.cmdButton00.Location = New System.Drawing.Point(76, 2)
+        Me.cmdButton00.Location = New System.Drawing.Point(2, 2)
         Me.cmdButton00.Margin = New System.Windows.Forms.Padding(2)
         Me.cmdButton00.Name = "cmdButton00"
         Me.cmdButton00.Size = New System.Drawing.Size(53, 25)
@@ -184,7 +203,7 @@ Partial Class frmPay
         Me.cmdButton01.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.cmdButton01.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdButton01.ForeColor = System.Drawing.Color.White
-        Me.cmdButton01.Location = New System.Drawing.Point(137, 2)
+        Me.cmdButton01.Location = New System.Drawing.Point(63, 2)
         Me.cmdButton01.Margin = New System.Windows.Forms.Padding(2)
         Me.cmdButton01.Name = "cmdButton01"
         Me.cmdButton01.Size = New System.Drawing.Size(53, 25)
@@ -199,7 +218,7 @@ Partial Class frmPay
         Me.cmdButton04.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.cmdButton04.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdButton04.ForeColor = System.Drawing.Color.White
-        Me.cmdButton04.Location = New System.Drawing.Point(317, 2)
+        Me.cmdButton04.Location = New System.Drawing.Point(243, 2)
         Me.cmdButton04.Margin = New System.Windows.Forms.Padding(2)
         Me.cmdButton04.Name = "cmdButton04"
         Me.cmdButton04.Size = New System.Drawing.Size(53, 25)
@@ -214,7 +233,7 @@ Partial Class frmPay
         Me.cmdButton02.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.cmdButton02.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdButton02.ForeColor = System.Drawing.Color.White
-        Me.cmdButton02.Location = New System.Drawing.Point(197, 2)
+        Me.cmdButton02.Location = New System.Drawing.Point(123, 2)
         Me.cmdButton02.Margin = New System.Windows.Forms.Padding(2)
         Me.cmdButton02.Name = "cmdButton02"
         Me.cmdButton02.Size = New System.Drawing.Size(53, 25)
@@ -225,6 +244,8 @@ Partial Class frmPay
         'pnlDetail
         '
         Me.pnlDetail.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        Me.pnlDetail.Controls.Add(Me.Label10)
+        Me.pnlDetail.Controls.Add(Me.lblDelivery)
         Me.pnlDetail.Controls.Add(Me.Label12)
         Me.pnlDetail.Controls.Add(Me.lblTotal)
         Me.pnlDetail.Controls.Add(Me.Label5)
@@ -247,7 +268,7 @@ Partial Class frmPay
         Me.Label12.AutoSize = True
         Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label12.ForeColor = System.Drawing.Color.White
-        Me.Label12.Location = New System.Drawing.Point(68, 204)
+        Me.Label12.Location = New System.Drawing.Point(68, 220)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(56, 24)
         Me.Label12.TabIndex = 23
@@ -258,7 +279,7 @@ Partial Class frmPay
         Me.lblTotal.BackColor = System.Drawing.Color.Blue
         Me.lblTotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblTotal.ForeColor = System.Drawing.Color.Lime
-        Me.lblTotal.Location = New System.Drawing.Point(215, 197)
+        Me.lblTotal.Location = New System.Drawing.Point(215, 213)
         Me.lblTotal.Margin = New System.Windows.Forms.Padding(2)
         Me.lblTotal.Name = "lblTotal"
         Me.lblTotal.Size = New System.Drawing.Size(154, 31)
@@ -271,7 +292,7 @@ Partial Class frmPay
         Me.Label5.AutoSize = True
         Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label5.ForeColor = System.Drawing.Color.White
-        Me.Label5.Location = New System.Drawing.Point(68, 43)
+        Me.Label5.Location = New System.Drawing.Point(53, 35)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(57, 24)
         Me.Label5.TabIndex = 21
@@ -282,7 +303,7 @@ Partial Class frmPay
         Me.lblCash.BackColor = System.Drawing.Color.Blue
         Me.lblCash.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblCash.ForeColor = System.Drawing.Color.White
-        Me.lblCash.Location = New System.Drawing.Point(215, 36)
+        Me.lblCash.Location = New System.Drawing.Point(215, 28)
         Me.lblCash.Margin = New System.Windows.Forms.Padding(2)
         Me.lblCash.Name = "lblCash"
         Me.lblCash.Size = New System.Drawing.Size(154, 31)
@@ -295,7 +316,7 @@ Partial Class frmPay
         Me.Label11.AutoSize = True
         Me.Label11.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label11.ForeColor = System.Drawing.Color.White
-        Me.Label11.Location = New System.Drawing.Point(68, 145)
+        Me.Label11.Location = New System.Drawing.Point(53, 137)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(105, 24)
         Me.Label11.TabIndex = 19
@@ -306,7 +327,7 @@ Partial Class frmPay
         Me.lblGiftCheck.BackColor = System.Drawing.Color.Blue
         Me.lblGiftCheck.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblGiftCheck.ForeColor = System.Drawing.Color.White
-        Me.lblGiftCheck.Location = New System.Drawing.Point(215, 138)
+        Me.lblGiftCheck.Location = New System.Drawing.Point(215, 130)
         Me.lblGiftCheck.Margin = New System.Windows.Forms.Padding(2)
         Me.lblGiftCheck.Name = "lblGiftCheck"
         Me.lblGiftCheck.Size = New System.Drawing.Size(154, 31)
@@ -319,7 +340,7 @@ Partial Class frmPay
         Me.Label9.AutoSize = True
         Me.Label9.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label9.ForeColor = System.Drawing.Color.White
-        Me.Label9.Location = New System.Drawing.Point(68, 111)
+        Me.Label9.Location = New System.Drawing.Point(53, 103)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(69, 24)
         Me.Label9.TabIndex = 17
@@ -330,7 +351,7 @@ Partial Class frmPay
         Me.lblCheck.BackColor = System.Drawing.Color.Blue
         Me.lblCheck.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblCheck.ForeColor = System.Drawing.Color.White
-        Me.lblCheck.Location = New System.Drawing.Point(215, 104)
+        Me.lblCheck.Location = New System.Drawing.Point(215, 96)
         Me.lblCheck.Margin = New System.Windows.Forms.Padding(2)
         Me.lblCheck.Name = "lblCheck"
         Me.lblCheck.Size = New System.Drawing.Size(154, 31)
@@ -354,7 +375,7 @@ Partial Class frmPay
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.ForeColor = System.Drawing.Color.White
-        Me.Label1.Location = New System.Drawing.Point(68, 77)
+        Me.Label1.Location = New System.Drawing.Point(53, 69)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(115, 24)
         Me.Label1.TabIndex = 14
@@ -365,7 +386,7 @@ Partial Class frmPay
         Me.lblCreditCard.BackColor = System.Drawing.Color.Blue
         Me.lblCreditCard.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblCreditCard.ForeColor = System.Drawing.Color.White
-        Me.lblCreditCard.Location = New System.Drawing.Point(215, 70)
+        Me.lblCreditCard.Location = New System.Drawing.Point(215, 62)
         Me.lblCreditCard.Margin = New System.Windows.Forms.Padding(2)
         Me.lblCreditCard.Name = "lblCreditCard"
         Me.lblCreditCard.Size = New System.Drawing.Size(154, 31)
@@ -451,9 +472,33 @@ Partial Class frmPay
         Me.Label6.ForeColor = System.Drawing.Color.White
         Me.Label6.Location = New System.Drawing.Point(2, 3)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(123, 16)
+        Me.Label6.Size = New System.Drawing.Size(122, 16)
         Me.Label6.TabIndex = 0
         Me.Label6.Text = "Payment (CASH)"
+        '
+        'Label10
+        '
+        Me.Label10.AutoSize = True
+        Me.Label10.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label10.ForeColor = System.Drawing.Color.White
+        Me.Label10.Location = New System.Drawing.Point(53, 171)
+        Me.Label10.Name = "Label10"
+        Me.Label10.Size = New System.Drawing.Size(161, 24)
+        Me.Label10.TabIndex = 25
+        Me.Label10.Text = "Delivery Service"
+        '
+        'lblDelivery
+        '
+        Me.lblDelivery.BackColor = System.Drawing.Color.Blue
+        Me.lblDelivery.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblDelivery.ForeColor = System.Drawing.Color.White
+        Me.lblDelivery.Location = New System.Drawing.Point(215, 164)
+        Me.lblDelivery.Margin = New System.Windows.Forms.Padding(2)
+        Me.lblDelivery.Name = "lblDelivery"
+        Me.lblDelivery.Size = New System.Drawing.Size(154, 31)
+        Me.lblDelivery.TabIndex = 26
+        Me.lblDelivery.Text = "0.00"
+        Me.lblDelivery.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'frmPay
         '
@@ -521,4 +566,7 @@ Partial Class frmPay
     Friend WithEvents lblTotal As System.Windows.Forms.Label
     Friend WithEvents Label5 As System.Windows.Forms.Label
     Friend WithEvents lblCash As System.Windows.Forms.Label
+    Friend WithEvents cmdButton05 As Windows.Forms.Button
+    Friend WithEvents Label10 As Windows.Forms.Label
+    Friend WithEvents lblDelivery As Windows.Forms.Label
 End Class

@@ -89,10 +89,17 @@
   <ItemGroup>
     <Compile Include="CheckPayment.vb" />
     <Compile Include="CreditCardneo.vb" />
+    <Compile Include="Delivery.vb" />
     <Compile Include="Forms\frmPayCredit.designer.vb">
       <DependentUpon>frmPayCredit.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmPayCredit.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmPayDelivery.designer.vb">
+      <DependentUpon>frmPayDelivery.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPayDelivery.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\frmRLCUploaded.Designer.vb">
@@ -173,6 +180,9 @@
     <EmbeddedResource Include="Forms\frmPayCreditNeo.resx">
       <DependentUpon>frmPayCreditNeo.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPayDelivery.resx">
+      <DependentUpon>frmPayDelivery.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmPayGC.resx">
       <DependentUpon>frmPayGC.vb</DependentUpon>
     </EmbeddedResource>
@@ -229,7 +239,7 @@
       <Name>ggcClient</Name>
     </ProjectReference>
     <ProjectReference Include="..\ggcRetailParams\ggcRetailParams.vbproj">
-      <Project>{4883F473-C0B0-4266-A9AC-8E4BCA3C4CB7}</Project>
+      <Project>{4883f473-c0b0-4266-a9ac-8e4bca3c4cb7}</Project>
       <Name>ggcRetailParams</Name>
     </ProjectReference>
   </ItemGroup>

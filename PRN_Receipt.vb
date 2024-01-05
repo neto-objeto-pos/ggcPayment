@@ -118,6 +118,7 @@ Public Class PRN_Receipt
     Private p_oDTGftChk As DataTable    'Gift Check
     Private p_oDTChkPym As DataTable    'Check Payment
     Private p_oDTCredit As DataTable    'Credit Card
+    Private p_oDTDelivery As DataTable    'delivery service
 
     Private p_oDTHeader As DataTable
     Private p_oDTFooter As DataTable
@@ -159,6 +160,7 @@ Public Class PRN_Receipt
     'Total Payments
     Private pnCashTotl As Decimal       'XXX
     Private pnGiftTotl As Decimal
+    Private pnDelivery As Decimal
     Private pnChckTotl As Decimal
     Private pnCrdtTotl As Decimal
 
@@ -621,6 +623,30 @@ Public Class PRN_Receipt
     End Function
 
     '+++++++++++++++++++++++++
+    'AddGiftCoupon(GiftSource, Amount)
+    '   - Sets the info of Gift Coupon(s) used as payment
+    '+++++++++++++++++++++++++
+    Public Function AddDeliveryServ(
+            ByVal DeliverySrc As String,
+            ByVal Amount As Decimal) As Boolean
+
+        With p_oDTDelivery
+
+            If .Rows.Count = 0 Then
+                pnDelivery = 0
+            End If
+
+            .Rows.Add(.NewRow)
+            .Rows(.Rows.Count - 1).Item("sDelvrSrc") = DeliverySrc
+            .Rows(.Rows.Count - 1).Item("nDlvrAmt") = Amount
+
+            pnGiftTotl = pnGiftTotl + Amount
+
+        End With
+
+        Return True
+    End Function
+    '+++++++++++++++++++++++++
     'AddCheck(Bank, CheckNo, CheckDate, Amount)
     '   - Sets the info of check(s) used as payment
     '+++++++++++++++++++++++++
@@ -1010,8 +1036,16 @@ Public Class PRN_Receipt
         'Print Gift Coupon
         If p_oDTGftChk.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTGftChk.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " &
                            Format(p_oDTGftChk(lnCtr).Item("nGiftAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
+                builder.Append(ls4Print & Environment.NewLine)
+            Next
+        End If
+        'Print Delivery
+        If p_oDtaDlvery.Rows.Count > 0 Then
+            For lnCtr = 0 To p_oDtaDlvery.Rows.Count - 1
+                ls4Print = " " & UCase(p_oDtaDlvery(lnCtr).Item("sBriefDsc") & " DS").PadRight(24) & " " &
+                           Format(p_oDtaDlvery(lnCtr).Item("nAmountxx"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
         End If
@@ -1546,8 +1580,16 @@ Public Class PRN_Receipt
         'Print Gift Coupon
         If p_oDTGftChk.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTGftChk.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " &
                            Format(p_oDTGftChk(lnCtr).Item("nGiftAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
+                builder.Append(ls4Print & Environment.NewLine)
+            Next
+        End If
+        'Print Delivery Service
+        If p_oDtaDlvery.Rows.Count > 0 Then
+            For lnCtr = 0 To p_oDtaDlvery.Rows.Count - 1
+                ls4Print = " " & UCase(p_oDtaDlvery(lnCtr).Item("sRiderIDx") & " DS").PadRight(24) & " " &
+                           Format(p_oDtaDlvery(lnCtr).Item("nAmountxx"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
         End If
@@ -1686,6 +1728,7 @@ Public Class PRN_Receipt
 
         'Dim Printer_Name As String = "\\192.168.10.14\EPSON LX-310 ESC/P"
         Dim cashier_printer As String = Environment.GetEnvironmentVariable("RMS_PRN_CS")
+        cashier_printer = "\\192.168.10.70\EPSON TM-U220 Receipt"
         'Dim cashier_printer As String = "\\192.168.10.12\EPSON TM-U220 Receipt"
 
         'Print the designation printer location...
@@ -2475,6 +2518,11 @@ Public Class PRN_Receipt
         p_oDTGftChk.Columns.Add("nGiftAmnt", System.Type.GetType("System.Decimal"))
         p_oDTGftChk.Columns.Add("sGiftSrce", System.Type.GetType("System.String")).MaxLength = 23
     End Sub
+    Private Sub createDeliveryServ()
+        p_oDTDelivery = New DataTable("DeliveryServ")
+        p_oDTDelivery.Columns.Add("nDlvrAmt", System.Type.GetType("System.Decimal"))
+        p_oDTDelivery.Columns.Add("sDelvrSrc", System.Type.GetType("System.String")).MaxLength = 23
+    End Sub
 
     Private Sub createCheck()
         p_oDTChkPym = New DataTable("Check")
@@ -2501,6 +2549,7 @@ Public Class PRN_Receipt
         p_oDTChkPym = Nothing
         p_oDTCredit = Nothing
         p_oDTGftChk = Nothing
+        p_oDTDelivery = Nothing
 
         p_oDTHeader = Nothing
         p_oDTFooter = Nothing
@@ -2513,6 +2562,7 @@ Public Class PRN_Receipt
 
         Call createDetail()
         Call createCheck()
+        Call createDeliveryServ()
         Call createCreditCard()
         Call createGiftCheck()
 
