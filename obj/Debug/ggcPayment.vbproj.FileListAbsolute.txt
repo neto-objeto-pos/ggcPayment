@@ -1,67 +1,19 @@
-D:\POS\ggcPayment\obj\Debug\ggcPayment.vbproj.AssemblyReference.cache
-D:\POS\ggcPayment\obj\Debug\ggcReceipt.frmPayCheck.resources
-D:\POS\ggcPayment\obj\Debug\ggcReceipt.frmPayCredit.resources
-D:\POS\ggcPayment\obj\Debug\ggcReceipt.frmPayCreditNeo.resources
-D:\POS\ggcPayment\obj\Debug\ggcReceipt.frmPayGC.resources
-D:\POS\ggcPayment\obj\Debug\ggcReceipt.frmPay.resources
-D:\POS\ggcPayment\obj\Debug\ggcReceipt.frmRLC.resources
-D:\POS\ggcPayment\obj\Debug\ggcReceipt.frmRLCUploaded.resources
-D:\POS\ggcPayment\obj\Debug\ggcReceipt.Resources.resources
-D:\POS\ggcPayment\obj\Debug\ggcPayment.vbproj.GenerateResource.cache
-D:\POS\ggcPayment\obj\Debug\ggcPayment.vbproj.CoreCompileInputs.cache
-D:\POS\ggcPayment\obj\Debug\ggcPayment.vbproj.CopyComplete
-D:\POS\ggcPayment\obj\Debug\ggcReceipt.dll
-D:\POS\ggcPayment\obj\Debug\ggcReceipt.xml
-D:\POS\ggcPayment\obj\Debug\ggcReceipt.pdb
-D:\POSold\ggcPayment\obj\Debug\ggcPayment.vbproj.AssemblyReference.cache
-D:\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPayCheck.resources
-D:\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPayCredit.resources
-D:\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPayCreditNeo.resources
-D:\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPayGC.resources
-D:\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPay.resources
-D:\POSold\ggcPayment\obj\Debug\ggcReceipt.frmRLC.resources
-D:\POSold\ggcPayment\obj\Debug\ggcReceipt.frmRLCUploaded.resources
-D:\POSold\ggcPayment\obj\Debug\ggcReceipt.Resources.resources
-D:\POSold\ggcPayment\obj\Debug\ggcPayment.vbproj.GenerateResource.cache
-D:\POSold\ggcPayment\obj\Debug\ggcPayment.vbproj.CoreCompileInputs.cache
-D:\POSold\ggcPayment\obj\Debug\ggcPayment.vbproj.CopyComplete
-D:\POSold\ggcPayment\obj\Debug\ggcReceipt.dll
-D:\POSold\ggcPayment\obj\Debug\ggcReceipt.xml
-D:\POSold\ggcPayment\obj\Debug\ggcReceipt.pdb
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcPayment.vbproj.AssemblyReference.cache
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPayCheck.resources
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPayCredit.resources
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPayCreditNeo.resources
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPayGC.resources
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPay.resources
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcReceipt.frmRLC.resources
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcReceipt.frmRLCUploaded.resources
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcReceipt.Resources.resources
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcPayment.vbproj.GenerateResource.cache
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcPayment.vbproj.CoreCompileInputs.cache
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcPayment.vbproj.CopyComplete
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcReceipt.dll
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcReceipt.xml
-D:\LP POS\POSold\ggcPayment\obj\Debug\ggcReceipt.pdb
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcPayment.vbproj.AssemblyReference.cache
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPayCheck.resources
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPayCredit.resources
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPayCreditNeo.resources
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPayGC.resources
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcReceipt.frmPay.resources
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcReceipt.frmRLC.resources
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcReceipt.frmRLCUploaded.resources
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcReceipt.Resources.resources
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcPayment.vbproj.GenerateResource.cache
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcPayment.vbproj.CoreCompileInputs.cache
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcPayment.vbproj.CopyComplete
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcReceipt.dll
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcReceipt.xml
-D:\Guanzon\GMC SEG Folder\vb.net\TJ\POSold\ggcPayment\obj\Debug\ggcReceipt.pdb
-C:\GGC_Systems\vb.net\RetMgySys\WinSCP.exe
-C:\GGC_Systems\vb.net\RetMgySys\ggcReceipt.dll
-C:\GGC_Systems\vb.net\RetMgySys\ggcReceipt.pdb
-C:\GGC_Systems\vb.net\RetMgySys\ggcReceipt.xml
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcPayment.vbproj.AssemblyReference.cache
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcReceipt.frmPayCheck.resources
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcReceipt.frmPayCredit.resources
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcReceipt.frmPayCreditNeo.resources
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcReceipt.frmPayDelivery.resources
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcReceipt.frmPayGC.resources
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcReceipt.frmPay.resources
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcReceipt.frmRLC.resources
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcReceipt.frmRLCUploaded.resources
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcReceipt.Resources.resources
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcPayment.vbproj.GenerateResource.cache
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcPayment.vbproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcPayment.vbproj.CopyComplete
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcReceipt.dll
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcReceipt.xml
+C:\Users\User\source\repos\ggcPayment\obj\Debug\ggcReceipt.pdb
 C:\GGC_Systems\vb.net\RetMgtSys\WinSCP.exe
 C:\GGC_Systems\vb.net\RetMgtSys\ggcReceipt.dll
 C:\GGC_Systems\vb.net\RetMgtSys\ggcReceipt.pdb
@@ -70,6 +22,7 @@ C:\Users\Maynard\Documents\GitHub\ggcPayment\obj\Debug\ggcPayment.vbproj.Assembl
 C:\Users\Maynard\Documents\GitHub\ggcPayment\obj\Debug\ggcReceipt.frmPayCheck.resources
 C:\Users\Maynard\Documents\GitHub\ggcPayment\obj\Debug\ggcReceipt.frmPayCredit.resources
 C:\Users\Maynard\Documents\GitHub\ggcPayment\obj\Debug\ggcReceipt.frmPayCreditNeo.resources
+C:\Users\Maynard\Documents\GitHub\ggcPayment\obj\Debug\ggcReceipt.frmPayDelivery.resources
 C:\Users\Maynard\Documents\GitHub\ggcPayment\obj\Debug\ggcReceipt.frmPayGC.resources
 C:\Users\Maynard\Documents\GitHub\ggcPayment\obj\Debug\ggcReceipt.frmPay.resources
 C:\Users\Maynard\Documents\GitHub\ggcPayment\obj\Debug\ggcReceipt.frmRLC.resources
