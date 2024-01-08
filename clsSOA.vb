@@ -27,11 +27,12 @@ Imports ggcAppDriver
 Imports ggcClient
 Imports CrystalDecisions.CrystalReports.Engine
 Imports ggcRMSReports
+Imports ggcAppDriver.ModMain
 
 Public Class clsSOA
     Private p_oApp As GRider
     Private p_oDTMaster As DataTable
-    Private p_oDTDetail As DataTable
+    'Private p_oDTDetail As DataTable
     Private p_oBillDetail As DataTable
     Private p_oSTRept As DataSet
     Private p_oFormxx As frmReportViewer
@@ -40,10 +41,9 @@ Public Class clsSOA
     Private p_oClient As ggcClient.Client
     Private p_nEditMode As xeEditMode
     Private p_oOthersx As New Others
-    Private p_oSOADetail As New clsSOAInfo
     Private p_nTranStat As Int32  'Transaction Status of the transaction to retrieve
     Private p_sBranchCD As String
-
+    Private p_nEntryCount As Integer
     Private pbModified As Boolean
 
 
@@ -53,8 +53,6 @@ Public Class clsSOA
 
     Public Event MasterRetrieved(ByVal Index As Integer,
                                   ByVal Value As Object)
-    Public Event DetailRetrieved(ByVal Row As Integer, ByVal Index As Integer,
-                              ByVal Value As Object)
     Public Event DetailBillRetrieved(ByVal Row As Integer, ByVal Index As Integer,
                               ByVal Value As Object)
 
@@ -161,59 +159,7 @@ Public Class clsSOA
             End If
         End Set
     End Property
-    Public Property Detail(ByVal Row As Integer, ByVal Index As Integer) As Object
-        Get
-            If p_nEditMode <> xeEditMode.MODE_UNKNOWN Then
-                Select Case Index
 
-                    Case Else
-                        Return p_oDTDetail(Row).Item(Index)
-                End Select
-            Else
-                Return vbEmpty
-            End If
-        End Get
-        Set(ByVal value As Object)
-            If p_nEditMode <> xeEditMode.MODE_UNKNOWN Then
-                Select Case Index
-                    Case 4
-                        pbModified = True
-                        p_oDTDetail(Row).Item(Index) = value
-                        p_oBillDetail(Row).Item(10) = p_oDTDetail(Row).Item(Index)
-                        RaiseEvent DetailRetrieved(Row, Index, p_oDTDetail(Row).Item(Index))
-                        RaiseEvent DetailBillRetrieved(Row, 10, p_oBillDetail(Row).Item(Index))
-                End Select
-            End If
-        End Set
-
-    End Property
-
-    'Property Detail(String)
-    Public Property Detail(ByVal Row As Integer, ByVal Index As String) As Object
-        Get
-            If p_nEditMode <> xeEditMode.MODE_UNKNOWN Then
-                Select Case LCase(Index)
-
-                    Case Else
-                        Return p_oDTDetail(Row).Item(Index)
-                End Select
-            Else
-                Return vbEmpty
-            End If
-        End Get
-        Set(ByVal value As Object)
-            If p_nEditMode <> xeEditMode.MODE_UNKNOWN Then
-                Select Case Index
-                    Case "cbilledxx"
-                        p_oDTDetail(Row).Item(Index) = value
-
-                        p_oBillDetail(Row).Item("cPaidxxxx") = p_oDTDetail(Row).Item(Index)
-                        RaiseEvent DetailRetrieved(Row, Index, p_oDTDetail(Row).Item(Index))
-                        RaiseEvent DetailBillRetrieved(Row, 10, p_oBillDetail(Row).Item(Index))
-                End Select
-            End If
-        End Set
-    End Property
     Public Property BillDetail(ByVal Row As Integer, ByVal Index As Integer) As Object
         Get
             If p_nEditMode <> xeEditMode.MODE_UNKNOWN Then
@@ -232,13 +178,23 @@ Public Class clsSOA
                     Case 5
                         p_oBillDetail(Row).Item(Index) = value
                         If p_oBillDetail(Row).Item(Index) = 1 Then
-                            AddDetail(Row)
+                            pbModified = True
+                            p_nEntryCount += p_nEntryCount
+                            'AddDetail(Row)
                         Else
-                            RemoveDetail(p_oBillDetail(Row).Item(0))
+                            pbModified = True
+                            p_nEntryCount -= p_nEntryCount
+                            'RemoveDetail(p_oBillDetail(Row).Item(0))
 
                         End If
                         RaiseEvent DetailBillRetrieved(Row, Index, p_oBillDetail(Row).Item(Index))
+                    Case 10
+                        pbModified = True
 
+                        Debug.Print(" sourceno: " + p_oBillDetail(Row).Item(2))
+
+                        p_oBillDetail(Row).Item(Index) = value
+                        RaiseEvent DetailBillRetrieved(Row, Index, p_oBillDetail(Row).Item(Index))
                 End Select
             End If
         End Set
@@ -264,13 +220,20 @@ Public Class clsSOA
                     Case "cbilledxx"
                         p_oBillDetail(Row).Item(Index) = value
                         If p_oBillDetail(Row).Item(Index) = 1 Then
-                            AddDetail(Row)
+                            p_nEntryCount += p_nEntryCount
+                            'AddDetail(Row)
                         Else
-                            RemoveDetail(p_oBillDetail(Row).Item(0))
+                            p_nEntryCount -= p_nEntryCount
+                            'RemoveDetail(p_oBillDetail(Row).Item(0))
                         End If
 
                         RaiseEvent DetailBillRetrieved(Row, Index, p_oBillDetail(Row).Item(Index))
+                    Case "cpaidxxxx"
+                        pbModified = True
+                        Debug.Print("Fucking sourceno: " + p_oBillDetail(Row).Item(0))
 
+                        p_oBillDetail(Row).Item(Index) = value
+                        RaiseEvent DetailBillRetrieved(Row, Index, p_oBillDetail(Row).Item(Index))
                 End Select
             End If
         End Set
@@ -282,12 +245,6 @@ Public Class clsSOA
         End Get
     End Property
 
-    Public Function GetItemCount() As Integer
-        If p_oDTDetail Is Nothing Then Return 0
-
-        Return p_oDTDetail.Rows.Count
-    End Function
-
     Public Function GetItemDSCount() As Integer
         If p_oBillDetail Is Nothing Then Return 0
 
@@ -297,19 +254,14 @@ Public Class clsSOA
     'Public Function NewTransaction()
     Public Function NewTransaction() As Boolean
         Dim lsSQL As String
-
+        p_nEntryCount = 0
         lsSQL = AddCondition(getSQ_Master, "0=1")
         p_oDTMaster = p_oApp.ExecuteQuery(lsSQL)
         p_oDTMaster.Rows.Add(p_oDTMaster.NewRow())
 
 
         Call initMaster()
-
-        lsSQL = AddCondition(getSQ_Detail, "0=1")
-        p_oDTDetail = p_oApp.ExecuteQuery(lsSQL)
-
         Call InitOthers()
-        Call InitSOAInfo()
 
         p_nEditMode = xeEditMode.MODE_ADDNEW
 
@@ -386,7 +338,7 @@ Public Class clsSOA
         If MsgBox("Do you want to Save this Transaction?", vbQuestion + vbYesNo, "Confirm") = vbNo Then Return False
 
         Dim lsSQL As String
-        Dim lnTotal As Integer
+        Dim lnTotal As Double
         Dim lnRow As Integer
         Dim lnEntryNox As Integer
 
@@ -399,44 +351,47 @@ Public Class clsSOA
             p_oApp.BeginTransaction()
             lnEntryNox = 0
             lnTotal = 0
-            'inserting detail
-            For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
-                lnTotal += p_oDTDetail.Rows(lnCtr)("nAmountxx")
-                Debug.Print(strParm(p_oDTDetail.Rows(lnCtr)("sSourceNo")))
-                lsSQL = "INSERT INTO " & p_sDetTable & " SET" &
-                               "  sTransNox = " & strParm(p_oDTMaster.Rows(0)("sTransNox")) &
-                               ", nEntryNox = " & CDbl(lnEntryNox + 1) &
-                               ", sSourceNo = " & strParm(p_oDTDetail.Rows(lnCtr)("sSourceNo")) &
-                               ", nAmountxx = " & CDbl(p_oDTDetail.Rows(lnCtr)("nAmountxx")) &
-                               ", cPaidxxxx = " & strParm(p_oDTDetail.Rows(lnCtr)("cPaidxxxx"))
+            'inserting detailsTransNox
+            For lnCtr = 0 To p_oBillDetail.Rows.Count - 1
+                Dim cCollectdValue = p_oBillDetail.Rows(lnCtr)("cBilledxx")
+                If Not (String.IsNullOrEmpty(cCollectdValue.ToString()) OrElse cCollectdValue = 0) Then
+                    lnTotal += CDbl(p_oBillDetail.Rows(lnCtr)("nAmountxx"))
+                    Debug.Print(strParm(p_oBillDetail.Rows(lnCtr)("sTransNox")))
+                    lsSQL = "INSERT INTO " & p_sDetTable & " SET" &
+                                   "  sTransNox = " & strParm(p_oDTMaster.Rows(0)("sTransNox")) &
+                                   ", nEntryNox = " & CDbl(lnEntryNox + 1) &
+                                   ", sSourceNo = " & strParm(p_oBillDetail.Rows(lnCtr)("sTransNox")) &
+                                   ", nAmountxx = " & CDbl(p_oBillDetail.Rows(lnCtr)("nAmountxx")) &
+                                   ", cPaidxxxx = " & xeLogical.NO
 
-                Try
-
-                    lnRow = p_oApp.Execute(lsSQL, p_sDetTable)
-                    If lnRow <= 0 Then
-                        MsgBox("Unable to Save Transaction!!!" & vbCrLf &
-                                "Please contact GGC SSG/SEG for assistance!!!", MsgBoxStyle.Critical, "WARNING")
-                        Return False
-                    End If
-                    'update billing detail
-                    lsSQL = "UPDATE Delivery_Service_Trans SET" &
-                        "  cBilledxx = " & xeLogical.YES &
-                        ",  dBilledxx = " & datetimeParm(p_oApp.SysDate) &
-                    " WHERE sTransNox = " & strParm(p_oDTDetail.Rows(lnCtr)("sSourceNo"))
                     Try
-                        lnRow = p_oApp.Execute(lsSQL, "Delivery_Service_Trans")
+
+                        lnRow = p_oApp.Execute(lsSQL, p_sDetTable)
                         If lnRow <= 0 Then
                             MsgBox("Unable to Save Transaction!!!" & vbCrLf &
                                     "Please contact GGC SSG/SEG for assistance!!!", MsgBoxStyle.Critical, "WARNING")
                             Return False
                         End If
+                        'update billing detail
+                        lsSQL = "UPDATE Delivery_Service_Trans SET" &
+                            "  cBilledxx = " & xeLogical.YES &
+                            ",  dBilledxx = " & datetimeParm(p_oApp.SysDate) &
+                        " WHERE sTransNox = " & strParm(p_oBillDetail.Rows(lnCtr)("sTransNox"))
+                        Try
+                            lnRow = p_oApp.Execute(lsSQL, "Delivery_Service_Trans")
+                            If lnRow <= 0 Then
+                                MsgBox("Unable to Save Transaction!!!" & vbCrLf &
+"Please contact GGC SSG/SEG for assistance!!!", MsgBoxStyle.Critical, "WARNING")
+                                Return False
+                            End If
+                        Catch ex As Exception
+                            Throw ex
+                        End Try
                     Catch ex As Exception
                         Throw ex
                     End Try
-                Catch ex As Exception
-                    Throw ex
-                End Try
-                lnEntryNox = lnEntryNox + 1
+                    lnEntryNox = lnEntryNox + 1
+                End If
             Next
 
             'inserting master
@@ -583,15 +538,6 @@ Public Class clsSOA
         p_oOthersx.sClientNm = ""
         p_oOthersx.sAddressx = ""
     End Sub
-    Private Sub InitSOAInfo()
-        p_oSOADetail.sTransNox = ""
-        p_oSOADetail.nEntryNox = ""
-        p_oSOADetail.sSourceNo = ""
-        p_oSOADetail.nAmountxx = ""
-        p_oSOADetail.cPaidxxxx = ""
-        p_oSOADetail.dTimeStmp = ""
-        p_oSOADetail.cBilledxx = ""
-    End Sub
 
     Private Function isEntryOk() As Boolean
 
@@ -605,10 +551,11 @@ Public Class clsSOA
             MsgBox("Client Info seems to be Empty! Please check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
             Return False
         End If
-
-        If p_oDTDetail.Rows.Count = 0 Then
-            MsgBox("Detail seems to be Empty! Please check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
-            Return False
+        If Not pbModified = True Then
+            If p_nEntryCount = 0 Then
+                MsgBox("Detail seems to be Empty! Please check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
+                Return False
+            End If
         End If
         Return True
     End Function
@@ -625,9 +572,6 @@ Public Class clsSOA
         lsSQL = AddCondition(getSQ_DeliveryService, " d.sTransNox = " & strParm(fsTransNox))
         p_oBillDetail = p_oApp.ExecuteQuery(lsSQL)
 
-        lsSQL = AddCondition(getSQ_Detail, "a.sTransNox = " & strParm(fsTransNox))
-        p_oDTDetail = p_oApp.ExecuteQuery(lsSQL)
-
 
         If p_oDTMaster.Rows.Count <= 0 Then
             p_nEditMode = xeEditMode.MODE_UNKNOWN
@@ -640,43 +584,43 @@ Public Class clsSOA
         Return True
     End Function
 
-    Public Function AddDetail(ByVal lnRow As Integer) As Boolean
-        Try
+    'Public Function AddDetail(ByVal lnRow As Integer) As Boolean
+    '    Try
 
-            With p_oBillDetail.Rows(lnRow)
-                p_oDTDetail.Rows.Add()
+    '        With p_oBillDetail.Rows(lnRow)
+    '            p_oDTDetail.Rows.Add()
 
-                p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("sTransNox") = p_oDTMaster.Rows(0)("sTransNox")
-                p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("nEntryNox") = p_oDTDetail.Rows.Count
-                p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("sSourceNo") = .Item("sTransNox")
-                p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("nAmountxx") = .Item("nAmountxx")
-                p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("cPaidxxxx") = 0
-            End With
+    '            p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("sTransNox") = p_oDTMaster.Rows(0)("sTransNox")
+    '            p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("nEntryNox") = p_oDTDetail.Rows.Count
+    '            p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("sSourceNo") = .Item("sTransNox")
+    '            p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("nAmountxx") = .Item("nAmountxx")
+    '            p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("cPaidxxxx") = 0
+    '        End With
 
-            Return True
-        Catch ex As Exception
-            MsgBox("Error Exception :" + ex.Message, MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
-            Return False
-        End Try
-    End Function
+    '        Return True
+    '    Catch ex As Exception
+    '        MsgBox("Error Exception :" + ex.Message, MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
+    '        Return False
+    '    End Try
+    'End Function
 
-    Public Function RemoveDetail(ByVal conditionValue As String) As Boolean
-        Try
+    'Public Function RemoveDetail(ByVal conditionValue As String) As Boolean
+    '    Try
 
-            For Each row As DataRow In p_oDTDetail.Rows
-                If row("sSourceNo").ToString() = conditionValue Then
-                    p_oDTDetail.Rows.Remove(row)
-                    Return True
-                End If
-            Next
+    '        For Each row As DataRow In p_oDTDetail.Rows
+    '            If row("sSourceNo").ToString() = conditionValue Then
+    '                p_oDTDetail.Rows.Remove(row)
+    '                Return True
+    '            End If
+    '        Next
 
-            MsgBox("No Detail to remove! Please check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
-            Return False
-        Catch ex As Exception
-            MsgBox("Error Exception: " + ex.Message, MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
-            Return False
-        End Try
-    End Function
+    '        MsgBox("No Detail to remove! Please check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
+    '        Return False
+    '    Catch ex As Exception
+    '        MsgBox("Error Exception: " + ex.Message, MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
+    '        Return False
+    '    End Try
+    'End Function
 
     Function CancelTransaction() As Boolean
         Dim lsSQL As String
@@ -710,19 +654,19 @@ Public Class clsSOA
 
 
         p_oApp.BeginTransaction()
-        For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
+        For lnCtr = 0 To p_oBillDetail.Rows.Count - 1
             Try
 
                 'update billing detail empty
                 lsSQL = "UPDATE Delivery_Service_Trans SET" &
                         "  cBilledxx = " & xeLogical.NO &
-                        "  cCollectd = " & xeLogical.NO &
-                        "  cTranStat = " & xeTranStat.TRANS_OPEN &
+                        ",  cCollectd = " & xeLogical.NO &
+                        ",  cTranStat = " & xeTranStat.TRANS_OPEN &
                         ",  dBilledxx = NULL " &
-                    " WHERE sTransNox = " & strParm(p_oDTDetail.Rows(lnCtr)("sSourceNo"))
+                    " WHERE sTransNox = " & strParm(p_oBillDetail.Rows(lnCtr)("sTransNox"))
                 Try
-                    lnRow = p_oApp.Execute(lsSQL, "Delivery_Service_Trans")
-                    If lnRow <= 0 Then
+                    lnrow = p_oApp.Execute(lsSQL, "Delivery_Service_Trans")
+                    If lnrow <= 0 Then
                         MsgBox("Unable to Disapprove Transaction!!!" & vbCrLf &
                                     "Please contact GGC SSG/SEG for assistance!!!", MsgBoxStyle.Critical, "WARNING")
                         Return False
@@ -851,14 +795,16 @@ endProc:
 
         p_nEditMode = xeEditMode.MODE_READY
 
+        MsgBox("This Transaction is Now Fully Paid .", MsgBoxStyle.Information, "Notice")
         Return True
 endProc:
+        Return False
         Exit Function
 
     End Function
 
 
-    'Public Function SaveTransaction
+    'Public Function PrePostTransaction
     'This object does not implement Update
     Public Function PrePostTransaction() As Boolean
         If Not (p_nEditMode = xeEditMode.MODE_ADDNEW Or
@@ -881,12 +827,12 @@ endProc:
         p_oApp.BeginTransaction()
 
         'inserting detail
-        For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
-            If (p_oDTDetail.Rows(lnCtr)("cPaidxxxx") = 1) Then
+        For lnCtr = 0 To p_oBillDetail.Rows.Count - 1
+            If (p_oBillDetail.Rows(lnCtr)("cPaidxxxx") = 1) Then
                 lsSQL = "UPDATE " & p_sDetTable & " SET " &
                             "  cPaidxxxx = " & xeLogical.YES &
                 " WHERE sTransNox = " & strParm(p_oDTMaster(0).Item("sTransNox")) &
-                        " AND sSourceNo = " & strParm(p_oDTDetail.Rows(lnCtr)("sSourceNo"))
+                        " AND sSourceNo = " & strParm(p_oBillDetail.Rows(lnCtr)("sTransNox"))
 
                 Try
 
@@ -900,10 +846,10 @@ endProc:
                     lsSQL = "UPDATE Delivery_Service_Trans SET " &
                             " cCollectd = " & xeLogical.YES &
                             ", cPaidxxxx = " & xeLogical.YES &
-                            ", dPaidxxxx = " & dateParm(p_oApp.SysDate) &
+                            ", dPaidxxxx = " & datetimeParm(p_oApp.SysDate) &
                             ", cTranStat = " & xeTranStat.TRANS_POSTED &
-                            ", dModified = " & dateParm(p_oApp.SysDate) &
-                        " WHERE sTransNox = " & strParm(p_oDTDetail.Rows(lnCtr)("sSourceNo"))
+                            ", dModified = " & datetimeParm(p_oApp.SysDate) &
+                        " WHERE sTransNox = " & strParm(p_oBillDetail.Rows(lnCtr)("sTransNox"))
                     Try
                         lnRow = p_oApp.Execute(lsSQL, "Delivery_Service_Trans")
                         If lnRow <= 0 Then
@@ -938,23 +884,23 @@ endProc:
     Private Function isAllPaid()
 
         Dim lnRow As Integer
-        For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
-            If Not (p_oDTDetail.Rows(lnCtr)("cPaidxxxx") = 1) Then
+        For lnCtr = 0 To p_oBillDetail.Rows.Count - 1
+            If Not (p_oBillDetail.Rows(lnCtr)("cPaidxxxx") = 1) Then
                 Return False
             End If
         Next
         Return True
     End Function
-    Private Function getSQ_Detail() As String
+    'Private Function getSQ_Detail() As String
 
-        Return "SELECT a.sTransNox sTransNox " &
-                    ", a.nEntryNox nEntryNox " &
-                    ", a.sSourceNo sSourceNo " &
-                    ", a.nAmountxx nAmountxx " &
-                    ", a.cPaidxxxx cPaidxxxx " &
-                    ", a.dTimeStmp dTimeStmp " &
-                " FROM " & p_sDetTable & " a "
-    End Function
+    '    Return "SELECT a.sTransNox sTransNox " &
+    '                ", a.nEntryNox nEntryNox " &
+    '                ", a.sSourceNo sSourceNo " &
+    '                ", a.nAmountxx nAmountxx " &
+    '                ", a.cPaidxxxx cPaidxxxx " &
+    '                ", a.dTimeStmp dTimeStmp " &
+    '            " FROM " & p_sDetTable & " a "
+    'End Function
     Private Function getSQ_Master() As String
         Return "SELECT a.sTransNox sTransNox" &
                     ", a.dTransact dTransact" &
@@ -1003,7 +949,7 @@ endProc:
                   ", a.sSourceCd" &
                   ", a.cCollectd" &
                   ", a.dBilledxx" &
-                  ", a.cPaidxxxx" &
+                  ", d.cPaidxxxx" &
                   ", a.dPaidxxxx" &
                   ", a.cWaivexxx" &
                   ", a.cTranStat" &
@@ -1026,7 +972,6 @@ endProc:
         p_oReport = Nothing
         p_oBillDetail = Nothing
         p_oDTMaster = Nothing
-        p_oDTDetail = Nothing
         p_oFormxx = New frmReportViewer
         p_nEditMode = xeEditMode.MODE_UNKNOWN
 
@@ -1040,17 +985,6 @@ endProc:
         Public sAddressx As String
     End Class
 
-    Private Class clsSOAInfo
-        Public sTransNox As String
-        Public nEntryNox As String
-        Public sSourceNo As String
-        Public nAmountxx As String
-        Public cPaidxxxx As String
-        Public dTimeStmp As String
-        Public cBilledxx As String
-
-
-    End Class
 
 
     Public Function loadBilling() As Boolean
@@ -1062,7 +996,7 @@ endProc:
         lsSQL = ""
         fsSourceCd = p_oDTMaster.Rows(0)("sSourceCd")
         If fsSourceCd = "DS" Then
-            lsSQL = AddCondition(getSQ_DeliveryService, "a.cBilledxx <> " & xeRecordStat.RECORD_NEW)
+            lsSQL = AddCondition(getSQ_DeliveryService, "a.cBilledxx <> " & xeRecordStat.RECORD_NEW & " GROUP BY a.sSourceNo ")
         Else
             lsSQL = ""
         End If
@@ -1071,10 +1005,17 @@ endProc:
         If lsSQL <> "" Then
             p_oBillDetail = p_oApp.ExecuteQuery(lsSQL)
         Else
+            p_oBillDetail = Nothing
+            MsgBox("Its seems there is no Transaction to Bill ! Please double-check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
+            Return False
+
+        End If
+
+        If p_oBillDetail.Rows.Count = 0 Then
+            p_oBillDetail = Nothing
+            MsgBox("Its seems there is no Transaction to Bill ! Please double-check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
             Return False
         End If
-        Debug.Print(p_oBillDetail.Rows.Count)
-        If p_oBillDetail.Rows.Count = 0 Then Return False
 
 
 
@@ -1163,7 +1104,7 @@ endProc:
 
         'Set masterdetails
         loTxtObj = loRpt.ReportDefinition.Sections(4).ReportObjects("txtTotalAmount")
-        loTxtObj.Text = p_oDTMaster(0).Item("nTranTotl")
+        loTxtObj.Text = FormatNumber(p_oDTMaster(0).Item("nTranTotl"), 2)
 
 
         'setting client
@@ -1191,7 +1132,7 @@ endProc:
                         "  cPrintedx = " & xeLogical.YES &
                         ",  dPrintedx = " & datetimeParm(p_oApp.SysDate) &
                         ", sModified = " & strParm(p_oApp.UserID) &
-                        ", dModified = " & dateParm(p_oApp.SysDate) &
+                        ", dModified = " & datetimeParm(p_oApp.SysDate) &
                     " WHERE sTransNox = " & strParm(p_oDTMaster(0).Item("sTransNox"))
 
             Try
@@ -1206,40 +1147,30 @@ endProc:
             End Try
 
             'detail table
-            For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
-                Try
+            For lnCtr = 0 To p_oBillDetail.Rows.Count - 1
 
-                    lnRow = p_oApp.Execute(lsSQL, p_sDetTable)
-                    If lnRow <= 0 Then
-                        MsgBox("Unable to Print Transaction!!!" & vbCrLf &
-                                "Please contact GGC SSG/SEG for assistance!!!", MsgBoxStyle.Critical, "WARNING")
-                        Return False
-                    End If
-                    'update billing detail
-
+                'update billing detail
+                If Not p_oBillDetail(lnCtr).Item("cTranStat") = 2 Then
                     lsSQL = "UPDATE Delivery_Service_Trans SET" &
                         " dBilledxx = " & datetimeParm(p_oApp.SysDate) &
                         ", cTranStat = " & xeAccountStat.CLOSED &
-                    " WHERE sTransNox = " & strParm(p_oDTDetail.Rows(lnCtr)("sSourceNo"))
+                    " WHERE sTransNox = " & strParm(p_oBillDetail.Rows(lnCtr)("sTransNox"))
                     Try
                         lnRow = p_oApp.Execute(lsSQL, "Delivery_Service_Trans")
                         If lnRow <= 0 Then
                             MsgBox("Unable to Print Transaction!!!" & vbCrLf &
-                                    "Please contact GGC SSG/SEG for assistance!!!", MsgBoxStyle.Critical, "WARNING")
+                                "Please contact GGC SSG/SEG for assistance!!!", MsgBoxStyle.Critical, "WARNING")
                             Return False
                         End If
                     Catch ex As Exception
                         Throw ex
                     End Try
-                Catch ex As Exception
-                    Throw ex
-                End Try
 
+                End If
             Next
         End If
         Return True
     End Function
-
     Private Function getRptTable() As DataTable
         'Initialize DataSet
         p_oSTRept = New DataSet
@@ -1260,9 +1191,9 @@ endProc:
         loDtaRow = foSchemaTable.NewRow
 
         loDtaRow.Item("nField01") = lnRow + 1
-        loDtaRow.Item("sField01") = p_oDTDetail(lnRow).Item("sSourceNo")
+        loDtaRow.Item("sField01") = p_oBillDetail(lnRow).Item("sSourceNo")
         loDtaRow.Item("sField02") = Format(p_oBillDetail(lnRow).Item("dTransact"), "MMMM dd, yyyy")
-        loDtaRow.Item("nField02") = p_oBillDetail(lnRow).Item("nAmountxx")
+        loDtaRow.Item("lField01") = p_oBillDetail(lnRow).Item("nAmountxx")
         Return loDtaRow
     End Function
 #End Region
