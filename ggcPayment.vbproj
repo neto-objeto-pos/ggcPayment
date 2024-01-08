@@ -23,11 +23,12 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>C:\GGC_Systems\vb.net\RetMgySys\</OutputPath>
+    <OutputPath>..\..\..\..\..\GGC_Systems\vb.net\RetMgtSys\</OutputPath>
     <DocumentationFile>ggcReceipt.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <RegisterForComInterop>false</RegisterForComInterop>
     <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,7 +45,7 @@
     <OptionExplicit>On</OptionExplicit>
   </PropertyGroup>
   <PropertyGroup>
-    <OptionCompare>Text</OptionCompare>
+    <OptionCompare>Binary</OptionCompare>
   </PropertyGroup>
   <PropertyGroup>
     <OptionStrict>Off</OptionStrict>
@@ -56,6 +57,7 @@
     <Reference Include="adodb, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="MySql.Data, Version=6.7.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>X:\GGC_Systems\vb.net\RetMgySys\MySql.Data.dll</HintPath>
@@ -88,10 +90,17 @@
   <ItemGroup>
     <Compile Include="CheckPayment.vb" />
     <Compile Include="CreditCardneo.vb" />
+    <Compile Include="Delivery.vb" />
     <Compile Include="Forms\frmPayCredit.designer.vb">
       <DependentUpon>frmPayCredit.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmPayCredit.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmPayDelivery.designer.vb">
+      <DependentUpon>frmPayDelivery.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPayDelivery.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\frmRLCUploaded.Designer.vb">
@@ -106,6 +115,7 @@
     <Compile Include="Forms\frmRLC.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="clsSOA.vb" />
     <Compile Include="PRN_RLC_Reading.vb" />
     <Compile Include="PRN_Charge.vb" />
     <Compile Include="CreditCard.vb" />
@@ -171,6 +181,9 @@
     <EmbeddedResource Include="Forms\frmPayCreditNeo.resx">
       <DependentUpon>frmPayCreditNeo.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPayDelivery.resx">
+      <DependentUpon>frmPayDelivery.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmPayGC.resx">
       <DependentUpon>frmPayGC.vb</DependentUpon>
     </EmbeddedResource>
@@ -222,9 +235,17 @@
       <Project>{6FA248F3-A2BA-43DF-BE98-032E11714DB5}</Project>
       <Name>ggcAppDriver</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ggcRetailParams\ggcRetailParams\ggcRetailParams.vbproj">
+    <ProjectReference Include="..\ggcClient\ggcClient.vbproj">
+      <Project>{d1b85464-9368-4354-b294-3b5e555b61c3}</Project>
+      <Name>ggcClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ggcRetailParams\ggcRetailParams.vbproj">
       <Project>{4883f473-c0b0-4266-a9ac-8e4bca3c4cb7}</Project>
       <Name>ggcRetailParams</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ggcRMSReports\ggcRMSReports.vbproj">
+      <Project>{59DDF956-B82B-46D8-955F-769D502647BF}</Project>
+      <Name>ggcRMSReports</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
