@@ -66,6 +66,7 @@ Public Class PRN_CancelledReceipt
     Private pnGiftTotl As Decimal
     Private pnChckTotl As Decimal
     Private pnCrdtTotl As Decimal
+    Private pnDSTotl As Decimal
 
     'Sale Total Info
     Private pnVatblSle As Decimal
@@ -471,8 +472,8 @@ Public Class PRN_CancelledReceipt
     'AddGiftCoupon(GiftSource, Amount)
     '   - Sets the info of Gift Coupon(s) used as payment
     '+++++++++++++++++++++++++
-    Public Function AddGiftCoupon( _
-            ByVal GiftSource As String, _
+    Public Function AddGiftCoupon(
+            ByVal GiftSource As String,
             ByVal Amount As Decimal) As Boolean
 
         With p_oDTGftChk
@@ -484,6 +485,29 @@ Public Class PRN_CancelledReceipt
             .Rows(.Rows.Count - 1).Item("nGiftAmnt") = Amount
 
             pnGiftTotl = pnGiftTotl + Amount
+
+        End With
+
+        Return True
+    End Function
+
+    '+++++++++++++++++++++++++
+    'AddGiftCoupon(GiftSource, Amount)
+    '   - Sets the info of Gift Coupon(s) used as payment
+    '+++++++++++++++++++++++++
+    Public Function AddDelivery(
+            ByVal DeliverySrc As String,
+            ByVal Amount As Decimal) As Boolean
+
+        With p_oDtaDlvery
+
+            If .Rows.Count = 0 Then pnGiftTotl = 0
+
+            .Rows.Add(.NewRow)
+            .Rows(.Rows.Count - 1).Item("sGiftSrce") = DeliverySrc
+            .Rows(.Rows.Count - 1).Item("nDeliveryAmt") = Amount
+
+            pnDSTotl = pnDSTotl + Amount
 
         End With
 

@@ -25,6 +25,7 @@ Imports ggcRetailParams
 Imports MySql.Data.MySqlClient
 Imports System.Windows.Forms
 Imports System.Reflection
+Imports System.Drawing.Printing
 
 Public Class Receipt
 
@@ -40,6 +41,7 @@ Public Class Receipt
     Protected p_oCheck As CheckPayment
     Protected p_oCreditCard As CreditCard
     Protected p_oGiftCert As GiftCerticate
+    Protected p_oDelivery As Delivery
     Protected p_oPayment As Payment
     Protected p_nEditMode As xeEditMode
 
@@ -82,6 +84,7 @@ Public Class Receipt
     Private p_nWithDisc As Integer
     Private p_nNoClient As Integer
     Private p_nTableNo As Integer
+    Private p_sTrantype As String
     Private p_sLogName As String
 
 #Region "Properties"
@@ -92,6 +95,14 @@ Public Class Receipt
         End Get
         Set(ByVal Value As Integer)
             p_nTableNo = Value
+        End Set
+    End Property
+    Property TranType As String
+        Get
+            Return p_sTrantype
+        End Get
+        Set(ByVal Value As String)
+            p_sTrantype = Value
         End Set
     End Property
 
@@ -142,6 +153,11 @@ Public Class Receipt
             Return p_nGiftCert
         End Get
     End Property
+    ReadOnly Property DSAmount As Decimal
+        Get
+            Return p_nDelivery
+        End Get
+    End Property
 
     Property Branch() As String
         Get
@@ -169,7 +185,7 @@ Public Class Receipt
 
     WriteOnly Property BillingNo As String
         Set(ByVal Value As String)
-            p_sBillingNo = value
+            p_sBillingNo = Value
         End Set
     End Property
 
@@ -380,8 +396,12 @@ Public Class Receipt
         lbSuccess = SaveTransaction()
         'MsgBox("Save Receipt")
 
-        If lbSuccess Then printReciept()
-        'MsgBox("Print Receipt")
+        If lbSuccess Then
+            CheckPrinter("EPSON TM-U220 Receipt")
+
+            printReciept()
+        End If
+        MsgBox("Print Receipt")
 
         Return lbSuccess
     End Function
@@ -393,7 +413,9 @@ Public Class Receipt
         loPrint = New PRN_Billing(p_oAppDrvr)
 
         With loPrint
-            If Not .InitMachine Then Return False
+            If Not .InitMachine Then
+                Return False
+            End If
 
             If CDate(Format(p_oDataTable.Rows(0)("dTransact"), xsDATE_SHORT)) < CDate(Format(p_oAppDrvr.getSysDate, xsDATE_SHORT)) Then
                 .Transaction_Date = CDate(Format(p_oDataTable.Rows(0)("dTransact"), xsDATE_SHORT))
@@ -425,7 +447,7 @@ Public Class Receipt
                     'Do not include REVERSE(D) orders here...
                     If p_oDtaOrder(lnCtr)("cReversed") = xeLogical.NO Then
                         'Compute unit price here...
-                        lnSlPrc = (p_oDtaOrder(lnCtr).Item("nUnitPrce") * _
+                        lnSlPrc = (p_oDtaOrder(lnCtr).Item("nUnitPrce") *
                                     (100 - p_oDtaOrder(lnCtr).Item("nDiscount")) / 100 -
                                     p_oDtaOrder(lnCtr).Item("nAddDiscx"))
 
@@ -433,18 +455,18 @@ Public Class Receipt
                         lnDiv = p_oDtaOrder(lnCtr)("nQuantity") / lnQuantity
 
                         If lnQuantity - lnComplmnt > 0 Then
-                            .AddDetail(lnDiv * (lnQuantity - lnComplmnt), _
-                                       p_oDtaOrder(lnCtr)("sBriefDsc"), _
-                                       lnSlPrc, _
-                                       True, _
-                                       p_oDtaOrder(lnCtr)("cDetailxx") = "1", _
+                            .AddDetail(lnDiv * (lnQuantity - lnComplmnt),
+                                       p_oDtaOrder(lnCtr)("sBriefDsc"),
+                                       lnSlPrc,
+                                       True,
+                                       p_oDtaOrder(lnCtr)("cDetailxx") = "1",
                                        IIf(p_oDtaOrder(lnCtr)("cComboMlx") <> "1", True, False))
                         End If
 
                         If lnComplmnt > 0 Then
-                            .AddComplement(lnDiv * lnComplmnt, _
-                                       p_oDtaOrder(lnCtr)("sBriefDsc"), _
-                                       0, _
+                            .AddComplement(lnDiv * lnComplmnt,
+                                       p_oDtaOrder(lnCtr)("sBriefDsc"),
+                                       0,
                                        True, IIf(p_oDtaOrder(lnCtr)("cComboMlx") <> "1", True, False))
                         End If
                     Else
@@ -506,14 +528,14 @@ Public Class Receipt
 
                     'MAC
 
-                    .AddDiscount(p_oDtaDiscx(0)("sIDNumber"), _
-                                 loDR("sCardDesc"), _
-                                 p_oDtaDiscx(0)("nDiscRate"), _
-                                 p_oDtaDiscx(0)("nDiscAmtx"), _
-                                 p_nDiscAmtx, _
-                                 IIf(p_oDtaDiscx(0)("cNoneVatx") = "1", False, True), _
-                                 p_oDtaDiscx(0)("nNoClient"), _
-                                 p_oDtaDiscx(0)("nWithDisc"), _
+                    .AddDiscount(p_oDtaDiscx(0)("sIDNumber"),
+                                 loDR("sCardDesc"),
+                                 p_oDtaDiscx(0)("nDiscRate"),
+                                 p_oDtaDiscx(0)("nDiscAmtx"),
+                                 p_nDiscAmtx,
+                                 IIf(p_oDtaDiscx(0)("cNoneVatx") = "1", False, True),
+                                 p_oDtaDiscx(0)("nNoClient"),
+                                 p_oDtaDiscx(0)("nWithDisc"),
                                  p_oDtaDiscx(0)("sClientNm"))
                 Else
                     '.AddDiscount("", _
@@ -521,11 +543,11 @@ Public Class Receipt
                     '             p_nDiscAmtx, IIf(p_oDtaDiscx(0)("cNoneVatx") = "1", False, True))
 
                     'MAC
-                    .AddDiscount("", _
-                                 "", _
-                                 p_oDtaDiscx(0)("nDiscRate"), _
-                                 p_oDtaDiscx(0)("nDiscAmtx"), _
-                                 p_nDiscAmtx, _
+                    .AddDiscount("",
+                                 "",
+                                 p_oDtaDiscx(0)("nDiscRate"),
+                                 p_oDtaDiscx(0)("nDiscAmtx"),
+                                 p_nDiscAmtx,
                                  IIf(p_oDtaDiscx(0)("cNoneVatx") = "1", False, True))
                 End If
             End If
@@ -562,7 +584,7 @@ Public Class Receipt
         End With
     End Function
 
-    Function printCancelled(ByVal sSourceNo As String, _
+    Function printCancelled(ByVal sSourceNo As String,
                             Optional ByVal bReprint As Boolean = False) As Boolean
         Dim lnCtr As Integer
         Dim loPrint As PRN_CancelledReceipt
@@ -606,7 +628,7 @@ Public Class Receipt
                     'Do not include REVERSE(D) orders here...
                     If p_oDtaOrder(lnCtr)("cReversed") = xeLogical.NO Then
                         'Compute unit price here...
-                        lnSlPrc = (p_oDtaOrder(lnCtr).Item("nUnitPrce") * _
+                        lnSlPrc = (p_oDtaOrder(lnCtr).Item("nUnitPrce") *
                                     (100 - p_oDtaOrder(lnCtr).Item("nDiscount")) / 100 -
                                     p_oDtaOrder(lnCtr).Item("nAddDiscx"))
 
@@ -624,9 +646,9 @@ Public Class Receipt
                         End If
 
                         If lnComplmnt > 0 Then
-                            .AddComplement(lnDiv * lnComplmnt, _
-                                       p_oDtaOrder(lnCtr)("sBriefDsc"), _
-                                       0, _
+                            .AddComplement(lnDiv * lnComplmnt,
+                                       p_oDtaOrder(lnCtr)("sBriefDsc"),
+                                       0,
                                        True, IIf(p_oDtaOrder(lnCtr)("cComboMlx") <> "1", True, False))
                         End If
                     Else
@@ -714,9 +736,9 @@ Public Class Receipt
                     If p_oDtaCCard(lnCtr)("nAmountxx") > 0 Then
                         loDR = loBank.SearchBank(p_oDtaCCard(lnCtr)("sBankIDxx"), True)
 
-                        .AddCreditCard(loDR("sBankName"), _
-                                       p_oDtaCCard(lnCtr)("sCardNoxx"), _
-                                       p_oDtaCCard(lnCtr)("sApprovNo"), _
+                        .AddCreditCard(loDR("sBankName"),
+                                       p_oDtaCCard(lnCtr)("sCardNoxx"),
+                                       p_oDtaCCard(lnCtr)("sApprovNo"),
                                        p_oDtaCCard(lnCtr)("nAmountxx"))
                     End If
                 Next
@@ -728,9 +750,9 @@ Public Class Receipt
                     If p_oDtaCheck(lnCtr)("nAmountxx") > 0 Then
                         loDR = loBank.SearchBank(p_oDtaCheck(lnCtr)("sBankIDxx"), True)
 
-                        .AddCheck(loDR("sBankName"), _
-                                  p_oDtaCheck(lnCtr)("sCheckNox"), _
-                                  p_oDtaCheck(lnCtr)("dCheckDte"), _
+                        .AddCheck(loDR("sBankName"),
+                                  p_oDtaCheck(lnCtr)("sCheckNox"),
+                                  p_oDtaCheck(lnCtr)("dCheckDte"),
                                   p_oDtaCheck(lnCtr)("nAmountxx"))
                     End If
                 Next
@@ -740,8 +762,18 @@ Public Class Receipt
             If p_oDtaGCert.Rows.Count > 0 Then
                 For lnCtr = 0 To p_oDtaGCert.Rows.Count - 1
                     If p_oDtaGCert(lnCtr)("nAmountxx") > 0 Then
-                        .AddGiftCoupon(p_oDtaGCert(lnCtr)("sCompnyCd"), _
+                        .AddGiftCoupon(p_oDtaGCert(lnCtr)("sCompnyCd"),
                                        p_oDtaGCert(lnCtr)("nAmountxx"))
+                    End If
+                Next
+            End If
+
+            Call getDelivery()
+            If p_oDtaDlvery.Rows.Count > 0 Then
+                For lnCtr = 0 To p_oDtaDlvery.Rows.Count - 1
+                    If p_oDtaDlvery(lnCtr)("nAmountxx") > 0 Then
+                        .AddDelivery(p_oDtaDlvery(lnCtr)("sRiderIDx"),
+                                       p_oDtaDlvery(lnCtr)("nAmountxx"))
                     End If
                 Next
             End If
@@ -769,6 +801,16 @@ Public Class Receipt
             Return .PrintOR()
         End With
     End Function
+    Private Function CheckPrinter(ByVal printerName As String) As Boolean
+        Dim cashier_printer As String = Environment.GetEnvironmentVariable("RMS_PRN_CS")
+        Try
+            Dim printDocument As PrintDocument = New PrintDocument
+            printDocument.PrinterSettings.PrinterName = cashier_printer
+            Return printDocument.PrinterSettings.IsValid
+        Catch ex As System.Exception
+            Return False
+        End Try
+    End Function
 
     Function printReciept(Optional ByVal bReprint As Boolean = False) As Boolean
         Dim lnCtr As Integer
@@ -777,7 +819,9 @@ Public Class Receipt
         loPrint = New PRN_Receipt(p_oAppDrvr)
 
         With loPrint
-            If Not .InitMachine Then Return False
+            If Not .InitMachine Then
+                Return False
+            End If
             If CDate(Format(p_oDataTable.Rows(0)("dTransact"), xsDATE_SHORT)) < CDate(Format(p_oAppDrvr.getSysDate, xsDATE_SHORT)) Then
                 .Transaction_Date = CDate(Format(p_oDataTable.Rows(0)("dTransact"), xsDATE_SHORT))
             Else
@@ -867,18 +911,18 @@ Public Class Receipt
                                             (100 - p_oDtaOrder(lnCtr).Item("nDiscount")) / 100 -
                                             p_oDtaOrder(lnCtr).Item("nAddDiscx"))
 
-                                Dim lnDiv As Double
-                                lnDiv = p_oDtaOrder(lnCtr)("nQuantity") / lnQuantity
+                            Dim lnDiv As Double
+                            lnDiv = p_oDtaOrder(lnCtr)("nQuantity") / lnQuantity
 
-                                If lnQuantity - lnComplmnt > 0 Then
-                                    .AddDetail(lnDiv * (lnQuantity - lnComplmnt),
+                            If lnQuantity - lnComplmnt > 0 Then
+                                .AddDetail(lnDiv * (lnQuantity - lnComplmnt),
                                                "*" & p_oDtaOrder(lnCtr)("sBriefDsc"),
                                                p_oDtaOrder(lnCtr)("nUnitPrce"),
                                                True,
                                                p_oDtaOrder(lnCtr)("cDetailxx") = "1",
                                                IIf(p_oDtaOrder(lnCtr)("cComboMlx") <> "1", True, False),
                                                p_oDtaOrder(lnCtr)("cWthPromo") = "1", p_oDtaOrder(lnCtr)("nDiscount"), p_oDtaOrder(lnCtr)("nAddDiscx"))
-                                End If
+                            End If
                             'End If
                         Else
                             .AddDetail(p_oDtaOrder(lnCtr)("nQuantity") * -1,
@@ -925,11 +969,11 @@ Public Class Receipt
                     '             p_nDiscAmtx, IIf(p_oDtaDiscx(0)("cNoneVatx") = "1", False, True))
 
                     'MAC
-                    .AddDiscount("", _
-                                 "", _
-                                 p_oDtaDiscx(0)("nDiscRate"), _
-                                 p_oDtaDiscx(0)("nDiscAmtx"), _
-                                 p_nDiscAmtx, _
+                    .AddDiscount("",
+                                 "",
+                                 p_oDtaDiscx(0)("nDiscRate"),
+                                 p_oDtaDiscx(0)("nDiscAmtx"),
+                                 p_nDiscAmtx,
                                  IIf(p_oDtaDiscx(0)("cNoneVatx") = "1", False, True))
                 End If
             End If
@@ -946,9 +990,9 @@ Public Class Receipt
                     If p_oDtaCCard(lnCtr)("nAmountxx") > 0 Then
                         loDR = loBank.SearchBank(p_oDtaCCard(lnCtr)("sBankIDxx"), True)
 
-                        .AddCreditCard(loDR("sBankName"), _
-                                       p_oDtaCCard(lnCtr)("sCardNoxx"), _
-                                       p_oDtaCCard(lnCtr)("sApprovNo"), _
+                        .AddCreditCard(loDR("sBankName"),
+                                       p_oDtaCCard(lnCtr)("sCardNoxx"),
+                                       p_oDtaCCard(lnCtr)("sApprovNo"),
                                        p_oDtaCCard(lnCtr)("nAmountxx"))
                     End If
                 Next
@@ -960,9 +1004,9 @@ Public Class Receipt
                     If p_oDtaCheck(lnCtr)("nAmountxx") > 0 Then
                         loDR = loBank.SearchBank(p_oDtaCheck(lnCtr)("sBankIDxx"), True)
 
-                        .AddCheck(loDR("sBankName"), _
-                                  p_oDtaCheck(lnCtr)("sCheckNox"), _
-                                  p_oDtaCheck(lnCtr)("dCheckDte"), _
+                        .AddCheck(loDR("sBankName"),
+                                  p_oDtaCheck(lnCtr)("sCheckNox"),
+                                  p_oDtaCheck(lnCtr)("dCheckDte"),
                                   p_oDtaCheck(lnCtr)("nAmountxx"))
                     End If
                 Next
@@ -972,8 +1016,18 @@ Public Class Receipt
             If p_oDtaGCert.Rows.Count > 0 Then
                 For lnCtr = 0 To p_oDtaGCert.Rows.Count - 1
                     If p_oDtaGCert(lnCtr)("nAmountxx") > 0 Then
-                        .AddGiftCoupon(p_oDtaGCert(lnCtr)("sCompnyCd"), _
+                        .AddGiftCoupon(p_oDtaGCert(lnCtr)("sCompnyCd"),
                                        p_oDtaGCert(lnCtr)("nAmountxx"))
+                    End If
+                Next
+            End If
+
+            Call getDelivery()
+            If p_oDtaDlvery.Rows.Count > 0 Then
+                For lnCtr = 0 To p_oDtaDlvery.Rows.Count - 1
+                    If p_oDtaDlvery(lnCtr)("nAmountxx") > 0 Then
+                        .AddDeliveryServ(p_oDtaDlvery(lnCtr)("sRiderIDx"),
+                                       p_oDtaDlvery(lnCtr)("nAmountxx"))
                     End If
                 Next
             End If
@@ -1009,8 +1063,8 @@ Public Class Receipt
     Function OpenBySource() As Boolean
         Dim loDT As New DataTable
         Dim lsSQL As String
- 
-        lsSQL = AddCondition(getSQL_Master, "sSourceNo = " & strParm(p_sSourceNo)) & _
+
+        lsSQL = AddCondition(getSQL_Master, "sSourceNo = " & strParm(p_sSourceNo)) &
                                        " AND sSourceCd = " & strParm(p_sSourceCd)
 
         Debug.Print(lsSQL)
@@ -1057,7 +1111,7 @@ Public Class Receipt
         Dim lsCondition As String
         Dim loDT As DataTable
 
-        lsCondition = "sSourceNo = " & strParm(p_sSourceNo) & _
+        lsCondition = "sSourceNo = " & strParm(p_sSourceNo) &
                         " AND sSourceCd = " & strParm(p_sSourceCd)
 
         lsSQL = "SELECT nCashAmtx, nTendered FROM " & pxeMasterTble
@@ -1107,6 +1161,18 @@ Public Class Receipt
                 p_nGiftCert = p_nGiftCert + CDbl(loDT(lnCtr)(0))
             Next
         End If
+
+        lsSQL = "SELECT nAmountxx FROM Delivery_Service_Trans WHERE cTranStat = '0'"
+        lsSQL = AddCondition(lsSQL, lsCondition)
+        loDT = p_oAppDrvr.ExecuteQuery(lsSQL)
+
+        If loDT.Rows.Count = 0 Then
+            p_nDelivery = 0.0
+        Else
+            For lnCtr = 0 To loDT.Rows.Count - 1
+                p_nDelivery = p_nDelivery + CDbl(loDT(lnCtr)(0))
+            Next
+        End If
     End Sub
 
     Public Function NewTransaction() As Boolean
@@ -1137,7 +1203,7 @@ Public Class Receipt
             'iMac
             ' added on duplicate update
 
-            If (p_nGiftCert + p_nCreditCard + p_nCheck) > 0 Then
+            If (p_nGiftCert + p_nCreditCard + p_nCheck + p_nDelivery) > 0 Then
                 p_nCash = p_nTendered
             End If
             lnCash = p_nCash
@@ -1148,6 +1214,15 @@ Public Class Receipt
                 Else
                     lnCash = p_oDataTable.Rows(0)("nSalesAmt") + p_oDataTable.Rows(0)("nSChargex")
                     lnCash = lnCash - p_nGiftCert
+                End If
+            End If
+
+            If p_nDelivery > 0 Then
+                If lnCash > p_nDelivery Then
+                    lnCash = (p_oDataTable.Rows(0)("nSalesAmt") + p_oDataTable.Rows(0)("nSChargex")) - p_nDelivery
+                Else
+                    lnCash = p_oDataTable.Rows(0)("nSalesAmt") + p_oDataTable.Rows(0)("nSChargex")
+                    lnCash = lnCash - p_nDelivery
                 End If
             End If
 
@@ -1246,7 +1321,7 @@ Public Class Receipt
 
         If p_bCancelled Then Return False
 
-        p_oAppDrvr.SaveEvent("0015", "Order TN " & p_sSourceNo & "/" & p_sSourceCd & "/" & _
+        p_oAppDrvr.SaveEvent("0015", "Order TN " & p_sSourceNo & "/" & p_sSourceCd & "/" &
                                     "OR No. " & p_oDataTable.Rows(0)("sORNumber") & "/Amount " & p_nTendered + p_nCash, p_sSerial)
 
         Return True
@@ -1262,10 +1337,10 @@ Public Class Receipt
         Dim lnLen As Long
         Dim lsStr As String = ""
 
-        lsSQL = "SELECT sTransNox" & _
-                " FROM " & pxeMasterTble & _
-                " WHERE sTransNox LIKE " & strParm(p_sBranchCd & p_sPOSNo & Format(p_oAppDrvr.getSysDate(), "yy") & "%") & _
-                " ORDER BY sTransNox DESC" & _
+        lsSQL = "SELECT sTransNox" &
+                " FROM " & pxeMasterTble &
+                " WHERE sTransNox LIKE " & strParm(p_sBranchCd & p_sPOSNo & Format(p_oAppDrvr.getSysDate(), "yy") & "%") &
+                " ORDER BY sTransNox DESC" &
                 " LIMIT 1"
 
         Try
@@ -1411,7 +1486,7 @@ Public Class Receipt
             .SourceNo = p_sSourceNo
 
             .OpenBySource()
-            p_odtaCCard = .CreditCardTrans
+            p_oDtaCCard = .CreditCardTrans
         End With
 
         p_oCreditCard = Nothing
@@ -1444,6 +1519,19 @@ Public Class Receipt
 
         p_oGiftCert = Nothing
     End Sub
+    Private Sub getDelivery()
+        p_oDelivery = New Delivery(p_oAppDrvr)
+
+        With p_oDelivery
+            .SourceCd = p_sSourceCd
+            .SourceNo = p_sSourceNo
+
+            .OpenBySource()
+            p_oDtaDlvery = .Delivery
+        End With
+
+        p_oDelivery = Nothing
+    End Sub
 #End Region
 
 #Region "Public Procedures"
@@ -1470,6 +1558,14 @@ Public Class Receipt
         p_oGiftCert.ShowGiftCert()
         CloseForm = p_oGiftCert.CloseForm
     End Sub
+
+    Sub showDeliverys(ByRef CloseForm As Boolean)
+        p_oDelivery = New Delivery(p_oAppDrvr)
+        p_oDelivery.SourceCd = p_sSourceCd
+        p_oDelivery.SourceNo = p_sSourceNo
+        p_oDelivery.ShowDeliverys()
+        CloseForm = p_oDelivery.CloseForm
+    End Sub
 #End Region
 
     Protected Overrides Sub Finalize()
@@ -1486,6 +1582,7 @@ Public Class Receipt
         p_nCreditCard = 0
         p_nCheck = 0
         p_nGiftCert = 0
+        p_nDelivery = 0
         p_nSalesAmt = 0
         p_nDiscount = 0
         p_nTendered = 0

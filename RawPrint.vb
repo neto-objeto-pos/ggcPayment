@@ -4,7 +4,7 @@ Imports System.Runtime.InteropServices
 
 Public Class RawPrint
     ' Structure and API declarions:
-    <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode)> _
+    <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode)>
     Structure DOCINFOW
         <MarshalAs(UnmanagedType.LPWStr)> Public pDocName As String
         <MarshalAs(UnmanagedType.LPWStr)> Public pOutputFile As String
@@ -17,40 +17,41 @@ Public Class RawPrint
     'Public Shared Function OpenPrinter(ByVal src As String, ByRef hPrinter As IntPtr, ByVal pd As Long) As Boolean
     'End Function
 
-    <DllImport("winspool.Drv", EntryPoint:="OpenPrinterW", _
-    SetLastError:=True, CharSet:=CharSet.Unicode, _
-    ExactSpelling:=False, CallingConvention:=CallingConvention.StdCall)> _
+
+    <DllImport("winspool.Drv", EntryPoint:="OpenPrinterW",
+    SetLastError:=True, CharSet:=CharSet.Unicode,
+    ExactSpelling:=False, CallingConvention:=CallingConvention.StdCall)>
     Public Shared Function OpenPrinter(ByVal src As String, ByRef hPrinter As Integer, ByVal pd As Integer) As Boolean
     End Function
 
-    <DllImport("winspool.Drv", EntryPoint:="ClosePrinter", _
-       SetLastError:=True, CharSet:=CharSet.Unicode, _
-       ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)> _
+    <DllImport("winspool.Drv", EntryPoint:="ClosePrinter",
+       SetLastError:=True, CharSet:=CharSet.Unicode,
+       ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
     Public Shared Function ClosePrinter(ByVal hPrinter As IntPtr) As Boolean
     End Function
-    <DllImport("winspool.Drv", EntryPoint:="StartDocPrinterW", _
-       SetLastError:=True, CharSet:=CharSet.Unicode, _
-       ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)> _
+    <DllImport("winspool.Drv", EntryPoint:="StartDocPrinterW",
+       SetLastError:=True, CharSet:=CharSet.Unicode,
+       ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
     Public Shared Function StartDocPrinter(ByVal hPrinter As IntPtr, ByVal level As Int32, ByRef pDI As DOCINFOW) As Boolean
     End Function
-    <DllImport("winspool.Drv", EntryPoint:="EndDocPrinter", _
-       SetLastError:=True, CharSet:=CharSet.Unicode, _
-       ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)> _
+    <DllImport("winspool.Drv", EntryPoint:="EndDocPrinter",
+       SetLastError:=True, CharSet:=CharSet.Unicode,
+       ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
     Public Shared Function EndDocPrinter(ByVal hPrinter As IntPtr) As Boolean
     End Function
-    <DllImport("winspool.Drv", EntryPoint:="StartPagePrinter", _
-       SetLastError:=True, CharSet:=CharSet.Unicode, _
-       ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)> _
+    <DllImport("winspool.Drv", EntryPoint:="StartPagePrinter",
+       SetLastError:=True, CharSet:=CharSet.Unicode,
+       ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
     Public Shared Function StartPagePrinter(ByVal hPrinter As IntPtr) As Boolean
     End Function
-    <DllImport("winspool.Drv", EntryPoint:="EndPagePrinter", _
-       SetLastError:=True, CharSet:=CharSet.Unicode, _
-       ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)> _
+    <DllImport("winspool.Drv", EntryPoint:="EndPagePrinter",
+       SetLastError:=True, CharSet:=CharSet.Unicode,
+       ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
     Public Shared Function EndPagePrinter(ByVal hPrinter As IntPtr) As Boolean
     End Function
-    <DllImport("winspool.Drv", EntryPoint:="WritePrinter", _
-       SetLastError:=True, CharSet:=CharSet.Unicode, _
-       ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)> _
+    <DllImport("winspool.Drv", EntryPoint:="WritePrinter",
+       SetLastError:=True, CharSet:=CharSet.Unicode,
+       ExactSpelling:=True, CallingConvention:=CallingConvention.StdCall)>
     Public Shared Function WritePrinter(ByVal hPrinter As IntPtr, ByVal pBytes As IntPtr, ByVal dwCount As Int32, ByRef dwWritten As Int32) As Boolean
     End Function
 
@@ -86,10 +87,11 @@ Public Class RawPrint
     Public Const pxePRINT_FULL_CUT As String = Chr(&H1D) & "V" & Chr(66) & Chr(0)
 
     Public Shared Function SendBytesToPrinter(ByVal szPrinterName As String, ByVal pBytes As IntPtr, ByVal dwCount As Int32) As Boolean
+
         Dim hPrinter As IntPtr      ' The printer handle.
         Dim dwError As Int32        ' Last error - in case there was trouble.
         Dim di As DOCINFOW          ' Describes your document (name, port, data type).
-        Dim dwWritten As Int32      ' The number of bytes written by WritePrinter().
+        Dim dwWritten As Int32      ' The number of bytes written by WritePrinter().liza dooguin
         Dim bSuccess As Boolean     ' Your success code.
 
         ' Set up the DOCINFO structure.
@@ -100,20 +102,39 @@ Public Class RawPrint
         ' Assume failure unless you specifically succeed.
         bSuccess = False
         If OpenPrinter(szPrinterName, hPrinter, 0) Then
+
+            Console.WriteLine($"Printer opened successfully. Handle: {hPrinter}")
+
+            ' Start a print job
+
             If StartDocPrinter(hPrinter, 1, di) Then
+                Console.WriteLine($"Printer opened successfully. Handle: {hPrinter}")
+
                 If StartPagePrinter(hPrinter) Then
+                    Console.WriteLine($"Printer opened successfully. Handle: {hPrinter}")
                     ' Write your printer-specific bytes to the printer.
                     bSuccess = WritePrinter(hPrinter, pBytes, dwCount, dwWritten)
-                    EndPagePrinter(hPrinter)
+                    If bSuccess Then
+                        EndPagePrinter(hPrinter)
+                    Else
+                        ' Handle WritePrinter failure
+                        Console.WriteLine("WritePrinter failed. Error code: " & Marshal.GetLastWin32Error().ToString())
+                    End If
+                Else
+                    ' Handle StartPagePrinter failure
+                    Console.WriteLine("StartPagePrinter failed. Error code: " & Marshal.GetLastWin32Error().ToString())
                 End If
+
                 EndDocPrinter(hPrinter)
+            Else
+                ' Handle StartDocPrinter failure
+                Console.WriteLine("StartDocPrinter failed. Error code: " & Marshal.GetLastWin32Error().ToString())
             End If
+
             ClosePrinter(hPrinter)
-        End If
-        ' If you did not succeed, GetLastError may give more information
-        ' about why not.
-        If bSuccess = False Then
-            dwError = Marshal.GetLastWin32Error()
+        Else
+            ' Handle OpenPrinter failure
+            Console.WriteLine("OpenPrinter failed. Error code: " & Marshal.GetLastWin32Error().ToString())
         End If
         Return bSuccess
     End Function ' SendBytesToPrinter()

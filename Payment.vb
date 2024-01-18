@@ -93,6 +93,7 @@ Public Class Payment
         End Get
 
         Set(ByVal Value As Object)
+            If Not IsNumeric(Index) Then Index = LCase(Index)
             Select Case Index
                 Case "stransnox" : Index = 0
                 Case "nentrynox" : Index = 1

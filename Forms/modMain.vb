@@ -16,6 +16,7 @@ Module modMain
     Public p_oDtaGCert As DataTable
     Public p_oDtaCheck As DataTable
     Public p_oDtaCCard As DataTable
+    Public p_oDtaDlvery As DataTable
 
     Public p_oFormPayCredit As frmPayCredit
     Public p_oFormCheck As frmPayCheck

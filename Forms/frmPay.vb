@@ -114,6 +114,12 @@ Public Class frmPay
                     Me.Close()
                     Me.Dispose()
                 End If
+            Case 5 'Delivery
+                poReceipt.showDeliverys(lbCloseForm)
+                If lbCloseForm Then
+                    Me.Close()
+                    Me.Dispose()
+                End If
         End Select
 endProc:
         Exit Sub

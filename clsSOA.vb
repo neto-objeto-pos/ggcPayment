@@ -584,44 +584,6 @@ Public Class clsSOA
         Return True
     End Function
 
-    'Public Function AddDetail(ByVal lnRow As Integer) As Boolean
-    '    Try
-
-    '        With p_oBillDetail.Rows(lnRow)
-    '            p_oDTDetail.Rows.Add()
-
-    '            p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("sTransNox") = p_oDTMaster.Rows(0)("sTransNox")
-    '            p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("nEntryNox") = p_oDTDetail.Rows.Count
-    '            p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("sSourceNo") = .Item("sTransNox")
-    '            p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("nAmountxx") = .Item("nAmountxx")
-    '            p_oDTDetail.Rows(p_oDTDetail.Rows.Count - 1)("cPaidxxxx") = 0
-    '        End With
-
-    '        Return True
-    '    Catch ex As Exception
-    '        MsgBox("Error Exception :" + ex.Message, MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
-    '        Return False
-    '    End Try
-    'End Function
-
-    'Public Function RemoveDetail(ByVal conditionValue As String) As Boolean
-    '    Try
-
-    '        For Each row As DataRow In p_oDTDetail.Rows
-    '            If row("sSourceNo").ToString() = conditionValue Then
-    '                p_oDTDetail.Rows.Remove(row)
-    '                Return True
-    '            End If
-    '        Next
-
-    '        MsgBox("No Detail to remove! Please check your entry...", MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
-    '        Return False
-    '    Catch ex As Exception
-    '        MsgBox("Error Exception: " + ex.Message, MsgBoxStyle.Critical + MsgBoxStyle.OkOnly, p_sMsgHeadr)
-    '        Return False
-    '    End Try
-    'End Function
-
     Function CancelTransaction() As Boolean
         Dim lsSQL As String
         Dim lnrow As Integer

@@ -45,6 +45,7 @@ Public Class PRN_Billing
     Private p_oDTDetail As DataTable
     Private p_oDTComplx As DataTable    'Complimentary
     Private p_oDTGftChk As DataTable    'Gift Check
+    Private p_oDTDelivery As DataTable    'delivery service
     Private p_oDTChkPym As DataTable    'Check Payment
     Private p_oDTCredit As DataTable    'Credit Card
 
@@ -84,6 +85,7 @@ Public Class PRN_Billing
     Private pnGiftTotl As Decimal
     Private pnChckTotl As Decimal
     Private pnCrdtTotl As Decimal
+    Private pnDelTotl As Decimal
 
     'Sale Total Info
     Private pnVatblSle As Decimal
@@ -489,10 +491,10 @@ Public Class PRN_Billing
     'AddCheck(Bank, CheckNo, CheckDate, Amount)
     '   - Sets the info of check(s) used as payment
     '+++++++++++++++++++++++++
-    Public Function AddCheck( _
-            ByVal Bank As String, _
-            ByVal CheckNo As String, _
-            ByVal CheckDate As Date, _
+    Public Function AddCheck(
+            ByVal Bank As String,
+            ByVal CheckNo As String,
+            ByVal CheckDate As Date,
             ByVal Amount As Decimal) As Boolean
 
         With p_oDTChkPym
@@ -506,6 +508,28 @@ Public Class PRN_Billing
             .Rows(.Rows.Count - 1).Item("nCheckAmt") = Amount
 
             pnChckTotl = pnChckTotl + Amount
+
+        End With
+
+        Return True
+    End Function
+    '+++++++++++++++++++++++++
+    'AddDelivery(DeliverySrc, Amount,)
+    '   - Sets the info of delivery(s) used as payment
+    '+++++++++++++++++++++++++
+    Public Function AddDelivery(
+            ByVal DeliverySrc As String,
+            ByVal Amount As Decimal) As Boolean
+
+        With p_oDTDelivery
+
+            If .Rows.Count = 0 Then pnDelTotl = 0
+
+            .Rows.Add(.NewRow)
+            .Rows(.Rows.Count - 1).Item("sBriefDsc") = DeliverySrc
+            .Rows(.Rows.Count - 1).Item("nAmountxx") = Amount
+
+            pnDelTotl = pnDelTotl + Amount
 
         End With
 
@@ -864,7 +888,7 @@ Public Class PRN_Billing
         'Dim Printer_Name As String = "\\192.168.10.14\EPSON LX-310 ESC/P"
         Dim builder As New System.Text.StringBuilder()
 
-        'builder.Append(RawPrint.pxePRINT_INIT)          'Initialize Printer
+        builder.Append(RawPrint.pxePRINT_INIT)          'Initialize Printer
         builder.Append(Environment.NewLine)
 
         'builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1 + RawPrint.pxeESC_DBLW + RawPrint.pxeESC_EMPH))
@@ -1068,8 +1092,13 @@ Public Class PRN_Billing
         'Dim cashier_printer As String = "\\192.168.10.12\EPSON TM-U220 Receipt"
 
         'Print the designation printer location...
-        RawPrint.SendStringToPrinter(cashier_printer, builder.ToString())
-
+        'RawPrint.SendStringToPrinter(cashier_printer, builder.ToString())
+        Try
+            RawPrint.SendStringToPrinter(cashier_printer, builder.ToString())
+            MsgBox("Print successful")
+        Catch ex As Exception
+            MsgBox("Error: " & ex.Message)
+        End Try
         'Call writeBill()
 
         Return True
@@ -1353,6 +1382,11 @@ Public Class PRN_Billing
         p_oDTChkPym.Columns.Add("sCheckNox", System.Type.GetType("System.String")).MaxLength = 23
         p_oDTChkPym.Columns.Add("dCheckDte", System.Type.GetType("System.DateTime"))
     End Sub
+    Private Sub createDeliveryServ()
+        p_oDTDelivery = New DataTable("DeliveryServ")
+        p_oDTDelivery.Columns.Add("nDlvrAmt", System.Type.GetType("System.Decimal"))
+        p_oDTDelivery.Columns.Add("sDelvrSrc", System.Type.GetType("System.String")).MaxLength = 23
+    End Sub
 
     Private Sub createCreditCard()
         p_oDTCredit = New DataTable("CreditCard")
@@ -1385,6 +1419,7 @@ Public Class PRN_Billing
         Call createCheck()
         Call createCreditCard()
         Call createGiftCheck()
+        Call createDeliveryServ()
 
         p_sPOSNo = Environment.GetEnvironmentVariable("RMS-CRM-No")      'MIN
         p_sVATReg = Environment.GetEnvironmentVariable("REG-TIN-No")     'VAT REG No.
