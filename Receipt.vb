@@ -20,8 +20,12 @@
 '  Jheff [ 10/12/2016 02:58 pm ]
 '     Start coding this object...
 '€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
+#Disable Warning BC40056 ' Namespace or type specified in Imports statement doesn't contain any public member or cannot be found
 Imports ggcAppDriver
+#Enable Warning BC40056 ' Namespace or type specified in Imports statement doesn't contain any public member or cannot be found
+#Disable Warning BC40056 ' Namespace or type specified in Imports statement doesn't contain any public member or cannot be found
 Imports ggcRetailParams
+#Enable Warning BC40056 ' Namespace or type specified in Imports statement doesn't contain any public member or cannot be found
 Imports MySql.Data.MySqlClient
 Imports System.Windows.Forms
 Imports System.Reflection
@@ -75,6 +79,7 @@ Public Class Receipt
     Protected p_nNonVATxx As Decimal
     Protected p_nDiscAmtx As Decimal
 
+
     Protected p_sCashierx As String
     Protected p_dPOSDatex As Date
     Protected p_sMergeTbl As String
@@ -86,6 +91,8 @@ Public Class Receipt
     Private p_nTableNo As Integer
     Private p_sTrantype As String
     Private p_sLogName As String
+    Private pnBill As Decimal
+    Private pnCharge As Decimal
 
 #Region "Properties"
 
@@ -103,6 +110,22 @@ Public Class Receipt
         End Get
         Set(ByVal Value As String)
             p_sTrantype = Value
+        End Set
+    End Property
+    Property myBill As Double
+        Get
+            Return pnBill
+        End Get
+        Set(ByVal Value As Double)
+            pnBill = Value
+        End Set
+    End Property
+    Property myCharge As Double
+        Get
+            Return pnCharge
+        End Get
+        Set(ByVal Value As Double)
+            pnCharge = Value
         End Set
     End Property
 
@@ -123,6 +146,7 @@ Public Class Receipt
             p_nWithDisc = Value
         End Set
     End Property
+
 
     ReadOnly Property AppDriver As GRider
         Get
@@ -401,7 +425,7 @@ Public Class Receipt
 
             printReciept()
         End If
-        MsgBox("Print Receipt")
+        'MsgBox("Print Receipt")
 
         Return lbSuccess
     End Function
@@ -836,6 +860,7 @@ Public Class Receipt
             .ClientNo = p_nNoClient
             .WithDisc = p_nWithDisc
             .TableNo = p_nTableNo
+            .TranType = p_sTrantype
             .LogName = p_sLogName
             .PosDate = p_dPOSDatex
             .MergeTable = p_sMergeTbl
@@ -1026,7 +1051,7 @@ Public Class Receipt
             If p_oDtaDlvery.Rows.Count > 0 Then
                 For lnCtr = 0 To p_oDtaDlvery.Rows.Count - 1
                     If p_oDtaDlvery(lnCtr)("nAmountxx") > 0 Then
-                        .AddDeliveryServ(p_oDtaDlvery(lnCtr)("sRiderIDx"),
+                        .AddDeliveryServ(p_oDtaDlvery(lnCtr)("sBriefDsc"),
                                        p_oDtaDlvery(lnCtr)("nAmountxx"))
                     End If
                 Next
@@ -1323,7 +1348,6 @@ Public Class Receipt
 
         p_oAppDrvr.SaveEvent("0015", "Order TN " & p_sSourceNo & "/" & p_sSourceCd & "/" &
                                     "OR No. " & p_oDataTable.Rows(0)("sORNumber") & "/Amount " & p_nTendered + p_nCash, p_sSerial)
-
         Return True
     End Function
 
@@ -1467,6 +1491,8 @@ Public Class Receipt
             .Rows(0)("cTranStat") = "0"
             .Rows(0)("nSChargex") = 0.0
         End With
+        pnBill = myBill
+        pnCharge = myCharge
     End Sub
 
     Private Sub ShowReceipt()

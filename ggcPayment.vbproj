@@ -23,12 +23,11 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>..\..\..\..\..\GGC_Systems\vb.net\RetMgtSys\</OutputPath>
+    <OutputPath>C:\GGC_Systems\vb.net\RetMgtSys\</OutputPath>
     <DocumentationFile>ggcReceipt.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <RegisterForComInterop>false</RegisterForComInterop>
     <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,7 +44,7 @@
     <OptionExplicit>On</OptionExplicit>
   </PropertyGroup>
   <PropertyGroup>
-    <OptionCompare>Binary</OptionCompare>
+    <OptionCompare>Text</OptionCompare>
   </PropertyGroup>
   <PropertyGroup>
     <OptionStrict>Off</OptionStrict>
@@ -70,8 +69,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="WinSCPnet, Version=1.14.0.13797, Culture=neutral, PublicKeyToken=2271ec4a3c56d0bf, processorArchitecture=MSIL">
-      <HintPath>..\RetailPOS\packages\WinSCP.6.1.2\lib\net40\WinSCPnet.dll</HintPath>
+    <Reference Include="WinSCPnet, Version=1.15.0.14641, Culture=neutral, PublicKeyToken=2271ec4a3c56d0bf, processorArchitecture=MSIL">
+      <HintPath>..\RetailPOS\packages\WinSCP.6.2.2-beta\lib\net40\WinSCPnet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CheckPayment.vb" />
+    <Compile Include="clsSOA.vb" />
     <Compile Include="CreditCardneo.vb" />
     <Compile Include="Delivery.vb" />
     <Compile Include="Forms\frmPayCredit.designer.vb">
@@ -112,7 +112,7 @@
     <Compile Include="Forms\frmRLC.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="clsSOA.vb" />
+    <Compile Include="Forms\modMain.vb" />
     <Compile Include="PRN_RLC_Reading.vb" />
     <Compile Include="PRN_Charge.vb" />
     <Compile Include="CreditCard.vb" />
@@ -141,7 +141,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GiftCertificate.vb" />
-    <Compile Include="Forms\modMain.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -237,7 +236,7 @@
       <Name>ggcClient</Name>
     </ProjectReference>
     <ProjectReference Include="..\ggcRetailParams\ggcRetailParams.vbproj">
-      <Project>{4883f473-c0b0-4266-a9ac-8e4bca3c4cb7}</Project>
+      <Project>{4883F473-C0B0-4266-A9AC-8E4BCA3C4CB7}</Project>
       <Name>ggcRetailParams</Name>
     </ProjectReference>
     <ProjectReference Include="..\ggcRMSReports\ggcRMSReports.vbproj">
@@ -252,9 +251,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\RetailPOS\packages\WinSCP.5.19.3\build\WinSCP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\RetailPOS\packages\WinSCP.5.19.3\build\WinSCP.targets'))" />
-    <Error Condition="!Exists('..\RetailPOS\packages\WinSCP.6.1.2\build\WinSCP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\RetailPOS\packages\WinSCP.6.1.2\build\WinSCP.targets'))" />
+    <Error Condition="!Exists('..\RetailPOS\packages\WinSCP.6.2.2-beta\build\WinSCP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\RetailPOS\packages\WinSCP.6.2.2-beta\build\WinSCP.targets'))" />
   </Target>
-  <Import Project="..\RetailPOS\packages\WinSCP.6.1.2\build\WinSCP.targets" Condition="Exists('..\RetailPOS\packages\WinSCP.6.1.2\build\WinSCP.targets')" />
+  <Import Project="..\RetailPOS\packages\WinSCP.6.2.2-beta\build\WinSCP.targets" Condition="Exists('..\RetailPOS\packages\WinSCP.6.2.2-beta\build\WinSCP.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

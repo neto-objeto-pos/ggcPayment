@@ -22,20 +22,6 @@ Public Class frmPayDelivery
         End Get
     End Property
 
-    Private Sub frmPayDelivery_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
-        Select Case e.KeyCode
-            Case Keys.Escape
-                pbCloseForm = False
-                If Not IsNothing(p_oFormPayCredit) Then showForm(2, False)
-                If Not IsNothing(p_oFormCheck) Then showForm(3, False)
-                If Not IsNothing(p_oFormGC) Then showForm(4, False)
-                showForm(1, False)
-            Case Keys.Return, Keys.Down
-                SetNextFocus()
-            Case Keys.Up
-                SetPreviousFocus()
-        End Select
-    End Sub
 
     Private Sub frmPay_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         setVisible()
@@ -64,6 +50,22 @@ Public Class frmPayDelivery
         End If
     End Sub
 
+
+    Private Sub frmPayDelivery_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
+        Select Case e.KeyCode
+            Case Keys.Escape
+                pbCloseForm = False
+                If Not IsNothing(p_oFormPayCredit) Then showForm(2, False)
+                If Not IsNothing(p_oFormCheck) Then showForm(3, False)
+                If Not IsNothing(p_oFormGC) Then showForm(4, False)
+                If Not IsNothing(p_oFormDelivery) Then showForm(5, False)
+                showForm(1, False)
+            Case Keys.Return, Keys.Down
+                SetNextFocus()
+            Case Keys.Up
+                SetPreviousFocus()
+        End Select
+    End Sub
     Private Sub cmdButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Dim loChk As Button
         loChk = CType(sender, System.Windows.Forms.Button)
@@ -81,68 +83,7 @@ Public Class frmPayDelivery
                     Me.Close()
                     Me.Dispose()
                 End If
-            Case 1, 2, 3
-                pbCloseForm = False
-                If isEntryOk(False) Then
-                    If Not poDelivery.SaveTransaction() Then
-                        Me.Close()
-                        Me.Dispose()
-                        GoTo endProc
-                    End If
-                End If
 
-                'Me.Dispose()
-                'Me.Close()
-
-                Select Case lnIndex
-                    Case 2
-                        Dim loCreditCard As New CreditCard(poDelivery.AppDriver)
-                        loCreditCard.SourceCd = poDelivery.SourceCd
-                        loCreditCard.SourceNo = poDelivery.SourceNo
-                        loCreditCard.ShowCreditCard()
-                    Case 3
-                        Dim loCheck As New CheckPayment(poDelivery.AppDriver)
-                        loCheck.SourceCd = poDelivery.SourceCd
-                        loCheck.SourceNo = poDelivery.SourceNo
-                        loCheck.ShowCheck()
-                    Case 1
-                        Me.Hide()
-                End Select
-            Case 4 'GIFT CERT
-            Case 5 'ADD CREDIT CARD
-                'If poDelivery.AddDelivery Then
-                '    Call loadOthers()
-                '    Call computeChange()
-                'End If
-            Case 6 ' Delete credit Card
-                'If poDelivery.DeleteGC(pnActiveRow) Then
-                '    Call loadOthers()
-                '    Call computeChange()
-                'End If
-                If poDelivery.ItemCount > 1 Then
-                    If DataGridView1.RowCount - 1 > 0 Then
-                        poDelivery.DeleteGC(pnActiveRow)
-                        loadOthers()
-                    Else
-                        'poDelivery.DeleteGC(pnActiveRow)
-                        'poDelivery.AddDelivery()
-                        'loadOthers()
-                    End If
-                Else
-                    poDelivery.Master(0, "scompnycd") = ""
-                    poDelivery.Master(0, "sReferNox") = ""
-                    poDelivery.Master(0, "dValidity") = ""
-                    poDelivery.Master(0, "sRemarksx") = ""
-                    poDelivery.Master(0, "nAmountxx") = 0.0
-
-                    txtField00.Text = ""
-                    'txtField01.Text = ""
-                    'txtField02.Text = ""
-                    'txtField03.Text = ""
-                    txtField04.Text = 0.0
-
-                    loadOthers()
-                End If
         End Select
 endProc:
         Exit Sub
@@ -172,24 +113,22 @@ endProc:
                 Case 0
                     If loTxt.Text <> String.Empty Then poDelivery.SearchCompany(pnActiveRow, loTxt.Text)
                 Case 4
-                    If Not IsNumeric(loTxt.Text) Then loTxt.Text = 0
-                    poDelivery.Master(pnActiveRow, "nAmountxx") = FormatNumber(loTxt.Text, 2)
-                    Call computeChange()
+                    poDelivery.Master(pnActiveRow, "nAmountxx") = FormatNumber(loTxt.Text, 2 )
             End Select
         End If
 
         poControl = Nothing
     End Sub
-    ''Private Sub txtField04_LostFocus(sender As Object, e As System.EventArgs) Handles txtField04.LostFocus
-    ''    With txtField04
-    ''        .BackColor = SystemColors.Window
+    'Private Sub txtField04_LostFocus(sender As Object, e As System.EventArgs) Handles txtField04.LostFocus
+    '    With txtField04
+    '        .BackColor = SystemColors.Window
 
-    ''        If Not IsNumeric(.Text) Then .Text = 0
-    ''        .Text = FormatNumber(.Text, 2)
+    '        If Not IsNumeric(.Text) Then .Text = 0
+    '        .Text = FormatNumber(.Text, 2)
 
-    ''        Call computeChange()
-    ''    End With
-    ''End Sub
+    '        Call computeChange()
+    '    End With
+    'End Sub
     Private Sub txtField_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs)
         If e.KeyCode = Keys.F3 Or e.KeyCode = Keys.Enter Then
             Dim loTxt As TextBox
@@ -219,14 +158,14 @@ endProc:
         End If
     End Sub
 
-    'Private Sub poCreditCard_MasterRetrieved(Row As Integer, Index As Integer, Value As Object) Handles poDelivery.MasterRetrieved
-    '    Select Case Index
-    '        Case 1
-    '            txtField00.Text = Value
-    '        Case 4
-    '            txtField04.Text = FormatNumber(Value, 2)
-    '    End Select
-    'End Sub
+    Private Sub poCreditCard_MasterRetrieved(Row As Integer, Index As Integer, Value As Object) Handles poDelivery.MasterRetrieved
+        Select Case Index
+            Case 1
+                txtField00.Text = Value
+            Case 4
+                txtField04.Text = FormatNumber(Value, 2)
+        End Select
+    End Sub
 
     Private Sub DataGridView1_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles DataGridView1.Click
         If DataGridView1.Rows.Count <= 0 Then Exit Sub
@@ -276,25 +215,41 @@ endProc:
 
     Private Sub computeChange()
         Dim lnBill As Decimal = CDec(lblBill.Text)
-        p_nDelivery = CDec(txtField04.Text)
+        'p_nDelivery = CDec(txtField04.Text)
 
-        If p_nDelivery > lnBill Then
-            lblChange.Text = FormatNumber((p_nDelivery - lnBill), 2)
+        'If p_nDelivery > lnBill Then
+        '    lblChange.Text = FormatNumber((p_nDelivery - lnBill), 2)
+        'End If
+
+        If p_nDelivery > 0 And p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery = 0 Then 'GC payment only
+            lblChange.Text = "0.00"
+        ElseIf p_nDelivery > 0 And p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert > 0 Then 'GC + Others
+            lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert) - (lnBill - p_nDelivery), 2)
+        ElseIf p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery <> 0 Then
+            If p_nDelivery > 0 Then
+                If p_nDelivery > lnBill Then
+                    lblChange.Text = "0.00"
+                Else
+                    lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery) - lnBill, 2)
+                End If
+            Else
+                lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery) - lnBill, 2)
+            End If
+        Else
+            lblChange.Text = "0.00"
         End If
 
     End Sub
 
     Private Sub clearFields()
         Dim lnRow As Integer
-
-        lblBill.Text = FormatNumber(p_nSalesAmt + p_nSchargex, 2)
+        txtField04.ReadOnly = True
+        lblBill.Text = FormatNumber(p_nSalesAmt)
+        txtField04.Text = FormatNumber(p_nSalesAmt)
         With poDelivery
             lnRow = .ItemCount - 1
             txtField00.Text = .Master(lnRow, "srideridx")
-            'txtField01.Text = .Master(lnRow, "sReferNox")
-            'txtField02.Text = CDate(.Master(lnRow, "dValidity")).ToShortDateString
-            'txtField03.Text = .Master(lnRow, "sRemarksx")
-            txtField04.Text = FormatNumber(.Master(lnRow, "nAmountxx"), 2)
+            txtField04.Text = FormatNumber(p_nSalesAmt)
         End With
         Call computeChange()
     End Sub
@@ -319,13 +274,6 @@ endProc:
             Return False
         End If
 
-        'If txtField01.Text = String.Empty Then
-        '    If DisplayMsg Then
-        '        MsgBox("Invalid Reference Number detected..." & vbCrLf &
-        '                "Please verify your entry then try again...", MsgBoxStyle.Critical, "WARNING")
-        '    End If
-        '    Return False
-        'End If
 
         If CDec(txtField04.Text) = 0.0 Then
             If DisplayMsg Then
@@ -340,13 +288,13 @@ endProc:
             p_nDelivery = p_nDelivery + poDelivery.Master(lnCtr, "nAmountxx")
         Next lnCtr
 
-        'If DisplayMsg Then
-        '    If CDec(lblBill.Text) > p_nCash + p_nCheck + p_nGiftCert + p_nCreditCard Then
-        '        MsgBox("Invalid Amount Paid..." & vbCrLf &
-        '                "Please verify your entry then try again...", MsgBoxStyle.Critical, "WARNING")
-        '        Return False
-        '    End If
-        'End If
+        If DisplayMsg Then
+            If CDec(lblBill.Text) > p_nCash + p_nCheck + p_nGiftCert + p_nCreditCard + p_nDelivery Then
+                MsgBox("Invalid Amount Paid..." & vbCrLf &
+                        "Please verify your entry then try again...", MsgBoxStyle.Critical, "WARNING")
+                Return False
+            End If
+        End If
 
         Return True
     End Function
@@ -368,7 +316,7 @@ endProc:
                     .Rows(lnCtr).Cells(3).Value = FormatNumber(poDelivery.Master(lnCtr, "nAmountxx"), 2)
                     lnTotal = lnTotal + poDelivery.Master(lnCtr, "nAmountxx")
                 Next
-                p_nGiftCert = lnTotal
+                p_nDelivery = lnTotal
 
                 computeChange()
 
@@ -404,11 +352,9 @@ endProc:
             .ColumnCount = 4
 
             'Set Column Headers
-            .Columns(0).HeaderText = ""
-            .Columns(1).HeaderText = "
-
-"
-            .Columns(2).HeaderText = "Reference No"
+            .Columns(0).HeaderText = "No"
+            .Columns(1).HeaderText = "Delivery Service"
+            .Columns(2).HeaderText = "Source No"
             .Columns(3).HeaderText = "Amount"
 
             'Set Column Sizes
@@ -499,15 +445,5 @@ endProc:
             .SetStyle(ControlStyles.AllPaintingInWmPaint, True)
             .UpdateStyles()
         End With
-    End Sub
-    Private Sub poDelivery_MasterRetrieve(ByVal Row As Integer, ByVal Index As Integer, ByVal Value As Object) Handles poDelivery.MasterRetrieved
-
-        Select Case Index
-            Case 1
-                txtField00.Text = Value
-            Case 3
-                txtField04.Text = Value
-
-        End Select
     End Sub
 End Class

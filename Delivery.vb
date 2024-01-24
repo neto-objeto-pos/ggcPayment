@@ -394,7 +394,7 @@ Public Class Delivery
         lsCondition = String.Empty
 
         If Value <> String.Empty Then
-            If Value = p_oDataTable(Row)("sRiderIDx") Then
+            If Value = p_oDataTable(Row)("sBriefDsc") Then
                 Return True
             End If
         End If

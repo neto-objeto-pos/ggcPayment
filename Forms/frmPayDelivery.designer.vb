@@ -283,16 +283,24 @@ Partial Class frmPayDelivery
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.AutoValidate = System.Windows.Forms.AutoValidate.Disable
         Me.BackgroundImage = Global.ggcReceipt.My.Resources.Resources.mainbackground
         Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.CausesValidation = False
         Me.ClientSize = New System.Drawing.Size(388, 539)
-        Me.ControlBox = False
         Me.Controls.Add(Me.pnlBill)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.pnlMain)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.DoubleBuffered = True
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.KeyPreview = True
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "frmPayDelivery"
+        Me.ShowIcon = False
+        Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.TransparencyKey = System.Drawing.SystemColors.Window
         Me.pnlBill.ResumeLayout(False)
         Me.pnlBill.PerformLayout()
         Me.pnlMain.ResumeLayout(False)
