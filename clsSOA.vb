@@ -188,6 +188,7 @@ Public Class clsSOA
 
                         End If
                         RaiseEvent DetailBillRetrieved(Row, Index, p_oBillDetail(Row).Item(Index))
+                        Debug.Print(" 5: " + p_oBillDetail(Row).Item(Index))
                     Case 10
                         pbModified = True
 
