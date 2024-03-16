@@ -111,6 +111,7 @@ Public Class Delivery
                 Case "swaivexxx" : Index = 13
                 Case "ctranstat" : Index = 14
                 Case "sbriefdsc" : Index = 15
+                Case "sclientid" : Index = 16
                     ''Load the company name to the virtual field if virtual field is empty but scompnycd has value...
                     'If Trim(p_oDataTable(Row)("scompnyNm")) = "" And p_oDataTable(Row)("sCompnyCd") <> "" Then
                     '    Dim loRow As DataTable
@@ -152,6 +153,7 @@ Public Class Delivery
                 Case "swaivexxx" : Index = 13
                 Case "ctranstat" : Index = 14
                 Case "sbriefdsc" : Index = 15
+                Case "sclientid" : Index = 16
 
                 Case Else
                     MsgBox("Invalid Field Detected!!!", MsgBoxStyle.Critical, "WARNING")
@@ -170,9 +172,15 @@ Public Class Delivery
         Dim loDT As New DataTable
 
         With p_oDataTable
-                For lnCtr = 0 To .Rows.Count - 1
-                    If Not isEntryOK(lnCtr) Then Return False
+            For lnCtr = 0 To .Rows.Count - 1
+                If Not isEntryOK(lnCtr) Then Return False
 
+                If Not isLimitOK() Then
+                    Return False
+                End If
+
+                .Rows(lnCtr)("sTransNox") = getNextTransNo()
+                Debug.Print("TransNo = " + .Rows(lnCtr)("sTransNox"))
                 lsSQL = "INSERT INTO " & pxeMasterTble & " SET" &
                             "  sTransNox = " & strParm(.Rows(lnCtr)("sTransNox")) &
                             ", sRiderIDx = " & strParm(.Rows(lnCtr)("sRiderIDx")) &
@@ -181,13 +189,67 @@ Public Class Delivery
                             ", sSourceCd = " & strParm(p_sSourceCd) &
                             ", sSourceNo = " & strParm(p_sSourceNo) &
                             ", cTranStat = " & strParm(.Rows(lnCtr)("cTranStat")) &
+                            ", cCollectd = " & strParm(xeTranStat.TRANS_OPEN) &
+                            ", cBilledxx = " & strParm(xeTranStat.TRANS_OPEN) &
+                            ", cPaidxxxx = " & strParm(xeTranStat.TRANS_OPEN) &
+                            ", cSendStat = " & strParm(xeTranStat.TRANS_OPEN) &
+                            ", cWaivexxx = " & strParm(xeTranStat.TRANS_OPEN) &
                             ", dModified = " & dateParm(p_oAppDrvr.SysDate) &
                         " ON DUPLICATE KEY UPDATE" &
                             "  sRiderIDx = " & strParm(.Rows(lnCtr)("sRiderIDx")) &
                             ", sSourceNo = " & strParm(p_sSourceNo) &
                             ", nAmountxx = " & CDec(.Rows(lnCtr)("nAmountxx")) &
-                            ", sRemarksx = " & strParm(.Rows(lnCtr)("sRemarksx"))
+                            ", sRemarksx = " & strParm(.Rows(lnCtr)("sRemarksx")) &
+                            ", dModified = " & dateParm(p_oAppDrvr.SysDate)
 
+
+                Debug.Print(lsSQL)
+
+                Try
+                    lnRow = p_oAppDrvr.Execute(lsSQL, pxeMasterTble)
+                    If lnRow <= 0 Then
+                        MsgBox("Unable to Save Transaction!!!" & vbCrLf &
+                                "Please contact GGC SSG/SEG for assistance!!!", MsgBoxStyle.Critical, "WARNING")
+                        Return False
+                    End If
+                Catch ex As Exception
+                    Throw ex
+                End Try
+
+                lsSQL = "INSERT INTO AR_Ledger SET" &
+                            "  sClientID = " & strParm(.Rows(lnCtr)("sClientID")) &
+                            ", sBranchCd = " & strParm(p_oAppDrvr.BranchCode) &
+                            ", nEntryNox = " & GetNextReference("AR_Ledger", "nEntryNox", "nEntryNox", "sBranchCd", p_oAppDrvr.BranchCode, p_oAppDrvr.Connection) &
+                            ", dTransact = " & dateParm(p_oAppDrvr.SysDate) &
+                            ", sSourceCd = " & strParm("DS") &
+                            ", sSourceNo = " & strParm(.Rows(lnCtr)("sTransNox")) &
+                            ", cReversex = " & strParm("+") &
+                            ", nCreditxx = " & CDec(.Rows(lnCtr)("nAmountxx")) &
+                            ", nDebitxxx = NULL " &
+                            ", dPostedxx = " & dateParm(p_oAppDrvr.SysDate) &
+                        " ON DUPLICATE KEY UPDATE " &
+                            "  dPostedxx = " & dateParm(p_oAppDrvr.SysDate) &
+                            ", sSourceNo = " & strParm(.Rows(lnCtr)("sTransNox")) &
+                            ", nCreditxx = " & CDec(.Rows(lnCtr)("nAmountxx"))
+
+
+                Debug.Print(lsSQL)
+
+                Try
+                    lnRow = p_oAppDrvr.Execute(lsSQL, pxeMasterTble)
+                    If lnRow <= 0 Then
+                        MsgBox("Unable to Save Transaction!!!" & vbCrLf &
+                                "Please contact GGC SSG/SEG for assistance!!!", MsgBoxStyle.Critical, "WARNING")
+                        Return False
+                    End If
+                Catch ex As Exception
+                    Throw ex
+                End Try
+
+                lsSQL = "UPDATE AR_Master set" &
+                            "  nABalance = nABalance +" & CDec(.Rows(lnCtr)("nAmountxx")) &
+                        " WHERE sClientID = " & strParm(.Rows(lnCtr)("sClientID")) &
+                        " AND sBranchCd = " & strParm(p_oAppDrvr.BranchCode)
 
                 Debug.Print(lsSQL)
 
@@ -265,6 +327,7 @@ Public Class Delivery
                 .Rows(lnCtr)("cTranStat") = loDT.Rows(lnCtr)("cTranStat")
                 .Rows(lnCtr)("sDescript") = loDT.Rows(lnCtr)("sDescript")
                 .Rows(lnCtr)("sBriefDsc") = loDT.Rows(lnCtr)("sBriefDsc")
+                .Rows(lnCtr)("sClientID") = loDT.Rows(lnCtr)("sClientID")
                 lnTotal += loDT.Rows(lnCtr)("nAmountxx")
             Next lnCtr
             p_nDelivery = lnTotal
@@ -279,6 +342,8 @@ Public Class Delivery
         Dim lnCtr As Integer
         Dim lnTotal As Decimal
 
+
+
         lsSQL = AddCondition(getSQL_Master, "a.sSourceNo = " & strParm(p_sSourceNo)) &
                                                 " AND a.sSourceCd = " & strParm(p_sSourceCd)
 
@@ -290,7 +355,9 @@ Public Class Delivery
         With p_oDataTable
             For lnCtr = 0 To loDT.Rows.Count - 1
                 .Rows.Add()
+
                 .Rows(lnCtr)("sTransNox") = loDT.Rows(lnCtr)("sTransNox")
+                Debug.Print("transno open bysource = " + .Rows(lnCtr)("sTransNox"))
                 .Rows(lnCtr)("sRiderIDx") = loDT.Rows(lnCtr)("sRiderIDx")
                 .Rows(lnCtr)("sRemarksx") = loDT.Rows(lnCtr)("sRemarksx")
                 .Rows(lnCtr)("nAmountxx") = loDT.Rows(lnCtr)("nAmountxx")
@@ -307,6 +374,7 @@ Public Class Delivery
                 .Rows(lnCtr)("cTranStat") = loDT.Rows(lnCtr)("cTranStat")
                 .Rows(lnCtr)("sDescript") = loDT.Rows(lnCtr)("sDescript")
                 .Rows(lnCtr)("sBriefDsc") = loDT.Rows(lnCtr)("sBriefDsc")
+                .Rows(lnCtr)("sClientID") = loDT.Rows(lnCtr)("sClientID")
                 lnTotal += loDT.Rows(lnCtr)("nAmountxx")
             Next lnCtr
             p_nDelivery = lnTotal
@@ -338,7 +406,9 @@ Public Class Delivery
 
         With p_oDataTable
             .Rows.Add()
-            .Rows(lnRow)("sTransNox") = GetNextCode(pxeMasterTble, "sTransNox", True, p_oAppDrvr.Connection, True, p_sBranchCd)
+            .Rows(lnRow)("sTransNox") = getNextTransNo()
+
+            Debug.Print("transno open bysource = " + .Rows(lnRow)("sTransNox"))
             .Rows(lnRow)("sRiderIDx") = ""
             .Rows(lnRow)("sRemarksx") = ""
             .Rows(lnRow)("nAmountxx") = 0.0
@@ -378,6 +448,7 @@ Public Class Delivery
                    " a.cTranStat," &
                    " b.sDescript," &
                    " b.sBriefDsc" &
+                   " b.sClientID" &
                 " FROM " & pxeMasterTble & " a" &
                 ", Delivery_Service b " &
                  " WHERE a.sRiderIDx = b.sRiderIDx"
@@ -404,11 +475,14 @@ Public Class Delivery
             p_oDataTable(Row)("sRiderIDx") = loDataRow("sRiderIDx")
             p_oDataTable(Row)("sBriefDsc") = loDataRow("sBriefDsc")
 
+            p_oDataTable(Row)("sClientID") = loDataRow("sClientID")
+
             p_sCompnyNm = loDataRow("sBriefDsc")
             RaiseEvent MasterRetrieved(Row, 1, loDataRow("sBriefDsc"))
         Else
             p_oDataTable(Row)("sRiderIDx") = ""
             p_oDataTable(Row)("sBriefDsc") = ""
+            p_oDataTable(Row)("sClientID") = ""
             RaiseEvent MasterRetrieved(Row, 1, p_oDataTable(Row)("sBriefDsc"))
         End If
 
@@ -437,13 +511,17 @@ Public Class Delivery
             .Columns.Add("cTranStat", GetType(String)).MaxLength = 1
             .Columns.Add("sDescript", GetType(String)).MaxLength = 64
             .Columns.Add("sBriefDsc", GetType(String)).MaxLength = 10
+            .Columns.Add("sClientID", GetType(String)).MaxLength = 12
         End With
     End Sub
 
     Private Sub initMaster()
         With p_oDataTable
             .Rows.Add()
+
             .Rows(0)("sTransNox") = getNextTransNo()
+
+            Debug.Print("TransNo initmaster= " + .Rows(0)("sTransNox"))
             .Rows(0)("sRiderIDx") = ""
             .Rows(0)("sRemarksx") = ""
             .Rows(0)("nAmountxx") = 0.0
@@ -468,6 +546,61 @@ Public Class Delivery
             Return False
         End If
 
+
+
+        Return True
+    End Function
+
+    Private Function isLimitOK() As Boolean
+
+        Dim lsSQL As String
+        Dim lnRow As Integer
+        Dim lnCtr As Integer
+        Dim lnABalance As Decimal
+        Dim lnLimitl As Decimal
+        Dim loDT As New DataTable
+
+        With p_oDataTable
+            For lnCtr = 0 To .Rows.Count - 1
+                lsSQL = " SELECT nCredLimt, nABalance FROM AR_Master " &
+            " WHERE sClientID = " & strParm(p_oDataTable.Rows(lnCtr)("sClientID")) &
+            " AND sBranchCd = " & strParm(p_oAppDrvr.BranchCode)
+
+                loDT = p_oAppDrvr.ExecuteQuery(lsSQL)
+
+                If loDT.Rows.Count = 0 Then
+                    MsgBox("Unable to Save Transaction !! No Delivery Account Found!" & vbCrLf & vbCrLf &
+                   "Verify your Entry then Try Again!!!", vbCritical, "Warning")
+                    Return False
+                End If
+
+
+                With loDT
+                    For lnRow = 0 To loDT.Rows.Count - 1
+
+                        lnABalance = CDec(loDT.Rows(lnCtr)("nABalance")) + CDec(p_oDataTable.Rows(lnCtr)("nAmountxx"))
+                        lnLimitl = CDec(loDT.Rows(lnRow)("nCredLimt"))
+                        If lnABalance >= lnLimitl Then
+                            If MsgBox("Account already exceeded Credit limit for this Delivery Service!! " &
+                        vbCrLf & " Do you still want to Continue?", vbQuestion + vbYesNo, "Confirm") = vbYes Then
+
+                                If Not p_oAppDrvr.getUserApproval() Then
+                                    Return False
+                                End If
+                            End If
+
+                        Else
+                            MsgBox("Unable to Save Transaction !!!" & vbCrLf & vbCrLf &
+                            "Verify your Entry then Try Again!!!", vbCritical, "Warning")
+                            Return False
+                        End If
+
+                    Next lnRow
+                End With
+
+
+            Next lnCtr
+        End With
         Return True
     End Function
 #End Region
@@ -507,6 +640,7 @@ Public Class Delivery
         Dim lnCode As Long
         Dim lnLen As Long
         Dim lsStr As String = ""
+
 
         lsSQL = "SELECT sTransNox" &
                 " FROM " & pxeMasterTble &
@@ -550,9 +684,14 @@ Public Class Delivery
         End If
 
         If lsSQL = "" Then
+            Debug.Print(lnCode, lsStr.PadRight(lnCounter, "0"))
             Return Format(lnCode, lsStr.PadRight(lnCounter, "0"))
         Else
+            Debug.Print(Left(lsSQL, lnCounter) & Format(lnCode, lsStr.PadRight(lnLen - lnCounter, "0")))
+
             Return Left(lsSQL, lnCounter) & Format(lnCode, lsStr.PadRight(lnLen - lnCounter, "0"))
         End If
     End Function
+
+
 End Class

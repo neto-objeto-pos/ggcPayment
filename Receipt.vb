@@ -246,11 +246,15 @@ Public Class Receipt
         End Set
     End Property
 
-    WriteOnly Property POSNumbr As String
+    Property POSNumbr As String
+        Get
+            Return p_sPOSNo
+        End Get
         Set(ByVal Value As String)
             p_sPOSNo = Value
         End Set
     End Property
+
     WriteOnly Property CRMNumbr As String
         Set(ByVal Value As String)
             p_sCRMNmbr = Value
@@ -411,6 +415,7 @@ Public Class Receipt
             p_oDataTable(0)(Index) = Value
         End Set
     End Property
+
 #End Region
 
 #Region "Public Function"
@@ -1551,6 +1556,7 @@ Public Class Receipt
         With p_oDelivery
             .SourceCd = p_sSourceCd
             .SourceNo = p_sSourceNo
+            .POSNumbr = p_sPOSNo
 
             .OpenBySource()
             p_oDtaDlvery = .Delivery
@@ -1589,6 +1595,7 @@ Public Class Receipt
         p_oDelivery = New Delivery(p_oAppDrvr)
         p_oDelivery.SourceCd = p_sSourceCd
         p_oDelivery.SourceNo = p_sSourceNo
+        p_oDelivery.POSNumbr = p_sPOSNo
         p_oDelivery.ShowDeliverys()
         CloseForm = p_oDelivery.CloseForm
     End Sub

@@ -24,6 +24,7 @@ Module modMain
     Public p_oFormPay As frmPay
     Public p_oFormDelivery As frmPayDelivery
 
+
     Private Declare Sub keybd_event Lib "user32.dll" (ByVal bVk As Byte, ByVal bScan As Byte, ByVal dwFlags As UInteger, ByVal dwExtraInfo As UInteger)
     'Sub Main()
     '    Dim ls4Print As String
@@ -151,6 +152,7 @@ Module modMain
     End Sub
 
     Sub showForm(ByVal lnForm As Integer, ByVal lbShow As Boolean)
+
         If lbShow Then
             Select Case lnForm
                 Case 1 'cash
