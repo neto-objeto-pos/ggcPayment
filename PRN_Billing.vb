@@ -57,6 +57,7 @@ Public Class PRN_Billing
     Private pdTransact As Date          'XXX
     Private psReferNox As String        'XXX
     Private psBillNoxx As String        'XXX
+    Private psDelivery As String
 
     Private pnTotalItm As Decimal
     Private pnTotalDue As Decimal
@@ -114,6 +115,14 @@ Public Class PRN_Billing
         End Get
         Set(ByVal value As String)
             psCashierNm = value
+        End Set
+    End Property
+    Public Property Dservice() As String
+        Get
+            Return psDelivery
+        End Get
+        Set(ByVal value As String)
+            psDelivery = value
         End Set
     End Property
 

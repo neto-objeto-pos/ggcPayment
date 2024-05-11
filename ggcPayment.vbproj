@@ -23,12 +23,11 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>..\..\..\..\..\GGC_Systems\vb.net\RetMgtSys\</OutputPath>
+    <OutputPath>C:\GGC_Systems\vb.net\RetMgtSys\</OutputPath>
     <DocumentationFile>ggcReceipt.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <RegisterForComInterop>false</RegisterForComInterop>
     <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,7 +44,7 @@
     <OptionExplicit>On</OptionExplicit>
   </PropertyGroup>
   <PropertyGroup>
-    <OptionCompare>Binary</OptionCompare>
+    <OptionCompare>Text</OptionCompare>
   </PropertyGroup>
   <PropertyGroup>
     <OptionStrict>Off</OptionStrict>
@@ -54,16 +53,42 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="adodb, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+    <Reference Include="CrystalDecisions.CrystalReports.Design, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win64_x64\dotnet\CrystalDecisions.CrystalReports.Design.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win64_x64\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CrystalDecisions.Data.AdoDotNetInterop, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win64_x64\dotnet\CrystalDecisions.Data.AdoDotNetInterop.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win64_x64\dotnet\CrystalDecisions.Shared.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CrystalDecisions.Windows.Forms, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win64_x64\dotnet\CrystalDecisions.Windows.Forms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win64_x64\dotnet\iPoint\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data, Version=6.7.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>X:\GGC_Systems\vb.net\RetMgySys\MySql.Data.dll</HintPath>
+      <HintPath>..\..\..\..\..\GGC_Systems\vb.net\RetMgtSys\MySql.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Renci.SshNet, Version=2020.0.1.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
-      <HintPath>..\RetailPOS\packages\SSH.NET.2020.0.1\lib\net40\Renci.SshNet.dll</HintPath>
+    <Reference Include="MySql.Data.Entity, Version=6.7.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\GGC_Systems\vb.net\RetMgtSys\MySql.Data.Entity.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -73,8 +98,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="WinSCPnet, Version=1.14.0.13797, Culture=neutral, PublicKeyToken=2271ec4a3c56d0bf, processorArchitecture=MSIL">
-      <HintPath>..\RetailPOS\packages\WinSCP.6.1.2\lib\net40\WinSCPnet.dll</HintPath>
+    <Reference Include="WinSCPnet, Version=1.15.0.14641, Culture=neutral, PublicKeyToken=2271ec4a3c56d0bf, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\GGC_Systems\vb.net\RetMgtSys\WinSCPnet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CheckPayment.vb" />
+    <Compile Include="clsSOA.vb" />
     <Compile Include="CreditCardneo.vb" />
     <Compile Include="Delivery.vb" />
     <Compile Include="Forms\frmPayCredit.designer.vb">
@@ -115,7 +142,7 @@
     <Compile Include="Forms\frmRLC.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="clsSOA.vb" />
+    <Compile Include="Forms\modMain.vb" />
     <Compile Include="PRN_RLC_Reading.vb" />
     <Compile Include="PRN_Charge.vb" />
     <Compile Include="CreditCard.vb" />
@@ -144,7 +171,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GiftCertificate.vb" />
-    <Compile Include="Forms\modMain.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -240,11 +266,11 @@
       <Name>ggcClient</Name>
     </ProjectReference>
     <ProjectReference Include="..\ggcRetailParams\ggcRetailParams.vbproj">
-      <Project>{4883f473-c0b0-4266-a9ac-8e4bca3c4cb7}</Project>
+      <Project>{4883F473-C0B0-4266-A9AC-8E4BCA3C4CB7}</Project>
       <Name>ggcRetailParams</Name>
     </ProjectReference>
     <ProjectReference Include="..\ggcRMSReports\ggcRMSReports.vbproj">
-      <Project>{59DDF956-B82B-46D8-955F-769D502647BF}</Project>
+      <Project>{59ddf956-b82b-46d8-955f-769d502647bf}</Project>
       <Name>ggcRMSReports</Name>
     </ProjectReference>
   </ItemGroup>
@@ -255,9 +281,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\RetailPOS\packages\WinSCP.5.19.3\build\WinSCP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\RetailPOS\packages\WinSCP.5.19.3\build\WinSCP.targets'))" />
-    <Error Condition="!Exists('..\RetailPOS\packages\WinSCP.6.1.2\build\WinSCP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\RetailPOS\packages\WinSCP.6.1.2\build\WinSCP.targets'))" />
+    <Error Condition="!Exists('..\RetailPOS\packages\WinSCP.6.2.2-beta\build\WinSCP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\RetailPOS\packages\WinSCP.6.2.2-beta\build\WinSCP.targets'))" />
   </Target>
-  <Import Project="..\RetailPOS\packages\WinSCP.6.1.2\build\WinSCP.targets" Condition="Exists('..\RetailPOS\packages\WinSCP.6.1.2\build\WinSCP.targets')" />
+  <Import Project="..\RetailPOS\packages\WinSCP.6.2.2-beta\build\WinSCP.targets" Condition="Exists('..\RetailPOS\packages\WinSCP.6.2.2-beta\build\WinSCP.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

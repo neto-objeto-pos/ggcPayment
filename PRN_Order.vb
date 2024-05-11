@@ -63,6 +63,7 @@ Public Class PRN_Order
     Private pnTotalItm As Decimal
     Private psContrlNo As String
     Private psWaiterxx As String
+    Private psDelivery As String
     Private psTableNox As String
     Private pdTransact As Date
 
@@ -118,6 +119,14 @@ Public Class PRN_Order
         End Get
         Set(ByVal value As String)
             psWaiterxx = value
+        End Set
+    End Property
+    Public Property Dservice() As String
+        Get
+            Return psDelivery
+        End Get
+        Set(ByVal value As String)
+            psDelivery = value
         End Set
     End Property
 
@@ -253,7 +262,9 @@ Public Class PRN_Order
 
         builder.Append(" Terminal No: " & p_sTermnl & Environment.NewLine)
         builder.Append(" No of Items: " & pnTotalItm & Environment.NewLine & Environment.NewLine)
-
+        If psDelivery = "2" Then
+            builder.Append(" ** DELIVERY SERVICE ** " & Environment.NewLine & Environment.NewLine)
+        End If
         ''Print Asterisk(*)
         'builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
 
@@ -397,6 +408,9 @@ Public Class PRN_Order
 
         builder.Append(" Terminal No: " & p_sTermnl & Environment.NewLine)
         builder.Append(" No of Items: " & pnTotalItm & Environment.NewLine & Environment.NewLine)
+        If psDelivery = "2" Then
+            builder.Append(" ** DELIVERY SERVICE ** " & Environment.NewLine & Environment.NewLine)
+        End If
 
         ''Print Asterisk(*)
         'builder.Append("*".PadLeft(40, "*") & Environment.NewLine)

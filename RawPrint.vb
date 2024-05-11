@@ -4,7 +4,7 @@ Imports System.Runtime.InteropServices
 
 Public Class RawPrint
     ' Structure and API declarions:
-    <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode)> _
+    <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode)>
     Structure DOCINFOW
         <MarshalAs(UnmanagedType.LPWStr)> Public pDocName As String
         <MarshalAs(UnmanagedType.LPWStr)> Public pOutputFile As String
@@ -100,21 +100,47 @@ Public Class RawPrint
         ' Assume failure unless you specifically succeed.
         bSuccess = False
         If OpenPrinter(szPrinterName, hPrinter, 0) Then
-            If StartDocPrinter(hPrinter, 1, di) Then
-                If StartPagePrinter(hPrinter) Then
-                    ' Write your printer-specific bytes to the printer.
-                    bSuccess = WritePrinter(hPrinter, pBytes, dwCount, dwWritten)
-                    EndPagePrinter(hPrinter)
+            ' Check if the handle is valid before proceeding.
+            If hPrinter <> IntPtr.Zero Then
+                ' Start a new print job.
+                If StartDocPrinter(hPrinter, 1, di) Then
+                    ' Start a new page within the print job.
+                    If StartPagePrinter(hPrinter) Then
+                        ' Write your printer-specific bytes to the printer.
+                        bSuccess = WritePrinter(hPrinter, pBytes, dwCount, dwWritten)
+
+                        ' Check if writing to the printer was successful.
+                        If bSuccess Then
+                            ' End the current page within the print job.
+                            EndPagePrinter(hPrinter)
+                        Else
+                            ' Handle WritePrinter failure
+                            Console.WriteLine("WritePrinter failed. Error code: " & Marshal.GetLastWin32Error().ToString())
+                        End If
+                    Else
+                        ' Handle StartPagePrinter failure
+                        Console.WriteLine("StartPagePrinter failed. Error code: " & Marshal.GetLastWin32Error().ToString())
+                    End If
+
+                    ' End the current print job.
+                    EndDocPrinter(hPrinter)
+                Else
+                    ' Handle StartDocPrinter failure
+                    Console.WriteLine("StartDocPrinter failed. Error code: " & Marshal.GetLastWin32Error().ToString())
                 End If
-                EndDocPrinter(hPrinter)
+
+                ' Close the printer handle.
+                ClosePrinter(hPrinter)
+            Else
+                ' Handle invalid printer handle
+                Console.WriteLine("Invalid printer handle obtained from OpenPrinter.")
             End If
-            ClosePrinter(hPrinter)
+        Else
+            ' Handle OpenPrinter failure
+            Console.WriteLine("OpenPrinter failed. Error code: " & Marshal.GetLastWin32Error().ToString())
         End If
-        ' If you did not succeed, GetLastError may give more information
-        ' about why not.
-        If bSuccess = False Then
-            dwError = Marshal.GetLastWin32Error()
-        End If
+
+        ' Return the result of the printing operation.
         Return bSuccess
     End Function ' SendBytesToPrinter()
 
