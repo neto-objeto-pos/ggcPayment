@@ -270,4 +270,12 @@ endProc:
             .UpdateStyles()
         End With
     End Sub
+
+    Private Sub frmPay_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        Select Case e.KeyCode
+            Case Keys.Escape
+                pbCancelled = True
+                Me.Close()
+        End Select
+    End Sub
 End Class

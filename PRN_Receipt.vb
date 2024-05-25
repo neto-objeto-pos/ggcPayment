@@ -307,6 +307,15 @@ Public Class PRN_Receipt
         End Set
     End Property
 
+    Public Property DeliveryPayment() As Decimal
+        Get
+            Return pnDelivery
+        End Get
+        Set(ByVal value As Decimal)
+            pnDelivery = value
+        End Set
+    End Property
+
     Public Property NonVatSales() As Decimal
         Get
             Return pnVatExSle
@@ -654,7 +663,7 @@ Public Class PRN_Receipt
             .Rows(.Rows.Count - 1).Item("sDelvrSrc") = DeliverySrc
             .Rows(.Rows.Count - 1).Item("nDlvrAmt") = Amount
 
-            pnGiftTotl = pnGiftTotl + Amount
+            pnDelivery = pnDelivery + Amount
 
         End With
 
@@ -740,7 +749,7 @@ Public Class PRN_Receipt
         builder.Append(Environment.NewLine)
         Select Case p_cTrnMde
             Case "A"
-                builder.Append(PadCenter("OFFICIAL RECEIPT", 40) & Environment.NewLine)
+                builder.Append(PadCenter("SALES INVOICE", 40) & Environment.NewLine)
             Case "D"
                 builder.Append(PadCenter("TRANING MODE", 40) & Environment.NewLine)
         End Select
@@ -763,7 +772,7 @@ Public Class PRN_Receipt
             builder.Append(" TAKE-OUT " & Environment.NewLine)
         End If
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
-        builder.Append(" OR No.: " & psReferNox & Environment.NewLine)
+        builder.Append(" SI No.: " & psReferNox & Environment.NewLine)
         If p_sBillNmbr <> "" Then
             builder.Append(" Billing No.: " & p_sBillNmbr & Environment.NewLine)
         End If
@@ -1024,14 +1033,14 @@ Public Class PRN_Receipt
 
             For lnCtr = 0 To loDT.Rows.Count - 1
                 If loDT.Rows(lnCtr).Item("cTranStat") = xeTranStat.TRANS_POSTED Then
-                    lsPartial = " PAID " & "(OR" & loDT.Rows(lnCtr).Item("sORNumber") & ")"
-                    builder.Append(lsPartial.PadRight(28) & " " & "-" & Format(loDT.Rows(lnCtr).Item("nSalesAmt"), xsDECIMAL) & "".PadLeft(pxeREGLEN) & Environment.NewLine)
+                    lsPartial = " PAID " & "(SI:" & loDT.Rows(lnCtr).Item("sORNumber") & ")"
+                    builder.Append(lsPartial.PadRight(28) & " " & "-" & Format(loDT.Rows(lnCtr).Item("nAmountxx"), xsDECIMAL) & "".PadLeft(pxeREGLEN) & Environment.NewLine)
                     lnCurSplit = lnCurSplit + 1
                 End If
             Next
 
             lsPartial = " Partial Bill " & "(" & lnCurSplit + 1 & "/" & loDT.Rows.Count & ")"
-            builder.Append(lsPartial.PadRight((Len(lsPartial) + 14) - Len(Format(pnSplitAmt, xsDECIMAL))) & " " & Format(pnSplitAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+            builder.Append(lsPartial.PadRight((Len(lsPartial) + 12) - Len(Format(pnSplitAmt, xsDECIMAL))) & " " & Format(pnSplitAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             lnSplitAmt = pnSplitAmt
         End If
 
@@ -1089,7 +1098,7 @@ Public Class PRN_Receipt
         If pnGiftTotl > lnChange Then
             lnChange = 0
         Else
-            lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
+            lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl + pnDelivery) - lnChange
         End If
 
         builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
@@ -1217,7 +1226,7 @@ Public Class PRN_Receipt
         Next
 
         builder.Append(Environment.NewLine)
-        builder.Append(PadCenter("----- END OF RECEIPT -----", 40) & Environment.NewLine)
+        builder.Append(PadCenter("----- END OF SALES INVOICE -----", 40) & Environment.NewLine)
         RawPrint.writeToFile(p_sPOSNo, builder.ToString())
         RawPrint.writeToFile(p_sPOSNo & " " & Format(p_dPOSDatex, "yyyyMMdd"), builder.ToString())
 
@@ -1239,6 +1248,8 @@ Public Class PRN_Receipt
         Dim lsDelivery = psDelivery
         Dim lnvatable As Decimal = 0
         Dim lnvat As Decimal = 0
+        Dim lnPartialPdTotl As Decimal = 0
+
         If Not AddHeader(p_sCompny, 40) Then
             MsgBox("Invalid Company Name!")
             Return False
@@ -1297,7 +1308,7 @@ Public Class PRN_Receipt
 
         Select Case p_cTrnMde
             Case "A"
-                builder.Append("OFFICIAL RECEIPT" & Environment.NewLine)
+                builder.Append("SALES INVOICE" & Environment.NewLine)
             Case "D"
                 builder.Append("TRAINING MODE" & Environment.NewLine)
         End Select
@@ -1325,7 +1336,7 @@ Public Class PRN_Receipt
         End If
 
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
-        builder.Append(" OR No.: " & psReferNox & Environment.NewLine)
+        builder.Append(" SI No.: " & psReferNox & Environment.NewLine)
         If p_sBillNmbr <> "" Then
             builder.Append(" Billing No.: " & p_sBillNmbr & Environment.NewLine)
         End If
@@ -1594,16 +1605,20 @@ Public Class PRN_Receipt
             Dim loDT As DataTable = getSplitTable(psSourceNo)
             Dim lsPartial As String
 
+            lnPartialPdTotl = 0
             For lnCtr = 0 To loDT.Rows.Count - 1
                 If loDT.Rows(lnCtr).Item("cTranStat") = xeTranStat.TRANS_POSTED Then
-                    lsPartial = " PAID " & "(OR" & loDT.Rows(lnCtr).Item("sORNumber") & ")"
-                    builder.Append(lsPartial.PadRight(28) & " " & "-" & Format(loDT.Rows(lnCtr).Item("nSalesAmt"), xsDECIMAL) & "".PadLeft(pxeREGLEN) & Environment.NewLine)
+                    lsPartial = " PAID " & "(SI" & loDT.Rows(lnCtr).Item("sORNumber") & ")"
+                    builder.Append(lsPartial.PadRight(28) & " " & "-" & Format(loDT.Rows(lnCtr).Item("nAmountxx"), xsDECIMAL) & "".PadLeft(pxeREGLEN) & Environment.NewLine)
                     lnCurSplit = lnCurSplit + 1
+                    lnPartialPdTotl += CDbl(loDT.Rows(lnCtr).Item("nAmountxx"))
                 End If
             Next
 
             lsPartial = " Partial Bill " & "(" & lnCurSplit + 1 & "/" & loDT.Rows.Count & ")"
-            builder.Append(lsPartial.PadRight((Len(lsPartial) + 14) - Len(Format(pnSplitAmt, xsDECIMAL))) & " " & Format(pnSplitAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+
+            builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
+            builder.Append(lsPartial.PadRight((Len(lsPartial) + 12) - Len(Format(pnSplitAmt, xsDECIMAL))) & " " & Format(pnSplitAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             lnSplitAmt = pnSplitAmt
         End If
 
@@ -1651,18 +1666,27 @@ Public Class PRN_Receipt
 
         'Print Change
         Dim lnChange As Decimal
-        If p_cSplitTyp <> 2 Then
-            lnChange = (pnSplitAmt + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
-        Else
-            lnChange = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
-        End If
+        'wala ito 
+        'If p_cSplitTyp <> 2 Then
+        '    lnChange = (pnSplitAmt + pnSChargex + lnPartialPdTotl) - (pnDiscAmtV + pnDiscAmtN)
+        'Else
+        '    lnChange = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
+        'End If
 
-        If pnGiftTotl > lnChange Then
-            lnChange = 0
-        Else
-            lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
+        'If pnGiftTotl > lnChange Then
+        '    lnChange = 0
+        'Else
+        '    lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl + pnDelivery + pnSplitAmt + lnPartialPdTotl) - lnChange
+        'End If
+
+        'maynard2024
+        Dim lnPartialBillRemaing As Decimal
+        If pnSplitAmt <> 0 Then
+            lnPartialBillRemaing = pnTotalDue - pnSplitAmt
+
         End If
-        lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - pnTotalDue
+        'it will update code above
+        lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl + pnDelivery + lnPartialBillRemaing) - pnTotalDue
         builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
         'Print Discount Information
@@ -1795,7 +1819,7 @@ Public Class PRN_Receipt
 
         Call WriteOR()
 
-        p_oApp.SaveEvent("0016", "OR No. " & psReferNox, p_sSerial)
+        p_oApp.SaveEvent("0016", "SI No. " & psReferNox, p_sSerial)
 
 
         Return True
@@ -1866,7 +1890,7 @@ Public Class PRN_Receipt
         builder.Append(RawPrint.pxePRINT_CNTR)
         Select Case p_cTrnMde
             Case "A"
-                builder.Append("OFFICIAL RECEIPT" & Environment.NewLine)
+                builder.Append("SALES INVOICE" & Environment.NewLine)
             Case "D"
                 builder.Append("TRAINING MODE" & Environment.NewLine)
         End Select
@@ -1887,7 +1911,7 @@ Public Class PRN_Receipt
             builder.Append(" Table No.: " & p_nTableNo & Environment.NewLine)
         End If
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
-        builder.Append(" OR No.: " & psReferNox & Environment.NewLine)
+        builder.Append(" SI No.: " & psReferNox & Environment.NewLine)
         builder.Append(" Transaction No.: " & psTransNox & Environment.NewLine)
         builder.Append(" Date : " & Format(pdTransact, "yyyy-mm-dd") & " " & Format(p_oApp.getSysDate, "hh:mm:ss tt") & Environment.NewLine)
 
@@ -2064,7 +2088,7 @@ Public Class PRN_Receipt
         If pnGiftTotl > lnChange Then
             lnChange = 0
         Else
-            lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
+            lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl + pnDelivery) - lnChange
         End If
 
         builder.Append(RawPrint.pxePRINT_EMP1)          'Double Strike + Condense + Emphasize
@@ -2168,7 +2192,7 @@ Public Class PRN_Receipt
 
         Call WriteOR()
 
-        p_oApp.SaveEvent("0016", "OR No. " & psReferNox, p_sSerial)
+        p_oApp.SaveEvent("0016", "SI No. " & psReferNox, p_sSerial)
 
         Return True
     End Function
@@ -2633,16 +2657,17 @@ Public Class PRN_Receipt
     Private Function getSplitTable(ByVal fsSourceNo As String) As DataTable
         Dim loDT As DataTable
 
-        loDT = p_oApp.ExecuteQuery("SELECT" & _
-                                        "  b.sORNumber" & _
-                                        ", b.nSalesAmt" & _
-                                        ", a.cTranStat" & _
-                                    " FROM Order_Split a" & _
-                                        " LEFT JOIN Receipt_Master b" & _
-                                            " ON a.sTransNox = b.sSourceNo" & _
-                                            " AND b.sSourceCd = 'SOSp'" & _
-                                    " WHERE a.sReferNox = " & strParm(fsSourceNo) & _
-                                    " ORDER BY b.sORNumber" & _
+        loDT = p_oApp.ExecuteQuery("SELECT" &
+                                        "  b.sORNumber" &
+                                        ", b.nSalesAmt" &
+                                        ", a.cTranStat" &
+                                        ", a.nAmountxx" &
+                                    " FROM Order_Split a" &
+                                        " LEFT JOIN Receipt_Master b" &
+                                            " ON a.sTransNox = b.sSourceNo" &
+                                            " AND b.sSourceCd = 'SOSp'" &
+                                    " WHERE a.sReferNox = " & strParm(fsSourceNo) &
+                                    " ORDER BY b.sORNumber" &
                                         ", a.sTransNox")
         Return loDT
     End Function

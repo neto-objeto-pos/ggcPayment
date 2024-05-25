@@ -1068,7 +1068,7 @@ Public Class PRN_Billing
         'Print the Footer
         builder.Append(PadCenter("THIS DOCUMENT IS NOT", 40) & Environment.NewLine)
         builder.Append(PadCenter("VALID FOR CLAIM OF INPUT TAX", 40) & Environment.NewLine)
-        builder.Append(PadCenter("PLEASE DEMAND FOR YOUR OFFICIAL RECEIPT", 40) & Environment.NewLine)
+        builder.Append(PadCenter("PLEASE DEMAND FOR YOUR SALES INVOICE", 40) & Environment.NewLine)
 
         builder.Append(Chr(&H1D) & "V" & Chr(66) & Chr(0))
 
@@ -1268,10 +1268,10 @@ Public Class PRN_Billing
         builder.Append(PadCenter("THIS DOCUMENT IS NOT", 40) & Environment.NewLine)
         builder.Append(PadCenter("VALID FOR CLAIM OF INPUT TAX", 40) & Environment.NewLine)
         builder.Append(PadCenter("PLEASE DEMAND FOR", 40) & Environment.NewLine)
-        builder.Append(PadCenter("OFFICIAL REPORT", 40) & Environment.NewLine)
+        builder.Append(PadCenter("SALES INVOICE", 40) & Environment.NewLine)
 
         builder.Append(Environment.NewLine)
-        builder.Append(PadCenter("----- END OF RECEIPT -----", 40) & Environment.NewLine)
+        builder.Append(PadCenter("----- END OF SALES INVOICE -----", 40) & Environment.NewLine)
         RawPrint.writeToFile(p_sPOSNo, builder.ToString())
         RawPrint.writeToFile(p_sPOSNo & " " & Format(p_dPOSDatex, "yyyyMMdd"), builder.ToString())
 

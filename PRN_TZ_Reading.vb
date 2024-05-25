@@ -230,12 +230,12 @@ Public Class PRN_TZ_Reading
         Dim lsORNoThru As String = loDta(0).Item("sORNoThru")
 
         For lnCtr = 0 To loDta.Rows.Count - 1
-            'Determing Beginning OR for this Terminal X Reading
+            'Determing Beginning SI for this Terminal X Reading
             If loDta(lnCtr).Item("sORNoFrom") < lsORNoFrom And loDta(lnCtr).Item("sORNoFrom") <> "" Then
                 lsORNoFrom = loDta(lnCtr).Item("sORNoFrom")
             End If
 
-            'Determing Beginning OR for this Terminal X Reading
+            'Determing Beginning SI for this Terminal X Reading
             If loDta(lnCtr).Item("sORNoThru") > lsORNoThru Then
                 lsORNoThru = loDta(lnCtr).Item("sORNoThru")
             End If
@@ -279,8 +279,8 @@ Public Class PRN_TZ_Reading
 
         'Print the begging and ending OR
         builder.Append(Environment.NewLine)
-        builder.Append(" Beginning OR  :  " & lsORNoFrom & Environment.NewLine)
-        builder.Append(" Ending OR     :  " & lsORNoThru & Environment.NewLine & Environment.NewLine)
+        builder.Append(" Beginning SI  :  " & lsORNoFrom & Environment.NewLine)
+        builder.Append(" Ending SI     :  " & lsORNoThru & Environment.NewLine & Environment.NewLine)
 
         builder.Append(" Beginning Balance  : ".PadRight(24) & Format(lnPrevSale, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         ''builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt + lnSChargex) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
@@ -346,8 +346,8 @@ Public Class PRN_TZ_Reading
         builder.Append(RawPrint.pxePRINT_EMP0)
 
         builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
-        builder.Append(" Void OR Count: ".PadRight(24) & Format(lnVoidCntx, xsINTEGER).PadLeft(13) & Environment.NewLine)
-        builder.Append(" Void OR Amount: ".PadRight(24) & Format(lnVoidAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append(" Void SI Count: ".PadRight(24) & Format(lnVoidCntx, xsINTEGER).PadLeft(13) & Environment.NewLine)
+        builder.Append(" Void SI Amount: ".PadRight(24) & Format(lnVoidAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
         builder.Append("/end-of-summary - " & Format(p_oApp.getSysDate, "dd/MMM/yyyy hh:mm:ss") & Environment.NewLine)
 
@@ -473,12 +473,12 @@ Public Class PRN_TZ_Reading
         Dim lsORNoThru As String = loDta(0).Item("sORNoThru")
 
         For lnCtr = 0 To loDta.Rows.Count - 1
-            'Determing Beginning OR for this Terminal X Reading
+            'Determing Beginning SI for this Terminal X Reading
             If loDta(lnCtr).Item("sORNoFrom") < lsORNoFrom And loDta(lnCtr).Item("sORNoFrom") <> "" Then
                 lsORNoFrom = loDta(lnCtr).Item("sORNoFrom")
             End If
 
-            'Determing Beginning OR for this Terminal X Reading
+            'Determing Beginning SI for this Terminal X Reading
             If loDta(lnCtr).Item("sORNoThru") > lsORNoThru Then
                 lsORNoThru = loDta(lnCtr).Item("sORNoThru")
             End If
@@ -523,8 +523,8 @@ Public Class PRN_TZ_Reading
 
         'Print the begging and ending OR
         builder.Append(Environment.NewLine)
-        builder.Append(" Beginning OR  :  " & lsORNoFrom & Environment.NewLine)
-        builder.Append(" Ending OR     :  " & lsORNoThru & Environment.NewLine & Environment.NewLine)
+        builder.Append(" Beginning SI  :  " & lsORNoFrom & Environment.NewLine)
+        builder.Append(" Ending SI     :  " & lsORNoThru & Environment.NewLine & Environment.NewLine)
 
         builder.Append(" Beginning Balance  : ".PadRight(24) & Format(lnPrevSale, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         ''builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt + lnSChargex) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
@@ -587,8 +587,8 @@ Public Class PRN_TZ_Reading
         builder.Append(RawPrint.pxePRINT_EMP0)
 
         builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
-        builder.Append(" Void OR Count: ".PadRight(24) & Format(lnVoidCntx, xsINTEGER).PadLeft(13) & Environment.NewLine)
-        builder.Append(" Void OR Amount: ".PadRight(24) & Format(lnVoidAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append(" Void SI Count: ".PadRight(24) & Format(lnVoidCntx, xsINTEGER).PadLeft(13) & Environment.NewLine)
+        builder.Append(" Void SI Amount: ".PadRight(24) & Format(lnVoidAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
         builder.Append("/end-of-summary - " & Format(p_oApp.getSysDate, "dd/MMM/yyyy hh:mm:ss") & Environment.NewLine)
 
@@ -696,12 +696,12 @@ Public Class PRN_TZ_Reading
         Dim lsORNoThru As String = loDta(0).Item("sORNoThru")
 
         For lnCtr = 0 To loDta.Rows.Count - 1
-            'Determing Beginning OR for this Terminal X Reading
+            'Determing Beginning SI for this Terminal X Reading
             If loDta(lnCtr).Item("sORNoFrom") < lsORNoFrom And loDta(lnCtr).Item("sORNoFrom") <> "" Then
                 lsORNoFrom = loDta(lnCtr).Item("sORNoFrom")
             End If
 
-            'Determing Beginning OR for this Terminal X Reading
+            'Determing Beginning SI for this Terminal X Reading
             If loDta(lnCtr).Item("sORNoThru") > lsORNoThru Then
                 lsORNoThru = loDta(lnCtr).Item("sORNoThru")
             End If
@@ -745,8 +745,8 @@ Public Class PRN_TZ_Reading
 
         'Print the begging and ending OR
         builder.Append(Environment.NewLine)
-        builder.Append(" Beginning OR  :  " & lsORNoFrom & Environment.NewLine)
-        builder.Append(" Ending OR     :  " & lsORNoThru & Environment.NewLine)
+        builder.Append(" Beginning SI  :  " & lsORNoFrom & Environment.NewLine)
+        builder.Append(" Ending SI     :  " & lsORNoThru & Environment.NewLine)
 
         builder.Append(Environment.NewLine)
         builder.Append(" Beginning Balance  : ".PadRight(24) & Format(lnPrevSale, xsDECIMAL).PadLeft(13) & Environment.NewLine)
@@ -809,8 +809,8 @@ Public Class PRN_TZ_Reading
         'builder.Append("ACCUMULATED GRAND TOTAL : ".PadRight(26) & Format(lnPrevSale + ((lnSalesAmt) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
 
         builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
-        builder.Append(" Void OR Count: ".PadRight(24) & Format(lnVoidCntx, xsINTEGER).PadLeft(13) & Environment.NewLine)
-        builder.Append(" Void OR Amount: ".PadRight(24) & Format(lnVoidAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append(" Void SI Count: ".PadRight(24) & Format(lnVoidCntx, xsINTEGER).PadLeft(13) & Environment.NewLine)
+        builder.Append(" Void SI Amount: ".PadRight(24) & Format(lnVoidAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
         builder.Append("/end-of-summary - " & Format(p_oApp.getSysDate, "dd/MMM/yyyy hh:mm:ss") & Environment.NewLine)
 
@@ -927,12 +927,12 @@ Public Class PRN_TZ_Reading
         Dim lsORNoThru As String = loDta(0).Item("sORNoThru")
 
         For lnCtr = 0 To loDta.Rows.Count - 1
-            'Determing Beginning OR for this Terminal X Reading
+            'Determing Beginning SI for this Terminal X Reading
             If loDta(lnCtr).Item("sORNoFrom") < lsORNoFrom And loDta(lnCtr).Item("sORNoFrom") <> "" Then
                 lsORNoFrom = loDta(lnCtr).Item("sORNoFrom")
             End If
 
-            'Determing Beginning OR for this Terminal X Reading
+            'Determing Beginning SI for this Terminal X Reading
             If loDta(lnCtr).Item("sORNoThru") > lsORNoThru Then
                 lsORNoThru = loDta(lnCtr).Item("sORNoThru")
             End If
@@ -976,8 +976,8 @@ Public Class PRN_TZ_Reading
 
         'Print the begging and ending OR
         builder.Append(Environment.NewLine)
-        builder.Append(" Beginning OR  :  " & lsORNoFrom & Environment.NewLine)
-        builder.Append(" Ending OR     :  " & lsORNoThru & Environment.NewLine)
+        builder.Append(" Beginning SI  :  " & lsORNoFrom & Environment.NewLine)
+        builder.Append(" Ending SI     :  " & lsORNoThru & Environment.NewLine)
 
         builder.Append(Environment.NewLine)
         builder.Append(" Beginning Balance  : ".PadRight(24) & Format(lnPrevSale, xsDECIMAL).PadLeft(13) & Environment.NewLine)
@@ -1038,8 +1038,8 @@ Public Class PRN_TZ_Reading
         'builder.Append("ACCUMULATED GRAND TOTAL : ".PadRight(26) & Format(lnPrevSale + ((lnSalesAmt) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
 
         builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
-        builder.Append(" Void OR Count: ".PadRight(24) & Format(lnVoidCntx, xsINTEGER).PadLeft(13) & Environment.NewLine)
-        builder.Append(" Void OR Amount: ".PadRight(24) & Format(lnVoidAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append(" Void SI Count: ".PadRight(24) & Format(lnVoidCntx, xsINTEGER).PadLeft(13) & Environment.NewLine)
+        builder.Append(" Void SI Amount: ".PadRight(24) & Format(lnVoidAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
         builder.Append("/end-of-summary - " & Format(p_oApp.getSysDate, "dd/MMM/yyyy hh:mm:ss") & Environment.NewLine)
 

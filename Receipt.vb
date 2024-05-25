@@ -457,6 +457,7 @@ Public Class Receipt
             .BillingNo = p_sBillingNo
             .Reprint = bReprint
             .CashierName = getCashier(p_oAppDrvr.UserID)
+            Debug.Print(p_oDataTable.Rows(0)("nSChargex"))
             .ServiceCharge = p_oDataTable.Rows(0)("nSChargex")
             .LogName = p_sLogName
             .PosDate = p_dPOSDatex
@@ -586,9 +587,9 @@ Public Class Receipt
 
             Select Case p_cTrnMde
                 Case "A"
-                    .AddFooter("This serves as your OFFICIAL RECEIPT.")
+                    .AddFooter("This serves as your SALES INVOICE.")
                 Case "D"
-                    .AddFooter("This is not an OFFICIAL RECEIPT.")
+                    .AddFooter("This is not an SALES INVOICE.")
             End Select
             .AddFooter("Thank you, and please come again.")
             .AddFooter("")
@@ -635,6 +636,8 @@ Public Class Receipt
             .Reprint = bReprint
             .CashierName = getCashier(p_oAppDrvr.UserID)
             .LogName = p_sLogName
+
+            Debug.Print(p_oDataTable.Rows(0)("nSChargex"))
             .ServiceCharge = p_oDataTable.Rows(0)("nSChargex")
             .ClientNo = p_nNoClient
             .WithDisc = p_nWithDisc
@@ -1065,9 +1068,9 @@ Public Class Receipt
             .AddFooter("")
             Select Case p_cTrnMde
                 Case "A"
-                    .AddFooter("This serves as your OFFICIAL RECEIPT.")
+                    .AddFooter("This serves as your SALES INVOICE.")
                 Case "D"
-                    .AddFooter("This is not an OFFICIAL RECEIPT.")
+                    .AddFooter("This is not an SALES INVOICE.")
             End Select
             .AddFooter("Thank you, and please come again.")
             .AddFooter("")
@@ -1352,7 +1355,7 @@ Public Class Receipt
         If p_bCancelled Then Return False
 
         p_oAppDrvr.SaveEvent("0015", "Order TN " & p_sSourceNo & "/" & p_sSourceCd & "/" &
-                                    "OR No. " & p_oDataTable.Rows(0)("sORNumber") & "/Amount " & p_nTendered + p_nCash, p_sSerial)
+                                    "SI No. " & p_oDataTable.Rows(0)("sORNumber") & "/Amount " & p_nTendered + p_nCash, p_sSerial)
         Return True
     End Function
 

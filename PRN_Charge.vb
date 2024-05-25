@@ -696,7 +696,7 @@ Public Class PRN_Charge
 
         Select Case p_cTrnMde
             Case "A"
-                builder.Append("OFFICIAL RECEIPT" & Environment.NewLine)
+                builder.Append("SALES INVOICE" & Environment.NewLine)
             Case "D"
                 builder.Append("TRAINING MODE" & Environment.NewLine)
         End Select
@@ -720,7 +720,7 @@ Public Class PRN_Charge
         End If
 
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
-        builder.Append(" OR No.: " & psReferNox & Environment.NewLine)
+        builder.Append(" SI No.: " & psReferNox & Environment.NewLine)
         builder.Append(" Transaction No.: " & psTransNox & Environment.NewLine)
         builder.Append(" Date : " & Format(pdTransact, "yyyy-mm-dd") & " " & Format(p_oApp.getSysDate, "hh:mm:ss") & Environment.NewLine)
 
@@ -1033,7 +1033,7 @@ Public Class PRN_Charge
 
         Call WriteOR()
 
-        p_oApp.SaveEvent("0016", "OR No. " & psReferNox, p_sTermnl)
+        p_oApp.SaveEvent("0016", "SI No. " & psReferNox, p_sTermnl)
 
         Return True
     End Function
@@ -1376,7 +1376,7 @@ Public Class PRN_Charge
         Next
 
         builder.Append(Environment.NewLine)
-        builder.Append(PadCenter("----- END OF RECEIPT -----", 40) & Environment.NewLine)
+        builder.Append(PadCenter("----- END OF SALES INVOICE -----", 40) & Environment.NewLine)
         RawPrint.writeToFile(p_sPOSNo & " " & Format(p_oApp.getSysDate, "yyyyMMdd"), builder.ToString())
 
         Return True
@@ -1672,7 +1672,7 @@ Public Class PRN_Charge
         Next
 
         builder.Append(Environment.NewLine)
-        builder.Append(PadCenter("----- END OF RECEIPT -----", 40) & Environment.NewLine)
+        builder.Append(PadCenter("----- END OF SALES INVOICE -----", 40) & Environment.NewLine)
         RawPrint.writeToFile(p_sPOSNo & " " & Format(p_oApp.getSysDate(), "yyyyMMdd"), builder.ToString())
 
         Return True
@@ -2303,7 +2303,7 @@ Public Class PRN_Charge
 
         Call WriteOR()
 
-        p_oApp.SaveEvent("0016", "OR No. " & psReferNox, p_sTermnl)
+        p_oApp.SaveEvent("0016", "SI No. " & psReferNox, p_sTermnl)
 
         Return True
     End Function
@@ -2705,7 +2705,7 @@ Public Class PRN_Charge
 
         Call WriteOR()
 
-        p_oApp.SaveEvent("0016", "OR No. " & psReferNox, p_sTermnl)
+        p_oApp.SaveEvent("0016", "SI No. " & psReferNox, p_sTermnl)
 
         Return True
     End Function
