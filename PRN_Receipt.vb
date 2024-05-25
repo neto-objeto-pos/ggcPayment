@@ -1682,11 +1682,13 @@ Public Class PRN_Receipt
         'maynard2024
         Dim lnPartialBillRemaing As Decimal
         If pnSplitAmt <> 0 Then
-            lnPartialBillRemaing = pnTotalDue - pnSplitAmt
-
+            If p_cSplitTyp <> 2 Then
+                lnPartialBillRemaing = pnTotalDue - pnSplitAmt
+            End If
         End If
         'it will update code above
         lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl + pnDelivery + lnPartialBillRemaing) - pnTotalDue
+
         builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
         'Print Discount Information
