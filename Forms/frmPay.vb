@@ -185,10 +185,10 @@ endProc:
                 If p_nGiftCert > lnBill Then
                     lblChange.Text = "0.00"
                 Else
-                    lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery) - lnBill, 2)
+                    lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery + p_nDiscount) - lnBill, 2)
                 End If
             Else
-                lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery) - lnBill, 2)
+                lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery + p_nDiscount) - lnBill, 2)
             End If
         Else
             lblChange.Text = "0.00"
@@ -199,7 +199,7 @@ endProc:
         lblCheck.Text = FormatNumber(p_nCheck, 2)
         lblGiftCheck.Text = FormatNumber(p_nGiftCert, 2)
         lblDelivery.Text = FormatNumber(p_nDelivery, 2)
-        lblTotal.Text = FormatNumber(p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery, 2)
+        lblTotal.Text = FormatNumber(p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery + p_nDiscount, 2)
     End Sub
 
     Private Sub clearFields()
@@ -208,6 +208,8 @@ endProc:
         p_nSchargex = FormatNumber(poReceipt.myCharge, 2)
         lblDiscount.Text = FormatNumber(poReceipt.Master("nDiscount") + poReceipt.Master("nVatDiscx") + poReceipt.Master("nPWDDiscx"), 2)
         txtAmount.Text = FormatNumber(poReceipt.Master("nTendered"), 2)
+        p_nDiscount = FormatNumber(lblDiscount.Text, 2)
+
 
         Call computeChange()
     End Sub

@@ -735,7 +735,50 @@ Public Class PRN_Receipt
         Dim lsDelivery = psDelivery
         Dim lnvatable As Decimal = 0
         Dim lnvat As Decimal = 0
-        pnTotalDue = pnTotalDuex
+        Dim lnPartialPdTotl As Decimal = 0
+
+        If Not AddHeader(p_sCompny, 40) Then
+            MsgBox("Invalid Company Name!")
+            Return False
+        End If
+
+        If Not AddHeader(p_oApp.BranchName) Then
+            MsgBox("Invalid Client Name!")
+            Return False
+        End If
+
+        If Not AddHeader(p_oApp.Address) Then
+            MsgBox("Invalid Client Address!")
+            Return False
+        End If
+
+        If Not AddHeader(p_oApp.TownCity & ", " & p_oApp.Province) Then
+            MsgBox("Invalid Town and Address!")
+            Return False
+        End If
+
+        'Add Additional Info To the header
+        '---------------------------------
+        If Not AddHeader("VAT REG TIN: " & p_sVATReg) Then
+            MsgBox("Invalid VAT REG TIN No!")
+            Return False
+        End If
+
+        If Not AddHeader("MIN : " & p_sPOSNo) Then
+            MsgBox("Invalid Machine Identification Number(MIN)!")
+            Return False
+        End If
+
+        If Not AddHeader("Serial No.: " & p_sSerial) Then
+            MsgBox("Invalid Serial No.!")
+            Return False
+        End If
+
+        If Not AddHeader("REPRINT") Then
+            MsgBox("Unable to Reprint!")
+            Return False
+        End If
+
         'Dim Printer_Name As String = "\\192.168.10.14\EPSON LX-310 ESC/P"
         Dim builder As New System.Text.StringBuilder()
 
@@ -746,31 +789,39 @@ Public Class PRN_Receipt
             Debug.Print(PadCenter(p_oDTHeader(lnCtr).Item("sHeadName"), 40) & Environment.NewLine)
         Next
 
+        builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1 + RawPrint.pxeESC_DBLH + RawPrint.pxeESC_DBLW + RawPrint.pxeESC_EMPH))
+        builder.Append(RawPrint.pxePRINT_CNTR)
         builder.Append(Environment.NewLine)
+
         Select Case p_cTrnMde
             Case "A"
-                builder.Append(PadCenter("SALES INVOICE", 40) & Environment.NewLine)
+                builder.Append("SALES INVOICE" & Environment.NewLine)
             Case "D"
-                builder.Append(PadCenter("TRANING MODE", 40) & Environment.NewLine)
+                builder.Append("TRAINING MODE" & Environment.NewLine)
         End Select
 
         If pbReprint Then
-            builder.Append(PadCenter(p_oDTHeader(p_oDTHeader.Rows.Count - 1).Item("sHeadName"), 40) & Environment.NewLine)
+            builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1 + RawPrint.pxeESC_DBLW + RawPrint.pxeESC_EMPH))
+            builder.Append(RawPrint.pxePRINT_CNTR)
+            builder.Append(p_oDTHeader(p_oDTHeader.Rows.Count - 1).Item("sHeadName") & Environment.NewLine)
         End If
 
-        builder.Append(Environment.NewLine)
+        builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1)) 'Condense
+        builder.Append(RawPrint.pxePRINT_LEFT)
 
         'Print Cashier
+        builder.Append(Environment.NewLine)
         builder.Append(" Cashier: " & p_sLogName & "/" & psCashierx & Environment.NewLine)
         If p_nTableNo > 0 Then
             If p_sMergeTb = "" Then
                 builder.Append(" Table No.: " & p_nTableNo.ToString.PadLeft(2, "0") & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
             Else
-                builder.Append(" Table No.: " & Mid(p_sMergeTb, 1, Len(p_sMergeTb) - 1) & "".PadRight(Len(p_sMergeTb) - 4) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
+                builder.Append(" Table No.: " & Mid(p_sMergeTb, 1, Len(p_sMergeTb) - 1) & "".PadRight(12 - (Len(p_sMergeTb) - 4)) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
             End If
         Else
             builder.Append(" TAKE-OUT " & Environment.NewLine)
         End If
+
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
         builder.Append(" SI No.: " & psReferNox & Environment.NewLine)
         If p_sBillNmbr <> "" Then
@@ -780,6 +831,7 @@ Public Class PRN_Receipt
         builder.Append(" Date : " & pdTransact.Year & "-" & Format(pdTransact.Month, "00") & "-" & Format(pdTransact.Day, "00") & " " & Format(p_oApp.getSysDate, "hh:mm:ss tt") & Environment.NewLine)
 
         'Print Asterisk(*)
+        builder.Append(Environment.NewLine)
         builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
 
         Dim ls4Print As String
@@ -793,30 +845,40 @@ Public Class PRN_Receipt
                 If p_oDTDetail(lnCtr).Item("cDetailxx") = "1" Then
                     If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
                         If p_oDTDetail(lnCtr).Item("nDiscount") > 0 Or p_oDTDetail(lnCtr).Item("nAddDiscx") > 0 Then
-                            ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
-                           UCase(Left(p_oDTDetail(lnCtr).Item("sBriefDsc"), 11) & "(D)").PadRight(pxeDSCLEN) + " "
-                            lnQTYDiscx = lnQTYDiscx + p_oDTDetail(lnCtr).Item("nQuantity")
-                            lnDisctAmt = lnDisctAmt + p_oDTDetail(lnCtr).Item("nQuantity") * p_oDTDetail(lnCtr).Item("nUnitPrce")
-                            If Not lbByCategx Then lbByCategx = True
+                            If pnDiscAmtV > 0 Then
+                                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
+                                            UCase(Left(p_oDTDetail(lnCtr).Item("sBriefDsc"), 11) & "(D)").PadRight(pxeDSCLEN) + " "
+                                lnQTYDiscx = lnQTYDiscx + p_oDTDetail(lnCtr).Item("nQuantity")
+                                lnDisctAmt = lnDisctAmt + p_oDTDetail(lnCtr).Item("nQuantity") * p_oDTDetail(lnCtr).Item("nUnitPrce")
+                                If Not lbByCategx Then lbByCategx = True
+                            Else
+                                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
+                                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                            End If
                         Else
                             ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
-                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                               UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                         End If
                     Else
                         ls4Print = String.Empty.PadLeft(pxeQTYLEN) + " " +
-                        UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                           UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     End If
                 Else
                     If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
                         If p_oDTDetail(lnCtr).Item("nDiscount") > 0 Or p_oDTDetail(lnCtr).Item("nAddDiscx") > 0 Then
-                            ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
-                                     UCase(Left(p_oDTDetail(lnCtr).Item("sBriefDsc"), 11) & "(D)").PadRight(pxeDSCLEN) + " "
-                            lnQTYDiscx = lnQTYDiscx + p_oDTDetail(lnCtr).Item("nQuantity")
-                            lnDisctAmt = lnDisctAmt + p_oDTDetail(lnCtr).Item("nQuantity") * p_oDTDetail(lnCtr).Item("nUnitPrce")
-                            If Not lbByCategx Then lbByCategx = True
+                            If pnDiscAmtV > 0 Then
+                                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
+                                            UCase(Left(p_oDTDetail(lnCtr).Item("sBriefDsc"), 11) & "(D)").PadRight(pxeDSCLEN) + " "
+                                lnQTYDiscx = lnQTYDiscx + p_oDTDetail(lnCtr).Item("nQuantity")
+                                lnDisctAmt = lnDisctAmt + p_oDTDetail(lnCtr).Item("nQuantity") * p_oDTDetail(lnCtr).Item("nUnitPrce")
+                                If Not lbByCategx Then lbByCategx = True
+                            Else
+                                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
+                                        UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                            End If
                         Else
                             ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
-                                     UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                                        UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                         End If
                     Else
                         ls4Print = "   " & UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
@@ -825,7 +887,7 @@ Public Class PRN_Receipt
                 End If
             Else
                 ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
-                        UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                           UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
             End If
 
             If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
@@ -862,7 +924,7 @@ Public Class PRN_Receipt
             For lnCtr = 0 To p_oDTComplx.Rows.Count - 1
 
                 ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
-                        UCase(p_oDTComplx(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                           UCase(p_oDTComplx(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                 builder.Append(ls4Print & Environment.NewLine)
             Next
         End If
@@ -880,15 +942,15 @@ Public Class PRN_Receipt
         builder.Append(Environment.NewLine)
 
         'Print TOTAL Sales    
-        If pnSChargex > 0 Or pnDiscAmtN > 0 Or pnDiscAmtV > 0 Then
+        If pnSChargex > 0 Or pnDiscAmtN > 0 Or pnDiscAmtV > 0 Or lsDelivery = "2" Then
             builder.Append(" Sub-Total".PadRight(25) & " " & Format(pnTotalDue, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            If pnDiscAmtN > 0 Or pnDiscAmtV > 0 Then
+            If pnDiscAmtN > 0 Or pnDiscAmtV > 0 Or lsDelivery = "2" Then
                 builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
             End If
+            pnTotalDuex = Format(pnTotalDue, xsDECIMAL)
         End If
 
-
-        Dim lnExVATDue = pnTotalDuex / 1.12
+        Dim lnExVATDue = pnTotalDue / 1.12
 
         'Print net of Sales w/o vat
         builder.Append(" Net of VAT".PadRight(25) & " " & Format(lnExVATDue, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
@@ -1024,22 +1086,25 @@ Public Class PRN_Receipt
         End If
         builder.Append(" TOTAL AMOUNT DUE".PadRight(25) & " " & Format(xnetSales + xVAT + xServCharge, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
         pnTotalDue = Format(xnetSales + xVAT + xServCharge, xsDECIMAL)
-
         If p_cSplitTyp <> 2 Then
             Dim lnCurSplit As Integer = 0
             Dim lnCtr As Integer
             Dim loDT As DataTable = getSplitTable(psSourceNo)
             Dim lsPartial As String
 
+            lnPartialPdTotl = 0
             For lnCtr = 0 To loDT.Rows.Count - 1
                 If loDT.Rows(lnCtr).Item("cTranStat") = xeTranStat.TRANS_POSTED Then
-                    lsPartial = " PAID " & "(SI:" & loDT.Rows(lnCtr).Item("sORNumber") & ")"
+                    lsPartial = " PAID " & "(SI" & loDT.Rows(lnCtr).Item("sORNumber") & ")"
                     builder.Append(lsPartial.PadRight(28) & " " & "-" & Format(loDT.Rows(lnCtr).Item("nAmountxx"), xsDECIMAL) & "".PadLeft(pxeREGLEN) & Environment.NewLine)
                     lnCurSplit = lnCurSplit + 1
+                    lnPartialPdTotl += CDbl(loDT.Rows(lnCtr).Item("nAmountxx"))
                 End If
             Next
 
             lsPartial = " Partial Bill " & "(" & lnCurSplit + 1 & "/" & loDT.Rows.Count & ")"
+
+            builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
             builder.Append(lsPartial.PadRight((Len(lsPartial) + 12) - Len(Format(pnSplitAmt, xsDECIMAL))) & " " & Format(pnSplitAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             lnSplitAmt = pnSplitAmt
         End If
@@ -1053,7 +1118,7 @@ Public Class PRN_Receipt
         If p_oDTCredit.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTCredit.Rows.Count - 1
                 ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " &
-                        Format(p_oDTCredit(lnCtr).Item("nCardAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
+                   Format(p_oDTCredit(lnCtr).Item("nCardAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
         End If
@@ -1062,7 +1127,7 @@ Public Class PRN_Receipt
         If p_oDTChkPym.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTChkPym.Rows.Count - 1
                 ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " &
-                        Format(p_oDTChkPym(lnCtr).Item("nCheckAmt"), xsDECIMAL).PadLeft(pxeREGLEN)
+                   Format(p_oDTChkPym(lnCtr).Item("nCheckAmt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
         End If
@@ -1071,7 +1136,7 @@ Public Class PRN_Receipt
         If p_oDTGftChk.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTGftChk.Rows.Count - 1
                 ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " &
-                        Format(p_oDTGftChk(lnCtr).Item("nGiftAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
+                   Format(p_oDTGftChk(lnCtr).Item("nGiftAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
         End If
@@ -1089,17 +1154,28 @@ Public Class PRN_Receipt
 
         'Print Change
         Dim lnChange As Decimal
-        If p_cSplitTyp <> 2 Then
-            lnChange = (pnSplitAmt + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
-        Else
-            lnChange = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
-        End If
+        'wala ito 
+        'If p_cSplitTyp <> 2 Then
+        '    lnChange = (pnSplitAmt + pnSChargex + lnPartialPdTotl) - (pnDiscAmtV + pnDiscAmtN)
+        'Else
+        '    lnChange = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
+        'End If
 
-        If pnGiftTotl > lnChange Then
-            lnChange = 0
-        Else
-            lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl + pnDelivery) - lnChange
+        'If pnGiftTotl > lnChange Then
+        '    lnChange = 0
+        'Else
+        '    lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl + pnDelivery + pnSplitAmt + lnPartialPdTotl) - lnChange
+        'End If
+
+        'maynard2024
+        Dim lnPartialBillRemaing As Decimal
+        If pnSplitAmt <> 0 Then
+            If p_cSplitTyp <> 2 Then
+                lnPartialBillRemaing = pnTotalDue - pnSplitAmt
+            End If
         End If
+        'it will update code above
+        lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl + pnDelivery + lnPartialBillRemaing) - pnTotalDue
 
         builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
@@ -1198,7 +1274,6 @@ Public Class PRN_Receipt
         End If
         pnVatblSle = lnvatable
         pnVatAmntx = lnvat
-
         'Print VAT Related info
         builder.Append("  VAT Exempt Sales      " & Format(pnVatExSle, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
         builder.Append("  Zero-Rated Sales      " & Format(pnZroRtSle, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)

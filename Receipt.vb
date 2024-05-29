@@ -92,6 +92,8 @@ Public Class Receipt
     Private p_sTrantype As String
     Private p_sLogName As String
     Private pnBill As Decimal
+
+    Private pnBillSplitted As Decimal
     Private pnCharge As Decimal
 
 #Region "Properties"
@@ -1222,7 +1224,6 @@ Public Class Receipt
 
         With p_oDataTable
             Call ShowReceipt()
-
             If p_bCancelled = True Then Return False
 
             If p_oDataTable.Rows(0)("nTendered") > 0.0 Then
