@@ -1096,7 +1096,7 @@ Public Class PRN_Receipt
             For lnCtr = 0 To loDT.Rows.Count - 1
                 If loDT.Rows(lnCtr).Item("cTranStat") = xeTranStat.TRANS_POSTED Then
                     lsPartial = " PAID " & "(SI" & loDT.Rows(lnCtr).Item("sORNumber") & ")"
-                    builder.Append(lsPartial.PadRight(28) & " " & "-" & Format(loDT.Rows(lnCtr).Item("nAmountxx"), xsDECIMAL) & "".PadLeft(pxeREGLEN) & Environment.NewLine)
+                    builder.Append(lsPartial.PadRight(30) & " " & "-" & Format(loDT.Rows(lnCtr).Item("nAmountxx"), xsDECIMAL) & "".PadLeft(pxeREGLEN) & Environment.NewLine)
                     lnCurSplit = lnCurSplit + 1
                     lnPartialPdTotl += CDbl(loDT.Rows(lnCtr).Item("nAmountxx"))
                 End If
@@ -1105,7 +1105,7 @@ Public Class PRN_Receipt
             lsPartial = " Partial Bill " & "(" & lnCurSplit + 1 & "/" & loDT.Rows.Count & ")"
 
             builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
-            builder.Append(lsPartial.PadRight((Len(lsPartial) + 12) - Len(Format(pnSplitAmt, xsDECIMAL))) & " " & Format(pnSplitAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+            builder.Append(lsPartial.PadRight((Len(lsPartial) + 10) - Len(Format(pnSplitAmt, xsDECIMAL))) & " " & Format(pnSplitAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             lnSplitAmt = pnSplitAmt
         End If
 
@@ -1684,7 +1684,7 @@ Public Class PRN_Receipt
             For lnCtr = 0 To loDT.Rows.Count - 1
                 If loDT.Rows(lnCtr).Item("cTranStat") = xeTranStat.TRANS_POSTED Then
                     lsPartial = " PAID " & "(SI" & loDT.Rows(lnCtr).Item("sORNumber") & ")"
-                    builder.Append(lsPartial.PadRight(28) & " " & "-" & Format(loDT.Rows(lnCtr).Item("nAmountxx"), xsDECIMAL) & "".PadLeft(pxeREGLEN) & Environment.NewLine)
+                    builder.Append(lsPartial.PadRight(28) & " " & "-" & Format(loDT.Rows(lnCtr).Item("nAmountxx"), xsDECIMAL) & "".PadLeft(pxeREGLEN - 1) & Environment.NewLine)
                     lnCurSplit = lnCurSplit + 1
                     lnPartialPdTotl += CDbl(loDT.Rows(lnCtr).Item("nAmountxx"))
                 End If
@@ -1693,7 +1693,9 @@ Public Class PRN_Receipt
             lsPartial = " Partial Bill " & "(" & lnCurSplit + 1 & "/" & loDT.Rows.Count & ")"
 
             builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
-            builder.Append(lsPartial.PadRight((Len(lsPartial) + 12) - Len(Format(pnSplitAmt, xsDECIMAL))) & " " & Format(pnSplitAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+            'builder.Append(lsPartial.PadRight((Len(lsPartial) + 12) - Len(Format(pnSplitAmt, xsDECIMAL))) & " " & Format(pnSplitAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+
+            builder.Append(lsPartial.PadRight(25) & " " & Format(pnSplitAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             lnSplitAmt = pnSplitAmt
         End If
 
