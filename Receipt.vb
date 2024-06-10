@@ -878,6 +878,7 @@ Public Class Receipt
             .SourceNo = p_sSplitSrc
             .BillingNo = p_sBillingNo
 
+
             If Not IsNothing(p_oDtaOrder) Then
                 Dim lnSlPrc As Double
                 'If p_oDtaOrder.Rows.Count = 0 Then

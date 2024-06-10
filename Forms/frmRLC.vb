@@ -94,7 +94,8 @@ endProc:
     End Sub
 
     Private Sub txtField_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs)
-        If e.KeyCode = Keys.F3 Or e.KeyCode = Keys.Enter Then
+        'If e.KeyCode = Keys.F3 Or e.KeyCode = Keys.Enter Then
+        If e.KeyCode = Keys.F3 Then
             Dim loTxt As TextBox
             loTxt = CType(sender, System.Windows.Forms.TextBox)
             Dim loIndex As Integer

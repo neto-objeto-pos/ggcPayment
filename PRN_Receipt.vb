@@ -90,6 +90,7 @@
 '€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 
 Imports ADODB
+Imports CrystalDecisions.[Shared].Json
 Imports ggcAppDriver
 Imports System.Drawing
 Imports System.Reflection
@@ -812,14 +813,33 @@ Public Class PRN_Receipt
         'Print Cashier
         builder.Append(Environment.NewLine)
         builder.Append(" Cashier: " & p_sLogName & "/" & psCashierx & Environment.NewLine)
+
+        'If p_nTableNo > 0 Then
+        '    If p_sMergeTb = "" Then
+        '        builder.Append(" Table No.: " & p_nTableNo.ToString.PadLeft(2, "0") & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
+        '    Else
+        '        builder.Append(" Table No.: " & Mid(p_sMergeTb, 1, Len(p_sMergeTb) - 1) & "".PadRight(12 - (Len(p_sMergeTb) - 4)) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
+        '    End If
+        'Else
+        '    builder.Append(" TAKE-OUT " & Environment.NewLine)
+        'End If
+
         If p_nTableNo > 0 Then
             If p_sMergeTb = "" Then
-                builder.Append(" Table No.: " & p_nTableNo.ToString.PadLeft(2, "0") & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
+                Select Case lsDelivery
+                    Case "0"
+                        builder.Append(" Table No.: " & p_nTableNo.ToString.PadLeft(2, "0") & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
+
+                    Case "1"
+                        builder.Append(" Table No.: " & p_nTableNo.ToString.PadLeft(2, "0") & "".PadRight(12) & " " & "TAKE-OUT".PadLeft(pxeREGLEN) & Environment.NewLine)
+
+                    Case "2"
+                        builder.Append(" Table No.: " & p_nTableNo.ToString.PadLeft(2, "0") & "".PadRight(12) & " " & "DELIVERY".PadLeft(pxeREGLEN) & Environment.NewLine)
+
+                End Select
             Else
                 builder.Append(" Table No.: " & Mid(p_sMergeTb, 1, Len(p_sMergeTb) - 1) & "".PadRight(12 - (Len(p_sMergeTb) - 4)) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
             End If
-        Else
-            builder.Append(" TAKE-OUT " & Environment.NewLine)
         End If
 
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
@@ -942,13 +962,13 @@ Public Class PRN_Receipt
         builder.Append(Environment.NewLine)
 
         'Print TOTAL Sales    
-        If pnSChargex > 0 Or pnDiscAmtN > 0 Or pnDiscAmtV > 0 Or lsDelivery = "2" Then
-            builder.Append(" Sub-Total".PadRight(25) & " " & Format(pnTotalDue, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+        'If pnSChargex > 0 Or pnDiscAmtN > 0 Or pnDiscAmtV > 0 Or lsDelivery = "2" Then
+        builder.Append(" Sub-Total".PadRight(25) & " " & Format(pnTotalDue, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             If pnDiscAmtN > 0 Or pnDiscAmtV > 0 Or lsDelivery = "2" Then
                 builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
             End If
             pnTotalDuex = Format(pnTotalDue, xsDECIMAL)
-        End If
+        'End If
 
         Dim lnExVATDue = pnTotalDue / 1.12
 
@@ -1400,14 +1420,32 @@ Public Class PRN_Receipt
         'Print Cashier
         builder.Append(Environment.NewLine)
         builder.Append(" Cashier: " & p_sLogName & "/" & psCashierx & Environment.NewLine)
+        'If p_nTableNo > 0 Then
+        '    If p_sMergeTb = "" Then
+        '        builder.Append(" Table No.: " & p_nTableNo.ToString.PadLeft(2, "0") & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
+        '    Else
+        '        builder.Append(" Table No.: " & Mid(p_sMergeTb, 1, Len(p_sMergeTb) - 1) & "".PadRight(12 - (Len(p_sMergeTb) - 4)) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
+        '    End If
+        'Else
+        '    builder.Append(" TAKE-OUT " & Environment.NewLine)
+        'End If
+
         If p_nTableNo > 0 Then
             If p_sMergeTb = "" Then
-                builder.Append(" Table No.: " & p_nTableNo.ToString.PadLeft(2, "0") & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
+                Select Case lsDelivery
+                    Case "0"
+                        builder.Append(" Table No.: " & p_nTableNo.ToString.PadLeft(2, "0") & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
+
+                    Case "1"
+                        builder.Append(" Table No.: " & p_nTableNo.ToString.PadLeft(2, "0") & "".PadRight(12) & " " & "TAKE-OUT".PadLeft(pxeREGLEN) & Environment.NewLine)
+
+                    Case "2"
+                        builder.Append(" Table No.: " & p_nTableNo.ToString.PadLeft(2, "0") & "".PadRight(12) & " " & "DELIVERY".PadLeft(pxeREGLEN) & Environment.NewLine)
+
+                End Select
             Else
                 builder.Append(" Table No.: " & Mid(p_sMergeTb, 1, Len(p_sMergeTb) - 1) & "".PadRight(12 - (Len(p_sMergeTb) - 4)) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
             End If
-        Else
-            builder.Append(" TAKE-OUT " & Environment.NewLine)
         End If
 
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
@@ -1530,13 +1568,13 @@ Public Class PRN_Receipt
         builder.Append(Environment.NewLine)
 
         'Print TOTAL Sales    
-        If pnSChargex > 0 Or pnDiscAmtN > 0 Or pnDiscAmtV > 0 Or lsDelivery = "2" Then
-            builder.Append(" Sub-Total".PadRight(25) & " " & Format(pnTotalDue, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+        'If pnSChargex > 0 Or pnDiscAmtN > 0 Or pnDiscAmtV > 0 Or lsDelivery = "2" Then
+        builder.Append(" Sub-Total".PadRight(25) & " " & Format(pnTotalDue, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             If pnDiscAmtN > 0 Or pnDiscAmtV > 0 Or lsDelivery = "2" Then
                 builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
             End If
             pnTotalDuex = Format(pnTotalDue, xsDECIMAL)
-        End If
+        'End If
 
         Dim lnExVATDue = pnTotalDue / 1.12
 
