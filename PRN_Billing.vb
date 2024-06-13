@@ -1064,11 +1064,12 @@ Public Class PRN_Billing
 
         'Print Asterisk(*)
         builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
-
-        'Print the Footer
-        builder.Append(PadCenter("THIS DOCUMENT IS NOT", 40) & Environment.NewLine)
-        builder.Append(PadCenter("VALID FOR CLAIM OF INPUT TAX", 40) & Environment.NewLine)
-        builder.Append(PadCenter("PLEASE DEMAND FOR YOUR SALES INVOICE", 40) & Environment.NewLine)
+        If Not (p_oApp.BranchCode = "P013") Then
+            'Print the Footer
+            builder.Append(PadCenter("THIS DOCUMENT IS NOT", 40) & Environment.NewLine)
+            builder.Append(PadCenter("VALID FOR CLAIM OF INPUT TAX", 40) & Environment.NewLine)
+            builder.Append(PadCenter("PLEASE DEMAND FOR YOUR SALES INVOICE", 40) & Environment.NewLine)
+        End If
 
         builder.Append(Chr(&H1D) & "V" & Chr(66) & Chr(0))
 

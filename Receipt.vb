@@ -429,12 +429,19 @@ Public Class Receipt
 
         If lbSuccess Then
             CheckPrinter("EPSON TM-U220 Receipt")
+            If (p_oAppDrvr.BranchCode = "P013") Then
+                Dim lnRep As Integer
+                lnRep = MsgBox("Do you want to print Bill?", vbQuestion & vbYesNo, "CONFIRMATION")
+                If lnRep = vbNo Then Return False
+                printBilling()
+            Else
+                printReciept()
+            End If
 
-            printReciept()
         End If
-        'MsgBox("Print Receipt")
+            'MsgBox("Print Receipt")
 
-        Return lbSuccess
+            Return lbSuccess
     End Function
 
     Function printBilling(Optional ByVal bReprint As Boolean = False) As Boolean
