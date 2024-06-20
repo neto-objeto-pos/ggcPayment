@@ -927,7 +927,7 @@ Public Class PRN_Charge
         builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
 
         'Print Change
-        Dim lnChange As Decimal = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
+        'Dim lnChange As Decimal = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
 
         'If pnGiftTotl > lnChange Then
         '    lnChange = 0
@@ -1279,15 +1279,15 @@ Public Class PRN_Charge
         builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
 
         'Print Change
-        Dim lnChange As Decimal = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
+        'Dim lnChange As Decimal = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
 
-        If pnGiftTotl > lnChange Then
-            lnChange = 0
-        Else
-            lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
-        End If
+        'If pnGiftTotl > lnChange Then
+        '    lnChange = 0
+        'Else
+        '    lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
+        'End If
 
-        builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+        'builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
         'Print Discount Information
         If Not IsNothing(p_oDTDiscnt) Then
@@ -2598,16 +2598,16 @@ Public Class PRN_Charge
         'Print Line Before change....
         builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
 
-        'Print Change
-        Dim lnChange As Decimal = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
+        ''Print Change
+        'Dim lnChange As Decimal = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
 
-        If pnGiftTotl > lnChange Then
-            lnChange = 0
-        Else
-            lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
-        End If
+        ''If pnGiftTotl > lnChange Then
+        ''    lnChange = 0
+        ''Else
+        '    lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
+        'End If
 
-        builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+        'builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
         'Print Discount Information
         If Not IsNothing(p_oDTDiscnt) Then
@@ -2688,12 +2688,12 @@ Public Class PRN_Charge
         End If
 
         'Print Asterisk(*)
-        builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
+        'builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
 
-        'Print the Footer
-        For lnCtr = 0 To p_oDTFooter.Rows.Count - 1
-            builder.Append(PadCenter(p_oDTFooter(lnCtr).Item("sFootName"), 40) & Environment.NewLine)
-        Next
+        ''Print the Footer
+        'For lnCtr = 0 To p_oDTFooter.Rows.Count - 1
+        '    builder.Append(PadCenter(p_oDTFooter(lnCtr).Item("sFootName"), 40) & Environment.NewLine)
+        'Next
 
         builder.Append(Chr(&H1D) & "V" & Chr(66) & Chr(0))
 
