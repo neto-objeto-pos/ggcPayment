@@ -1146,7 +1146,7 @@ endProc:
         Dim oProg As frmProgress
         Dim lnRow As Integer
         Dim lsSQL As String 'whole statement
-        Dim lsQuery1 As String
+        Dim  lsQuery1 As String
         p_oReport = New ReportDocument
 
         'check if cancel or fully paid

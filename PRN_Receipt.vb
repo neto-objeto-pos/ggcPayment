@@ -94,6 +94,7 @@ Imports CrystalDecisions.[Shared].Json
 Imports ggcAppDriver
 Imports System.Drawing
 Imports System.Reflection
+Imports System.Runtime.InteropServices
 
 Public Class PRN_Receipt
     Private p_oApp As GRider
@@ -813,7 +814,6 @@ Public Class PRN_Receipt
         'Print Cashier
         builder.Append(Environment.NewLine)
         builder.Append(" Cashier: " & p_sLogName & "/" & psCashierx & Environment.NewLine)
-
         'If p_nTableNo > 0 Then
         '    If p_sMergeTb = "" Then
         '        builder.Append(" Table No.: " & p_nTableNo.ToString.PadLeft(2, "0") & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
@@ -964,10 +964,8 @@ Public Class PRN_Receipt
         'Print TOTAL Sales    
         'If pnSChargex > 0 Or pnDiscAmtN > 0 Or pnDiscAmtV > 0 Or lsDelivery = "2" Then
         builder.Append(" Sub-Total".PadRight(25) & " " & Format(pnTotalDue, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            If pnDiscAmtN > 0 Or pnDiscAmtV > 0 Or lsDelivery = "2" Then
-                builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-            End If
-            pnTotalDuex = Format(pnTotalDue, xsDECIMAL)
+        builder.Append("-".PadLeft(40, "-") & Environment.NewLine & Environment.NewLine)
+        pnTotalDuex = Format(pnTotalDue, xsDECIMAL)
         'End If
 
         Dim lnExVATDue = pnTotalDue / 1.12
@@ -1037,49 +1035,62 @@ Public Class PRN_Receipt
             Dim lnSCPWNetx As Decimal = lnSCPWAmtx - (lnSCPWAmtx - (lnSCPWAmtx / lnVatPerc))
             lnDiscAmtN = Format(lnDiscAmtN, xsDECIMAL)
             lnSCPWNetx = Format(lnSCPWNetx, xsDECIMAL)
-
+            regSales = (lnExVATDue - lnDiscAmtN) - (lnSCPWAmtx - lnDiscAmtN)
             If p_nNoClient <> p_nWithDisc Then
-                regSales = (lnExVATDue - lnDiscAmtN) - (lnSCPWAmtx - lnDiscAmtN)
                 builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
                 builder.Append(" SC/PWD Sales".PadRight(25) & " " & Format(lnSCPWAmtx, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
                 builder.Append(" Less: 20% SC/PWD Disc.".PadRight(25) & " " & Format(lnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                builder.Append(" Net Sales SC/PWD".PadRight(25) & " " & Format(Math.Floor(100 * (lnSCPWNetx - (lnSCPWNetx * 0.2))) / 100, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-
                 builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
+                builder.Append(" SC/PWD Sales".PadRight(25) & " " & Format(lnSCPWAmtx - lnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
                 builder.Append(" Regular Sales".PadRight(25) & " " & Format(regSales, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+
             Else
                 builder.Append(" Less: 20% SC/PWD Disc.".PadRight(25) & " " & Format(lnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
+                builder.Append(" SC/PWD Sales".PadRight(25) & " " & Format(lnSCPWAmtx - lnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             End If
 
         End If
         ' service charge checker
         If pnSChargex > 0 Then
-            If regSales > 0 Then
-                builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-                builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                builder.Append(" Add: VAT".PadRight(25) & " " & Format(regSales * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                builder.Append(" Add: Service Charge".PadRight(25) & " " & Format(regSales * 0.05, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN, xsDECIMAL)
-                lnvat = Format(regSales * 0.12, xsDECIMAL)
+            builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
+            builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+            If pnDiscAmtN > 0 Then
+                If regSales > 0 Then
+                    builder.Append(" Add: VAT".PadRight(25) & " " & Format(regSales * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                End If
             Else
-                builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-                builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - lnDisctAmt - pnDiscAmtV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
                 builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                builder.Append(" Add: Service Charge".PadRight(25) & " " & Format(lnExVATDue * 0.05, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV, xsDECIMAL)
-                lnvat = Format(lnExVATDue * 0.12, xsDECIMAL)
             End If
+            builder.Append(" Add: Service Charge".PadRight(25) & " " & Format((lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN) * 0.05, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+            lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN, xsDECIMAL)
+            lnvat = Format(regSales * 0.12, xsDECIMAL)
 
         Else
             If Not lsDelivery = "2" Then
+
                 builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-                builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - lnDisctAmt - pnDiscAmtV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                lnvat = Format(lnExVATDue * 0.12, xsDECIMAL)
-                lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV, xsDECIMAL)
+                builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                If p_nNoClient > 0 Then
+                    If p_nNoClient > p_nWithDisc Then
+                        If pnDiscAmtN > 0 Then
+                            If regSales > 0 Then
+                                builder.Append(" Add: VAT".PadRight(25) & " " & Format(regSales * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                            End If
+
+                        End If
+
+                    End If
+                Else
+                    builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+
+                    lnvat = Format(lnExVATDue * 0.12, xsDECIMAL)
+                    lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV, xsDECIMAL)
+                    'pnTotalDue = lnExVATDue - lnDisctAmt - pnDiscAmtV
+                End If
             End If
-            'pnTotalDue = lnExVATDue - lnDisctAmt - pnDiscAmtV
         End If
+
 
         If lsDelivery = "2" Then
             builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
@@ -1099,10 +1110,14 @@ Public Class PRN_Receipt
         If lsDelivery = "2" Or pnSChargex = 0.00 Then
             xServCharge = 0
         End If
-        If regSales > 0 Then
-            xnetSales = lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN
+
+        xnetSales = lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN
+        If pnSChargex > 0 Then
+            xServCharge = xnetSales * 0.05
+        End If
+        If pnDiscAmtN > 0 Then
             xVAT = regSales * 0.12
-            xServCharge = regSales * 0.05
+
         End If
         builder.Append(" TOTAL AMOUNT DUE".PadRight(25) & " " & Format(xnetSales + xVAT + xServCharge, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
         pnTotalDue = Format(xnetSales + xVAT + xServCharge, xsDECIMAL)
@@ -1116,7 +1131,7 @@ Public Class PRN_Receipt
             For lnCtr = 0 To loDT.Rows.Count - 1
                 If loDT.Rows(lnCtr).Item("cTranStat") = xeTranStat.TRANS_POSTED Then
                     lsPartial = " PAID " & "(SI" & loDT.Rows(lnCtr).Item("sORNumber") & ")"
-                    builder.Append(lsPartial.PadRight(30) & " " & "-" & Format(loDT.Rows(lnCtr).Item("nAmountxx"), xsDECIMAL) & "".PadLeft(pxeREGLEN) & Environment.NewLine)
+                    builder.Append(lsPartial.PadRight(28) & " " & "-" & Format(loDT.Rows(lnCtr).Item("nAmountxx"), xsDECIMAL) & "".PadLeft(pxeREGLEN - 1) & Environment.NewLine)
                     lnCurSplit = lnCurSplit + 1
                     lnPartialPdTotl += CDbl(loDT.Rows(lnCtr).Item("nAmountxx"))
                 End If
@@ -1125,7 +1140,9 @@ Public Class PRN_Receipt
             lsPartial = " Partial Bill " & "(" & lnCurSplit + 1 & "/" & loDT.Rows.Count & ")"
 
             builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
-            builder.Append(lsPartial.PadRight((Len(lsPartial) + 10) - Len(Format(pnSplitAmt, xsDECIMAL))) & " " & Format(pnSplitAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+            'builder.Append(lsPartial.PadRight((Len(lsPartial) + 12) - Len(Format(pnSplitAmt, xsDECIMAL))) & " " & Format(pnSplitAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+
+            builder.Append(lsPartial.PadRight(25) & " " & Format(pnSplitAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             lnSplitAmt = pnSplitAmt
         End If
 
@@ -1133,7 +1150,6 @@ Public Class PRN_Receipt
         If pnCashTotl > 0 Then
             builder.Append(" Cash".PadRight(25) & " " & Format(pnCashTotl, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
         End If
-
         'Print Credit Card Payments
         If p_oDTCredit.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTCredit.Rows.Count - 1
@@ -1230,7 +1246,6 @@ Public Class PRN_Receipt
                 ls4Print = p_oDTCredit(lnCtr).Item("sCardNoxx")
                 Dim lnL4stFour = Right(ls4Print, 4)
                 ls4Print = "************" & "" & lnL4stFour
-                'ls4Print = Left(ls4Print, 12) & "".PadLeft(4, "*")
                 builder.Append(ls4Print & Environment.NewLine)
                 builder.Append("SWIPED" & Environment.NewLine)
                 builder.Append("Approval Code: " & p_oDTCredit(lnCtr).Item("sApprovNo") & Environment.NewLine)
@@ -1328,10 +1343,6 @@ Public Class PRN_Receipt
         Return True
     End Function
 
-
-
-
-    'printOR edited by teejei
     Public Function PrintOR() As Boolean
         Dim lnDeducQTY As Integer
         Dim lnVatPerc As Double = 1.12
@@ -1472,38 +1483,38 @@ Public Class PRN_Receipt
                     If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
                         If p_oDTDetail(lnCtr).Item("nDiscount") > 0 Or p_oDTDetail(lnCtr).Item("nAddDiscx") > 0 Then
                             If pnDiscAmtV > 0 Then
-                                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                                             UCase(Left(p_oDTDetail(lnCtr).Item("sBriefDsc"), 11) & "(D)").PadRight(pxeDSCLEN) + " "
                                 lnQTYDiscx = lnQTYDiscx + p_oDTDetail(lnCtr).Item("nQuantity")
                                 lnDisctAmt = lnDisctAmt + p_oDTDetail(lnCtr).Item("nQuantity") * p_oDTDetail(lnCtr).Item("nUnitPrce")
                                 If Not lbByCategx Then lbByCategx = True
                             Else
-                                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                                             UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                             End If
                         Else
-                            ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                            ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                                UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                         End If
                     Else
-                        ls4Print = String.Empty.PadLeft(pxeQTYLEN) + " " + _
+                        ls4Print = String.Empty.PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     End If
                 Else
                     If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
                         If p_oDTDetail(lnCtr).Item("nDiscount") > 0 Or p_oDTDetail(lnCtr).Item("nAddDiscx") > 0 Then
                             If pnDiscAmtV > 0 Then
-                                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                                             UCase(Left(p_oDTDetail(lnCtr).Item("sBriefDsc"), 11) & "(D)").PadRight(pxeDSCLEN) + " "
                                 lnQTYDiscx = lnQTYDiscx + p_oDTDetail(lnCtr).Item("nQuantity")
                                 lnDisctAmt = lnDisctAmt + p_oDTDetail(lnCtr).Item("nQuantity") * p_oDTDetail(lnCtr).Item("nUnitPrce")
                                 If Not lbByCategx Then lbByCategx = True
                             Else
-                                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                                         UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                             End If
                         Else
-                            ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                            ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                                         UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                         End If
                     Else
@@ -1512,7 +1523,7 @@ Public Class PRN_Receipt
                     End If
                 End If
             Else
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
             End If
 
@@ -1549,7 +1560,7 @@ Public Class PRN_Receipt
             builder.Append("COMPLEMENT: " & Environment.NewLine)
             For lnCtr = 0 To p_oDTComplx.Rows.Count - 1
 
-                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTComplx(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -1570,10 +1581,8 @@ Public Class PRN_Receipt
         'Print TOTAL Sales    
         'If pnSChargex > 0 Or pnDiscAmtN > 0 Or pnDiscAmtV > 0 Or lsDelivery = "2" Then
         builder.Append(" Sub-Total".PadRight(25) & " " & Format(pnTotalDue, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            If pnDiscAmtN > 0 Or pnDiscAmtV > 0 Or lsDelivery = "2" Then
-                builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-            End If
-            pnTotalDuex = Format(pnTotalDue, xsDECIMAL)
+        builder.Append("-".PadLeft(40, "-") & Environment.NewLine & Environment.NewLine)
+        pnTotalDuex = Format(pnTotalDue, xsDECIMAL)
         'End If
 
         Dim lnExVATDue = pnTotalDue / 1.12
@@ -1643,51 +1652,64 @@ Public Class PRN_Receipt
             Dim lnSCPWNetx As Decimal = lnSCPWAmtx - (lnSCPWAmtx - (lnSCPWAmtx / lnVatPerc))
             lnDiscAmtN = Format(lnDiscAmtN, xsDECIMAL)
             lnSCPWNetx = Format(lnSCPWNetx, xsDECIMAL)
-
+            regSales = (lnExVATDue - lnDiscAmtN) - (lnSCPWAmtx - lnDiscAmtN)
             If p_nNoClient <> p_nWithDisc Then
-                regSales = (lnExVATDue - lnDiscAmtN) - (lnSCPWAmtx - lnDiscAmtN)
                 builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
                 builder.Append(" SC/PWD Sales".PadRight(25) & " " & Format(lnSCPWAmtx, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
                 builder.Append(" Less: 20% SC/PWD Disc.".PadRight(25) & " " & Format(lnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                builder.Append(" Net Sales SC/PWD".PadRight(25) & " " & Format(Math.Floor(100 * (lnSCPWNetx - (lnSCPWNetx * 0.2))) / 100, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-
                 builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
+                builder.Append(" SC/PWD Sales".PadRight(25) & " " & Format(lnSCPWAmtx - lnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
                 builder.Append(" Regular Sales".PadRight(25) & " " & Format(regSales, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+
             Else
                 builder.Append(" Less: 20% SC/PWD Disc.".PadRight(25) & " " & Format(lnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
+                builder.Append(" SC/PWD Sales".PadRight(25) & " " & Format(lnSCPWAmtx - lnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             End If
 
         End If
         ' service charge checker
         If pnSChargex > 0 Then
-            If regSales > 0 Then
-                builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-                builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                builder.Append(" Add: VAT".PadRight(25) & " " & Format(regSales * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                builder.Append(" Add: Service Charge".PadRight(25) & " " & Format(regSales * 0.05, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN, xsDECIMAL)
-                lnvat = Format(regSales * 0.12, xsDECIMAL)
+            builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
+            builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+            If pnDiscAmtN > 0 Then
+                If regSales > 0 Then
+                    builder.Append(" Add: VAT".PadRight(25) & " " & Format(regSales * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                End If
             Else
-                builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-                builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - lnDisctAmt - pnDiscAmtV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
                 builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                builder.Append(" Add: Service Charge".PadRight(25) & " " & Format(lnExVATDue * 0.05, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV, xsDECIMAL)
-                lnvat = Format(lnExVATDue * 0.12, xsDECIMAL)
             End If
+            builder.Append(" Add: Service Charge".PadRight(25) & " " & Format((lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN) * 0.05, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+            lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN, xsDECIMAL)
+            lnvat = Format(regSales * 0.12, xsDECIMAL)
 
         Else
             If Not lsDelivery = "2" Then
+
                 builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-                builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - lnDisctAmt - pnDiscAmtV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                lnvat = Format(lnExVATDue * 0.12, xsDECIMAL)
-                lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV, xsDECIMAL)
+                builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                If p_nNoClient > 0 Then
+                    If p_nNoClient > p_nWithDisc Then
+                        If pnDiscAmtN > 0 Then
+                            If regSales > 0 Then
+                                builder.Append(" Add: VAT".PadRight(25) & " " & Format(regSales * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                            End If
+
+                        End If
+
+                    End If
+                Else
+                    builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+
+                    lnvat = Format(lnExVATDue * 0.12, xsDECIMAL)
+                    lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV, xsDECIMAL)
+                    'pnTotalDue = lnExVATDue - lnDisctAmt - pnDiscAmtV
+                End If
             End If
-            'pnTotalDue = lnExVATDue - lnDisctAmt - pnDiscAmtV
         End If
 
-            If lsDelivery = "2" Then
+
+        If lsDelivery = "2" Then
             builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
             builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - pnDiscAmtV - pnAddDiscV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
@@ -1705,10 +1727,14 @@ Public Class PRN_Receipt
         If lsDelivery = "2" Or pnSChargex = 0.00 Then
             xServCharge = 0
         End If
-        If regSales > 0 Then
-            xnetSales = lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN
+
+        xnetSales = lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN
+        If pnSChargex > 0 Then
+            xServCharge = xnetSales * 0.05
+        End If
+        If pnDiscAmtN > 0 Then
             xVAT = regSales * 0.12
-            xServCharge = regSales * 0.05
+
         End If
         builder.Append(" TOTAL AMOUNT DUE".PadRight(25) & " " & Format(xnetSales + xVAT + xServCharge, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
         pnTotalDue = Format(xnetSales + xVAT + xServCharge, xsDECIMAL)
@@ -1942,377 +1968,6 @@ Public Class PRN_Receipt
         Return True
     End Function
 
-    Private Function PrintORold() As Boolean
-        Dim lnVatPerc As Double = 1.12
-
-        If Not AddHeader(p_sCompny, 40) Then
-            MsgBox("Invalid Company Name!")
-            Return False
-        End If
-
-        If Not AddHeader(p_oApp.BranchName) Then
-            MsgBox("Invalid Client Name!")
-            Return False
-        End If
-
-        If Not AddHeader(p_oApp.Address) Then
-            MsgBox("Invalid Client Address!")
-            Return False
-        End If
-
-        If Not AddHeader(p_oApp.TownCity & ", " & p_oApp.Province) Then
-            MsgBox("Invalid Town and Address!")
-
-            Return False
-        End If
-
-        'Add Additional Info To the header
-        '---------------------------------
-        If Not AddHeader("VAT REG TIN: " & p_sVATReg) Then
-            MsgBox("Invalid VAT REG TIN No!")
-            Return False
-        End If
-
-        If Not AddHeader("MIN : " & p_sPOSNo) Then
-            MsgBox("Invalid Machine Identification Number(MIN)!")
-            Return False
-        End If
-
-        If Not AddHeader("Serial No.: " & p_sSerial) Then
-            MsgBox("Invalid Serial No.!")
-            Return False
-        End If
-
-        If Not AddHeader("REPRINT") Then
-            MsgBox("Unable to Reprint!")
-            Return False
-        End If
-
-        'Dim Printer_Name As String = "\\192.168.10.14\EPSON LX-310 ESC/P"
-        Dim builder As New System.Text.StringBuilder()
-
-        builder.Append(RawPrint.pxePRINT_INIT)          'Initialize Printer
-
-        builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1 + RawPrint.pxeESC_DBLW + RawPrint.pxeESC_EMPH))
-        builder.Append(RawPrint.pxePRINT_CNTR)
-        builder.Append(p_oDTHeader(0).Item("sHeadName") & Environment.NewLine)
-
-        builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1)) 'Condense
-        For lnCtr = 1 To p_oDTHeader.Rows.Count - 2
-            builder.Append(PadCenter(p_oDTHeader(lnCtr).Item("sHeadName"), 40) & Environment.NewLine)
-        Next
-
-        builder.Append(Environment.NewLine)
-        builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1 + RawPrint.pxeESC_DBLH + RawPrint.pxeESC_DBLW + RawPrint.pxeESC_EMPH))
-        builder.Append(RawPrint.pxePRINT_CNTR)
-        Select Case p_cTrnMde
-            Case "A"
-                builder.Append("SALES INVOICE" & Environment.NewLine)
-            Case "D"
-                builder.Append("TRAINING MODE" & Environment.NewLine)
-        End Select
-
-        If pbReprint Then
-            builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1 + RawPrint.pxeESC_DBLW + RawPrint.pxeESC_EMPH))
-            builder.Append(RawPrint.pxePRINT_CNTR)
-            builder.Append(p_oDTHeader(p_oDTHeader.Rows.Count - 1).Item("sHeadName") & Environment.NewLine)
-        End If
-
-        builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1)) 'Condense
-        builder.Append(RawPrint.pxePRINT_LEFT)
-
-        'Print Cashier
-        builder.Append(Environment.NewLine)
-        builder.Append(" Cashier: " & p_sLogName & "/" & psCashierx & Environment.NewLine)
-        If p_nTableNo > 0 Then
-            builder.Append(" Table No.: " & p_nTableNo & Environment.NewLine)
-        End If
-        builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
-        builder.Append(" SI No.: " & psReferNox & Environment.NewLine)
-        builder.Append(" Transaction No.: " & psTransNox & Environment.NewLine)
-        builder.Append(" Date : " & Format(pdTransact, "yyyy-mm-dd") & " " & Format(p_oApp.getSysDate, "hh:mm:ss tt") & Environment.NewLine)
-
-        builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1)) 'Condense
-        builder.Append(RawPrint.pxePRINT_LEFT)
-
-        'Print Asterisk(*)
-        builder.Append(Environment.NewLine)
-        builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
-
-        Dim ls4Print As String
-        ls4Print = " QTY" & " " & "DESCRIPTION".PadRight(pxeDSCLEN) & " " & "UPRICE".PadLeft(pxePRCLEN) & " " & "AMOUNT".PadLeft(pxeTTLLEN)
-        builder.Append(ls4Print & Environment.NewLine)
-
-        'Print Detail of Sales
-        For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
-            If p_oDTDetail(lnCtr).Item("nQuantity") > 0 Then
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
-                           UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
-            Else
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " + _
-                           UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
-            End If
-
-            If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
-                If p_oDTDetail(lnCtr).Item("cDetailxx") = "1" Then
-                    ls4Print = "  " & Left(ls4Print, pxeQTYLEN + 1 + pxeDSCLEN - 2)
-                End If
-
-                ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce"), xsDECIMAL).PadLeft(pxePRCLEN) + " "
-                ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nTotlAmnt"), xsDECIMAL).PadLeft(pxeTTLLEN)
-                If p_oDTDetail(lnCtr).Item("cVatablex") Then
-                    ls4Print = ls4Print
-                    'ls4Print = ls4Print + "V"
-                End If
-
-                builder.Append(ls4Print & Environment.NewLine)
-            Else
-                builder.Append(Space(2) & ls4Print & Environment.NewLine)
-            End If
-        Next
-
-        'Print Detail of Complementary
-        If p_oDTComplx.Rows.Count > 0 Then
-            builder.Append("COMPLEMENT: " & Environment.NewLine)
-            For lnCtr = 0 To p_oDTComplx.Rows.Count - 1
-
-                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
-                           UCase(p_oDTComplx(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
-                builder.Append(ls4Print & Environment.NewLine)
-            Next
-        End If
-
-        'Print Dash Separator(-)
-        builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
-        builder.Append(" No. of Items: " & pnTotalItm & Environment.NewLine)
-
-        'do we have SC Discount?
-        If pnDiscAmtN > 0 And pnNoClient > 0 Then
-            'print no of clients and no of with discounts
-            builder.Append(" Total No. of Clients: " & p_nNoClient & Environment.NewLine)
-            If InStr(LCase(p_oDTDiscnt(0).Item("sDiscCard")), "sc", CompareMethod.Text) <> 0 Then
-                builder.Append(" No. of SC/PWD Clients: " & p_nWithDisc & Environment.NewLine)
-            Else
-                'todo
-            End If
-        End If
-
-        builder.Append(Environment.NewLine)
-
-        If p_nSchargex > 0 Or (pnDiscAmtN > 0 And pnNoClient > 0) Then
-            'Print TOTAL Sales
-            builder.Append(" Sub-Total".PadRight(25) & " " & Format(pnTotalDue, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-        End If
-
-        'Print Line before Amount Due
-        If pnSChargex > 0 Then
-            builder.Append(" Service Charge(" & p_nSchargex & "%)" & "    :".PadRight(25) & " " & Format(pnSChargex, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-        End If
-
-        Dim lnExVATDue = pnTotalDue / 1.12
-
-        'Print Discounts
-        If pnDiscAmtV > 0 Then
-            'builder.Append(" Less: Discount(s)".PadRight(25) & " " & Format(pnDiscAmtV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            Dim lnVATExclsv = pnTotalDue / lnVatPerc
-            Dim lnRateAmntx = lnVATExclsv * (pnDiscRteV / 100)
-            Dim lnAddDiscxx = pnAddDiscV / lnVatPerc
-
-            Dim lnAmountDue = pnTotalDue - pnDiscAmtV
-            Dim lnVATExWDsc = lnVATExclsv - (lnRateAmntx + lnAddDiscxx + pnDiscAmtN)
-
-            'builder.Append(" Price Exlusive of VAT".PadRight(25) & " " & Format(lnVATExclsv, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-
-            Dim lsLess As String = " Less: "
-            If pnDiscRteV > 0 Then
-                builder.Append((lsLess & Math.Round(pnDiscRteV) & "% Discount").PadRight(25) & " " & Format(lnRateAmntx, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                lsLess = "       "
-            End If
-
-            If pnAddDiscV > 0 Then
-                builder.Append((lsLess & "P" & Math.Round(pnAddDiscV) & " Discount").PadRight(25) & " " & Format(lnAddDiscxx, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                lsLess = "       "
-            End If
-
-            builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-            builder.Append(" Net Sales (w/o VAT)".PadRight(25) & " " & Format(lnVATExWDsc, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnVATExWDsc * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-
-            builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-        ElseIf pnDiscAmtN > 0 Then
-
-            Dim lnVATablex As Decimal = 0
-            Dim lnNVATable As Decimal = 0
-            Dim lnDiscAmtN As Decimal = computePWDSC(lnVATablex, lnNVATable)
-
-            builder.Append(" Less VAT:".PadRight(25) & " " & Format(lnExVATDue, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            builder.Append(" Less: 20% SC/PWD Disc.".PadRight(25) & " " & Format(lnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-
-            If lnVATablex > 0 Then
-                builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-                builder.Append(" Net Sales (w/o VAT)".PadRight(25) & " " & Format(lnExVATDue - lnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-                builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnVATablex, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            End If
-            builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-
-        End If
-
-        builder.Append(RawPrint.pxePRINT_EMP1)          'Double Strike + Condense + Emphasize
-
-        'Print Amount Due By subracting the discounts
-        builder.Append(" TOTAL AMOUNT DUE :".PadRight(25) & " " & Format((pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN), xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-        builder.Append(RawPrint.pxePRINT_EMP0)
-
-        'Print Cash Payments80
-        If pnCashTotl > 0 Then
-            builder.Append(" Cash".PadRight(25) & " " & Format(pnCashTotl, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-        End If
-
-        'Print Credit Card Payments
-        If p_oDTCredit.Rows.Count > 0 Then
-            For lnCtr = 0 To p_oDTCredit.Rows.Count - 1
-                ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " & _
-                           Format(p_oDTCredit(lnCtr).Item("nCardAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
-                builder.Append(ls4Print & Environment.NewLine)
-            Next
-        End If
-
-        'Print Check Payments
-        If p_oDTChkPym.Rows.Count > 0 Then
-            For lnCtr = 0 To p_oDTChkPym.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " & _
-                           Format(p_oDTChkPym(lnCtr).Item("nCheckAmt"), xsDECIMAL).PadLeft(pxeREGLEN)
-                builder.Append(ls4Print & Environment.NewLine)
-            Next
-        End If
-
-        'Print Gift Coupon
-        If p_oDTGftChk.Rows.Count > 0 Then
-            For lnCtr = 0 To p_oDTGftChk.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " & _
-                           Format(p_oDTGftChk(lnCtr).Item("nGiftAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
-                builder.Append(ls4Print & Environment.NewLine)
-            Next
-        End If
-
-        'Print Line Before change....
-        builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
-
-        'Print Change
-        Dim lnChange As Decimal = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
-
-        If pnGiftTotl > lnChange Then
-            lnChange = 0
-        Else
-            lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl + pnDelivery) - lnChange
-        End If
-
-        builder.Append(RawPrint.pxePRINT_EMP1)          'Double Strike + Condense + Emphasize
-        builder.Append(" CHANGE           :".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-
-        builder.Append(RawPrint.pxePRINT_EMP0)          'Double Strike + Condense + Emphasize
-
-        '****************************************************************
-
-        'Print Discount Information
-        If Not IsNothing(p_oDTDiscnt) Then
-            If p_oDTDiscnt.Rows.Count > 0 Then
-                If p_oDTDiscnt(0).Item("sDiscCard") <> "" Then
-                    builder.Append(Environment.NewLine)
-                    builder.Append("///////////////////////////////////////" & Environment.NewLine)
-                    If InStr(LCase(p_oDTDiscnt(0).Item("sDiscCard")), "sc", CompareMethod.Text) <> 0 Then
-                        builder.Append("SENIOR/PWD INFORMATION" & Environment.NewLine)
-                    End If
-
-                    'add name and signature field
-                    builder.Append("ID No: " & p_oDTDiscnt(0).Item("sIDNumber") & Environment.NewLine)
-                    builder.Append("Name: " & p_oDTDiscnt(0).Item("sClientNm") & Environment.NewLine)
-                    builder.Append("Signature:______________________________" & Environment.NewLine)
-                End If
-            End If
-        End If
-
-        'Print Credit Card Info
-        If p_oDTCredit.Rows.Count > 0 Then
-            For lnCtr = 0 To p_oDTCredit.Rows.Count - 1
-                builder.Append("///////////////////////////////////////" & Environment.NewLine)
-                'Print Credit Card Bank
-                builder.Append(p_oDTCredit(lnCtr).Item("sCardBank") & Environment.NewLine)
-
-                'Print Card Number/Should hide entire card number
-                ls4Print = p_oDTCredit(lnCtr).Item("sCardNoxx")
-                ls4Print = Left(ls4Print, 5) & "".PadLeft(ls4Print.Length - 9, "*") & Right(ls4Print, 4)
-                builder.Append(ls4Print & Environment.NewLine)
-                builder.Append("SWIPED" & Environment.NewLine)
-                builder.Append("Approval Code: " & p_oDTCredit(lnCtr).Item("sApprovNo") & Environment.NewLine)
-            Next
-        End If
-
-        'Print Check Payment Info
-        If p_oDTChkPym.Rows.Count > 0 Then
-            For lnCtr = 0 To p_oDTChkPym.Rows.Count - 1
-                builder.Append("///////////////////////////////////////" & Environment.NewLine)
-                builder.Append("Check No: " & p_oDTChkPym(lnCtr).Item("sCheckNox") & Environment.NewLine)
-                builder.Append("Bank    : " & p_oDTChkPym(lnCtr).Item("sCheckBnk") & Environment.NewLine)
-                builder.Append("Date:   : " & Format(p_oDTChkPym(lnCtr).Item("dCheckDte"), xsDATE_SHORT) & Environment.NewLine)
-                builder.Append("Amount  : " & Format(p_oDTChkPym(lnCtr).Item("nCheckAmt"), xsDECIMAL) & Environment.NewLine)
-            Next
-        End If
-
-        'Print Dash Separator(-)
-        builder.Append("-".PadLeft(40, "-") & Environment.NewLine & Environment.NewLine)
-
-        'Compute VAT & and other info
-        '++++++++++++++++++++++++++++++++++++++
-        'VAT is 12 % of sales
-        'TODO: load VAT percent of sales from CONFIG
-        'pnVatblSle = (pnTotalDue - (pnDiscAmtV + pnDiscAmtN + pnZroRtSle + pnVatExSle)) / lnVatPerc
-        'pnVatAmntx = (pnTotalDue - (pnDiscAmtV + pnDiscAmtN + pnZroRtSle + pnVatExSle)) - pnVatblSle
-
-        pnVatblSle = ((pnTotalDue + pnSChargex) - (pnDiscAmtV + pnZroRtSle + pnVatExSle + pnDiscAmtN)) / lnVatPerc
-        pnVatAmntx = ((pnTotalDue + pnSChargex) - (pnDiscAmtV + pnZroRtSle + pnVatExSle + pnDiscAmtN)) - pnVatblSle
-
-        'Print VAT Related info
-        builder.Append("  VAT Exempt Sales      " & Format(pnVatExSle, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-        builder.Append("  Zero-Rated Sales      " & Format(pnZroRtSle, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-        builder.Append("  VATable Sales         " & Format(pnVatblSle, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-        builder.Append("  VAT Amount            " & Format(pnVatAmntx, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine & Environment.NewLine)
-
-        If psCustName <> "" Then
-            builder.Append(" Cust Name: " & psCustName & Environment.NewLine)
-            builder.Append(" Address  : " & psCustAddx & Environment.NewLine)
-            builder.Append(" TIN      : " & psCustTINx & Environment.NewLine)
-            builder.Append(" Bus Style: " & psCustBusx & Environment.NewLine & Environment.NewLine)
-        Else
-            builder.Append(" Cust Name: ____________________________" & Environment.NewLine)
-            builder.Append(" Address  : ____________________________" & Environment.NewLine)
-            builder.Append(" TIN      : ____________________________" & Environment.NewLine)
-            builder.Append(" Bus Style: ____________________________" & Environment.NewLine & Environment.NewLine)
-        End If
-
-        'Print Asterisk(*)
-        builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
-
-        'Print the Footer
-        For lnCtr = 0 To p_oDTFooter.Rows.Count - 1
-            builder.Append(PadCenter(p_oDTFooter(lnCtr).Item("sFootName"), 40) & Environment.NewLine)
-        Next
-
-        builder.Append(Chr(&H1D) & "V" & Chr(66) & Chr(0))
-
-        'Dim Printer_Name As String = "\\192.168.10.14\EPSON LX-310 ESC/P"
-        Dim cashier_printer As String = Environment.GetEnvironmentVariable("RMS_PRN_CS")
-
-        'Print the designation printer location...
-        RawPrint.SendStringToPrinter(cashier_printer, builder.ToString())
-
-        Call WriteOR()
-
-        p_oApp.SaveEvent("0016", "SI No. " & psReferNox, p_sSerial)
-
-        Return True
-    End Function
 
     Private Function computePWDSC(ByRef lnVATableAmt As Decimal, ByRef lnNVATableAmt As Decimal)
         'Dim lnDivAmountx = (pnTotalDue + pnSChargex) / pnNoClient   'divide the total amount to the number of customers
@@ -2335,332 +1990,6 @@ Public Class PRN_Receipt
         'Dim lnPWDDiscntx = (lnPartAmtxV - lnPartAmtxN) + (lnPartAmtxN * 0.2)
         'Return lnPWDDiscntx
     End Function
-
-    'Public Function PrintOR() As Boolean
-    '    If Not AddHeader("The Monarch Hospitality and Tourism Corp") Then
-    '        MsgBox("Invalid Company Name!")
-    '        Return False
-    '    End If
-
-    '    If Not AddHeader("PEDRITOS PRIMA CAFE") Then
-    '        MsgBox("Invalid Client Name!")
-    '        Return False
-    '    End If
-
-    '    If Not AddHeader("Tapuac District") Then
-    '        MsgBox("Invalid Client Address!")
-    '        Return False
-    '    End If
-
-    '    If Not AddHeader("Dagupan City, Pangasinan") Then
-    '        MsgBox("Invalid Town and Address!")
-    '        Return False
-    '    End If
-
-    '    'If Not AddHeader(p_sCompny) Then
-    '    '    MsgBox("Invalid Company Name!")
-    '    '    Return False
-    '    'End If
-
-    '    'If Not AddHeader(p_oApp.BranchName) Then
-    '    '    MsgBox("Invalid Client Name!")
-    '    '    Return False
-    '    'End If
-
-    '    'If Not AddHeader(p_oApp.Address) Then
-    '    '    MsgBox("Invalid Client Address!")
-    '    '    Return False
-    '    'End If
-
-    '    'If Not AddHeader(p_oApp.TownCity & ", " & p_oApp.Province) Then
-    '    '    MsgBox("Invalid Town and Address!")
-    '    '    Return False
-    '    'End If
-
-    '    'Add Additional Info To the header
-    '    '---------------------------------
-    '    If Not AddHeader("VAT REG TIN: " & p_sVATReg) Then
-    '        MsgBox("Invalid VAT REG TIN No!")
-    '        Return False
-    '    End If
-
-    '    If Not AddHeader("MIN : " & p_sPOSNo) Then
-    '        MsgBox("Invalid Machine Identification Number(MIN)!")
-    '        Return False
-    '    End If
-
-    '    If Not AddHeader("Permit #: " & p_sPermit) Then
-    '        MsgBox("Invalid Permit No!")
-    '        Return False
-    '    End If
-
-    '    If Not AddHeader("Serial No.: " & p_sSerial) Then
-    '        MsgBox("Invalid Serial No.!")
-    '        Return False
-    '    End If
-
-    '    Dim loPrint As ggcLRReports.clsDirectPrintSF
-    '    loPrint = New ggcLRReports.clsDirectPrintSF
-    '    'loPrint.PrintFont = New Font("Courier New", 10)
-    '    loPrint.PrintBegin()
-
-    '    Dim lnCtr As Integer
-    '    Dim lnRowCtr As Integer = 0
-    '    Dim ls4Print As String
-
-    '    'Print the header
-    '    For lnCtr = 0 To p_oDTHeader.Rows.Count - 1
-    '        loPrint.Print(lnRowCtr, 0, PadCenter(p_oDTHeader(lnCtr).Item("sHeadName"), 40))
-    '        lnRowCtr = lnRowCtr + 1
-    '    Next
-
-    '    'Print Asterisk(*)
-    '    loPrint.Print(lnRowCtr, 0, "*".PadLeft(40, "*"))
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    'Print TITLE
-    '    ls4Print = "QTY" + " " + "DESCRIPTION".PadLeft(pxeDSCLEN) + " " + "UPRICE".PadLeft(pxePRCLEN) + " " + "AMOUNT".PadLeft(pxeTTLLEN)
-    '    loPrint.Print(lnRowCtr, 0, ls4Print)
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    'Print Detail of Sales
-    '    For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
-
-    '        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
-    '                   UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadLeft(pxeDSCLEN) + " "
-
-    '        If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
-    '            ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce"), xsDECIMAL).PadLeft(pxePRCLEN) + " "
-    '            ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nTotlAmnt"), xsDECIMAL).PadLeft(pxeTTLLEN) + " "
-    '            If p_oDTDetail(lnCtr).Item("cVatablex") Then
-    '                ls4Print = ls4Print + "V"
-    '            End If
-    '        End If
-    '        loPrint.Print(lnRowCtr, 0, ls4Print)
-
-    '        lnRowCtr = lnRowCtr + 1
-    '    Next
-
-    '    'Print Dash Separator(-)
-    '    loPrint.Print(lnRowCtr, 0, "-".PadLeft(40, "-"))
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    'Print Dash Separator(*)
-    '    loPrint.Print(lnRowCtr, 0, " No of Items: " & pnTotalItm)
-    '    lnRowCtr = lnRowCtr + 2  'There should be space after this part...
-
-    '    'Print TOTAL Sales
-    '    loPrint.Print(lnRowCtr, 0, " TOTAL".PadLeft(25) & " " & Format(pnTotalDue, xsDECIMAL).PadLeft(pxeREGLEN))
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    'Print Discounts
-    '    If pnDiscAmtV > 0 Then
-    '        loPrint.Print(lnRowCtr, 0, " Less: Discount(s)".PadLeft(25) & " " & Format(pnDiscAmtV, xsDECIMAL).PadLeft(pxeREGLEN))
-    '        lnRowCtr = lnRowCtr + 1
-
-    '        If pnDiscAmtN > 0 Then
-    '            loPrint.Print(lnRowCtr, 0, "               VAT".PadLeft(25) & " " & Format(pnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN))
-    '            lnRowCtr = lnRowCtr + 1
-    '        End If
-    '    ElseIf pnDiscAmtN > 0 Then
-    '        loPrint.Print(lnRowCtr, 0, "Less: VAT         ".PadLeft(25) & " " & Format(pnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN))
-    '        lnRowCtr = lnRowCtr + 1
-    '    End If
-
-    '    'Print Line before Amount Due
-    '    loPrint.Print(lnRowCtr, 0, "                         -------------")
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    'Print Amount Due By subracting the discounts
-    '    loPrint.Print(lnRowCtr, 0, " Amount Due:              " & Format(pnTotalDue - (pnDiscAmtV + pnDiscAmtN), xsDECIMAL).PadLeft(pxeREGLEN))
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    'Print Cash Payments
-    '    If pnCashTotl > 0 Then
-    '        loPrint.Print(lnRowCtr, 0, " Cash                     " & Format(pnCashTotl, xsDECIMAL).PadLeft(pxeREGLEN))
-    '        lnRowCtr = lnRowCtr + 1
-    '    End If
-
-    '    'Print Credit Card Payments
-    '    If p_oDTCredit.Rows.Count > 0 Then
-    '        For lnCtr = 0 To p_oDTCredit.Rows.Count - 1
-    '            ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " & _
-    '                       Format(p_oDTCredit(lnCtr).Item("nCardAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
-    '            loPrint.Print(lnRowCtr, 0, ls4Print)
-    '            lnRowCtr = lnRowCtr + 1
-    '        Next
-    '    End If
-
-    '    'Print Check Payments
-    '    If p_oDTChkPym.Rows.Count > 0 Then
-    '        For lnCtr = 0 To p_oDTChkPym.Rows.Count - 1
-    '            ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " & _
-    '                       Format(p_oDTChkPym(lnCtr).Item("nCheckAmt"), xsDECIMAL).PadLeft(pxeREGLEN)
-    '            loPrint.Print(lnRowCtr, 0, ls4Print)
-    '            lnRowCtr = lnRowCtr + 1
-    '        Next
-    '    End If
-
-    '    'Print Gift Coupon
-    '    If p_oDTGftChk.Rows.Count > 0 Then
-    '        For lnCtr = 0 To p_oDTGftChk.Rows.Count - 1
-    '            ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce")).PadRight(24) & " " & _
-    '                       Format(p_oDTGftChk(lnCtr).Item("nGiftAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
-    '            loPrint.Print(lnRowCtr, 0, ls4Print)
-    '            lnRowCtr = lnRowCtr + 1
-    '        Next
-    '    End If
-
-    '    'Print Line Before change....
-    '    loPrint.Print(lnRowCtr, 0, "                         -------------")
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    'Print Change
-    '    Dim lnChange As Decimal = pnTotalDue - (pnDiscAmtV + pnDiscAmtN)
-    '    lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
-    '    loPrint.Print(lnRowCtr, 0, " CHANGE     :".PadLeft(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN))
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    'Print Discount Information
-    '    If p_oDTDiscnt.Rows.Count > 0 Then
-    '        If p_oDTDiscnt(0).Item("sDiscCard") <> "" Then
-    '            loPrint.Print(lnRowCtr, 0, "///////////////////////////////////////")
-    '            lnRowCtr = lnRowCtr + 1
-
-    '            For lnCtr = 0 To p_oDTDiscnt.Rows.Count - 1
-    '                'Print Discount Description
-    '                loPrint.Print(lnRowCtr, 0, p_oDTDiscnt(lnCtr).Item("sDiscCard"))
-    '                lnRowCtr = lnRowCtr + 1
-
-    '                'Print Card Number
-    '                loPrint.Print(lnRowCtr, 0, p_oDTDiscnt(lnCtr).Item("sIDNumber"))
-    '                lnRowCtr = lnRowCtr + 1
-
-    '            Next
-    '        End If
-    '    End If
-
-    '    'Print Credit Card Info
-    '    If p_oDTCredit.Rows.Count > 0 Then
-    '        For lnCtr = 0 To p_oDTCredit.Rows.Count - 1
-    '            loPrint.Print(lnRowCtr, 0, "///////////////////////////////////////")
-    '            lnRowCtr = lnRowCtr + 1
-    '            'Print Credit Card Bank
-    '            loPrint.Print(lnRowCtr, 0, p_oDTCredit(lnCtr).Item("sCardBank"))
-    '            lnRowCtr = lnRowCtr + 1
-
-    '            'Print Card Number/Should hide entire card number
-    '            ls4Print = p_oDTCredit(lnCtr).Item("sCardNoxx")
-    '            ls4Print = Left(ls4Print, 5) & "".PadLeft(ls4Print.Length - 9, "*") & Right(ls4Print, 4)
-    '            loPrint.Print(lnRowCtr, 0, ls4Print)
-    '            lnRowCtr = lnRowCtr + 1
-
-    '            loPrint.Print(lnRowCtr, 0, "SWIPED")
-    '            lnRowCtr = lnRowCtr + 1
-
-    '            loPrint.Print(lnRowCtr, 0, "Approval Code: " & p_oDTCredit(lnCtr).Item("sApprovNo"))
-    '            lnRowCtr = lnRowCtr + 1
-    '        Next
-    '    End If
-
-    '    'Print Check Payment Info
-    '    If p_oDTChkPym.Rows.Count > 0 Then
-    '        For lnCtr = 0 To p_oDTChkPym.Rows.Count - 1
-    '            loPrint.Print(lnRowCtr, 0, "///////////////////////////////////////")
-    '            lnRowCtr = lnRowCtr + 1
-
-    '            loPrint.Print(lnRowCtr, 0, "Check No: " & p_oDTChkPym(lnCtr).Item("sCheckNox"))
-    '            lnRowCtr = lnRowCtr + 1
-
-    '            loPrint.Print(lnRowCtr, 0, "Bank    : " & p_oDTChkPym(lnCtr).Item("sCheckBnk"))
-    '            lnRowCtr = lnRowCtr + 1
-
-    '            loPrint.Print(lnRowCtr, 0, "Date:   : " & Format(p_oDTChkPym(lnCtr).Item("dCheckDte"), xsDATE_SHORT))
-    '            lnRowCtr = lnRowCtr + 1
-
-    '            loPrint.Print(lnRowCtr, 0, "Amount  : " & Format(p_oDTChkPym(lnCtr).Item("nCheckAmt"), xsDECIMAL))
-    '            lnRowCtr = lnRowCtr + 1
-    '        Next
-    '    End If
-
-    '    'Print Dash Separator(-)
-    '    loPrint.Print(lnRowCtr, 0, "-".PadLeft(40, "-"))
-    '    lnRowCtr = lnRowCtr + 2 'There should be space after this part..
-
-    '    'Compute VAT & and other info
-    '    '++++++++++++++++++++++++++++++++++++++
-    '    'VAT is 12 % of sales
-    '    'TODO: load VAT percent of sales from CONFIG
-    '    Dim lnVatPerc As Double = 1.12
-    '    pnVatblSle = (pnTotalDue - (pnDiscAmtV + pnDiscAmtN + pnZroRtSle + pnVatExSle)) / lnVatPerc
-    '    pnVatAmntx = (pnTotalDue - (pnDiscAmtV + pnDiscAmtN + pnZroRtSle + pnVatExSle)) - pnVatblSle
-
-    '    'Print VAT Related info
-    '    loPrint.Print(lnRowCtr, 0, "  VAT Exempt Sales      " & Format(pnVatExSle, xsDECIMAL).PadLeft(pxeREGLEN))
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    loPrint.Print(lnRowCtr, 0, "  Zero Rated Sales      " & Format(pnZroRtSle, xsDECIMAL).PadLeft(pxeREGLEN))
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    loPrint.Print(lnRowCtr, 0, "  VAT Sales             " & Format(pnVatblSle, xsDECIMAL).PadLeft(pxeREGLEN))
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    loPrint.Print(lnRowCtr, 0, "  VAT Amount            " & Format(pnVatAmntx, xsDECIMAL).PadLeft(pxeREGLEN))
-    '    lnRowCtr = lnRowCtr + 2 'There should be space after this part..
-
-    '    If psCustName <> "" Then
-    '        loPrint.Print(lnRowCtr, 0, " Cust Name: " & psCustName)
-    '        lnRowCtr = lnRowCtr + 1
-
-    '        loPrint.Print(lnRowCtr, 0, " Address  : " & psCustAddx)
-    '        lnRowCtr = lnRowCtr + 1
-
-    '        loPrint.Print(lnRowCtr, 0, " TIN #    : " & psCustTINx)
-    '        lnRowCtr = lnRowCtr + 1
-
-    '        loPrint.Print(lnRowCtr, 0, " Bus Style:" & psCustBusx)
-    '        lnRowCtr = lnRowCtr + 2 'There should be space after this part..
-    '    Else
-    '        loPrint.Print(lnRowCtr, 0, " Cust Name: ----------------------------")
-    '        lnRowCtr = lnRowCtr + 1
-
-    '        loPrint.Print(lnRowCtr, 0, " Address  : ----------------------------")
-    '        lnRowCtr = lnRowCtr + 1
-
-    '        loPrint.Print(lnRowCtr, 0, " TIN #    : ----------------------------")
-    '        lnRowCtr = lnRowCtr + 1
-
-    '        loPrint.Print(lnRowCtr, 0, " Bus Style: ----------------------------")
-    '        lnRowCtr = lnRowCtr + 2 'There should be space after this part..
-    '    End If
-
-    '    'Print Cashier
-    '    loPrint.Print(lnRowCtr, 0, " Cashier: " & "Juan Dela Cruz") 'psCashrNme
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    loPrint.Print(lnRowCtr, 0, " Terminal No.: " & p_sTermnl)
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    loPrint.Print(lnRowCtr, 0, " OR No.: " & psReferNox)
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    loPrint.Print(lnRowCtr, 0, " Date : " & Format(pdTransact, xsDATE_TIME))
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    'Print Asterisk(*)
-    '    loPrint.Print(lnRowCtr, 0, "*".PadLeft(40, "*"))
-    '    lnRowCtr = lnRowCtr + 1
-
-    '    'Print the Footer
-    '    For lnCtr = 0 To p_oDTFooter.Rows.Count - 1
-    '        loPrint.Print(lnRowCtr, 0, PadCenter(p_oDTFooter(lnCtr).Item("sFootName"), 40))
-    '        lnRowCtr = lnRowCtr + 1
-    '    Next
-
-    '    loPrint.PrintEnd()
-
-    '    Return True
-    'End Function
 
     Private Function PadCenter(ByVal source As String, ByVal length As Integer) As String
         Dim spaces As Integer = length - source.Length

@@ -174,7 +174,7 @@ endProc:
 
 
     Private Sub computeChange()
-        Dim lnBill As Decimal = CDec(lblBill.Text)
+        Dim lnBill As Decimal = CDec(lblBill.Text) + CDec(lblDiscount.Text)
 
         If p_nGiftCert > 0 And p_nTendered + p_nCheck + p_nCreditCard + p_nDelivery = 0 Then 'GC payment only
             lblChange.Text = "0.00"
