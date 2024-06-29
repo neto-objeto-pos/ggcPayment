@@ -1352,8 +1352,6 @@ Public Class PRN_Receipt
         Dim lnDisctAmt As Decimal = 0
         Dim lnTotalDueWoVat As Decimal = 0
         Dim lsDelivery = psDelivery
-        Dim lnvatable As Decimal = 0
-        Dim lnvat As Decimal = 0
         Dim lnPartialPdTotl As Decimal = 0
 
         If Not AddHeader(p_sCompny, 40) Then
@@ -1680,8 +1678,7 @@ Public Class PRN_Receipt
                 builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             End If
             builder.Append(" Add: Service Charge".PadRight(25) & " " & Format((lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN) * 0.05, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN, xsDECIMAL)
-            lnvat = Format(regSales * 0.12, xsDECIMAL)
+
 
         Else
             If Not lsDelivery = "2" Then
@@ -1701,8 +1698,8 @@ Public Class PRN_Receipt
                 Else
                     builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
-                    lnvat = Format(lnExVATDue * 0.12, xsDECIMAL)
-                    lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV, xsDECIMAL)
+
+
                     'pnTotalDue = lnExVATDue - lnDisctAmt - pnDiscAmtV
                 End If
             End If
@@ -1713,8 +1710,6 @@ Public Class PRN_Receipt
             builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
             builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - pnDiscAmtV - pnAddDiscV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            lnvat = Format(lnExVATDue * 0.12, xsDECIMAL)
-            lnvatable = Format(lnExVATDue - pnDiscAmtV - pnAddDiscV, xsDECIMAL)
             'pnTotalDue = lnExVATDue - lnDisctAmt - pnDiscAmtV
         End If
         'Print Amount Due By subracting the discounts
@@ -1913,19 +1908,17 @@ Public Class PRN_Receipt
             End If
         Else
             If pnDiscAmtV > 0 Then
-                pnVatblSle = (pnTotalDue / lnVatPerc) - (pnDiscAmtV + pnZroRtSle + pnVatExSle + pnDiscAmtN)
-                pnVatAmntx = (pnTotalDue - (pnDiscAmtV + pnZroRtSle + pnVatExSle + pnDiscAmtN)) - pnVatblSle
+                pnVatblSle = lnExVATDue - (pnDiscAmtV + pnZroRtSle + pnVatExSle)
+                pnVatAmntx = (pnVatblSle * lnVatPerc) - (lnExVATDue - pnVatExSle)
             ElseIf pnDiscAmtN > 0 Then
-                pnVatblSle = ((pnTotalDue / lnVatPerc) - (pnDiscAmtV + pnZroRtSle + (pnVatExSle * lnVatPerc)))
-                pnVatAmntx = (pnTotalDue - (pnDiscAmtV + pnZroRtSle + (pnVatExSle * lnVatPerc))) - pnVatblSle
+                pnVatblSle = lnExVATDue - (pnDiscAmtV + pnZroRtSle + pnVatExSle)
+                pnVatAmntx = (pnVatblSle * lnVatPerc) - (lnExVATDue - pnVatExSle)
 
             Else
-                pnVatblSle = (pnTotalDue / lnVatPerc) - (pnDiscAmtV + pnZroRtSle + pnVatExSle + pnDiscAmtN)
-                pnVatAmntx = (pnTotalDue - (pnDiscAmtV + pnZroRtSle + pnVatExSle + pnDiscAmtN)) - pnVatblSle
+                pnVatblSle = lnExVATDue - (pnDiscAmtV + pnZroRtSle + pnVatExSle + pnDiscAmtN)
+                pnVatAmntx = (pnVatblSle * lnVatPerc) - (pnDiscAmtV + pnZroRtSle + pnVatExSle + pnDiscAmtN + lnExVATDue)
             End If
         End If
-        pnVatblSle = lnvatable
-        pnVatAmntx = lnvat
         'Print VAT Related info
         builder.Append("  VAT Exempt Sales      " & Format(pnVatExSle, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
         builder.Append("  Zero-Rated Sales      " & Format(pnZroRtSle, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
