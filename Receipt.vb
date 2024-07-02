@@ -1138,7 +1138,11 @@ Public Class Receipt
             p_nTendered = loDT.Rows(0)("nTendered")
             'p_nDiscAmtx = loDT.Rows(0)("nDiscount")
             'p_nNonVATxx = loDT.Rows(0)("nSalesAmt") + loDT.Rows(0)("nPWDDiscx")
-            p_nNonVATxx = loDT.Rows(0)("nSalesAmt") - ((loDT.Rows(0)("nVATSales") + IFNull(loDT.Rows(0)("nZeroRatd"), 0) + loDT.Rows(0)("nVATAmtxx")))
+
+            Debug.Print(loDT.Rows(0)("nSalesAmt"))
+            Debug.Print(loDT.Rows(0)("nVATSales"))
+            Debug.Print(loDT.Rows(0)("nVATAmtxx"))
+            p_nNonVATxx = loDT.Rows(0)("nSalesAmt") - ((loDT.Rows(0)("nVATSales") + IFNull(loDT.Rows(0)("nZeroRatd"), 0) + loDT.Rows(0)("nVATAmtxx") - (loDT.Rows(0)("nDiscount") + loDT.Rows(0)("nPWDDiscx"))))
         End With
 
         Call computePaymentTotal()

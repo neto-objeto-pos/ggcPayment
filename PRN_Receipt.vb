@@ -92,6 +92,7 @@
 Imports ADODB
 Imports CrystalDecisions.[Shared].Json
 Imports ggcAppDriver
+Imports Microsoft.Win32
 Imports System.Drawing
 Imports System.Reflection
 Imports System.Runtime.InteropServices
@@ -823,7 +824,6 @@ Public Class PRN_Receipt
         'Else
         '    builder.Append(" TAKE-OUT " & Environment.NewLine)
         'End If
-
         If p_nTableNo > 0 Then
             If p_sMergeTb = "" Then
                 Select Case lsDelivery
@@ -840,6 +840,9 @@ Public Class PRN_Receipt
             Else
                 builder.Append(" Table No.: " & Mid(p_sMergeTb, 1, Len(p_sMergeTb) - 1) & "".PadRight(12 - (Len(p_sMergeTb) - 4)) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
             End If
+        Else
+            builder.Append(" TAKE-OUT " & Environment.NewLine)
+
         End If
 
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
@@ -1060,11 +1063,12 @@ Public Class PRN_Receipt
                     builder.Append(" Add: VAT".PadRight(25) & " " & Format(regSales * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
                 End If
             Else
-                builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                If lnExVATDue * 0.12 > 0 Then
+                    builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                End If
             End If
             builder.Append(" Add: Service Charge".PadRight(25) & " " & Format((lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN) * 0.05, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN, xsDECIMAL)
-            lnvat = Format(regSales * 0.12, xsDECIMAL)
+
 
         Else
             If Not lsDelivery = "2" Then
@@ -1082,26 +1086,26 @@ Public Class PRN_Receipt
 
                     End If
                 Else
-                    builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                    If lnExVATDue * 0.12 > 0 Then
+                        builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                    End If
 
-                    lnvat = Format(lnExVATDue * 0.12, xsDECIMAL)
-                    lnvatable = Format(lnExVATDue - lnDisctAmt - pnDiscAmtV, xsDECIMAL)
                     'pnTotalDue = lnExVATDue - lnDisctAmt - pnDiscAmtV
                 End If
-            End If
+                End If
         End If
 
 
         If lsDelivery = "2" Then
             builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
             builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - pnDiscAmtV - pnAddDiscV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            lnvat = Format(lnExVATDue * 0.12, xsDECIMAL)
-            lnvatable = Format(lnExVATDue - pnDiscAmtV - pnAddDiscV, xsDECIMAL)
+            If lnExVATDue * 0.12 > 0 Then
+                builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+            End If
             'pnTotalDue = lnExVATDue - lnDisctAmt - pnDiscAmtV
         End If
-        'Print Amount Due By subracting the discounts
-        builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
+            'Print Amount Due By subracting the discounts
+            builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
         lnTotalDueWoVat = Format(lnTotalDueWoVat * 0.12, xsDECIMAL)
         Dim xnetSales As Decimal = lnExVATDue - pnDiscAmtV - lnDisctAmt
         Dim xVAT As Decimal = lnExVATDue * 0.12
@@ -1111,7 +1115,7 @@ Public Class PRN_Receipt
             xServCharge = 0
         End If
 
-        xnetSales = lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN
+        xnetSales = lnExVATDue - (lnDisctAmt + pnDiscAmtV + pnDiscAmtN)
         If pnSChargex > 0 Then
             xServCharge = xnetSales * 0.05
         End If
@@ -1119,8 +1123,12 @@ Public Class PRN_Receipt
             xVAT = regSales * 0.12
 
         End If
-        builder.Append(" TOTAL AMOUNT DUE".PadRight(25) & " " & Format(xnetSales + xVAT + xServCharge, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-        pnTotalDue = Format(xnetSales + xVAT + xServCharge, xsDECIMAL)
+        Dim lnTotalDuex As Decimal = 0
+
+        lnTotalDuex = xnetSales + xVAT + xServCharge
+        builder.Append(" TOTAL AMOUNT DUE".PadRight(25) & " " & Format(lnTotalDuex, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+        'pnTotalDue = Format(xnetSales + xVAT + xServCharge, xsDECIMAL)
+
         If p_cSplitTyp <> 2 Then
             Dim lnCurSplit As Integer = 0
             Dim lnCtr As Integer
@@ -1211,7 +1219,7 @@ Public Class PRN_Receipt
             End If
         End If
         'it will update code above
-        lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl + pnDelivery + lnPartialBillRemaing) - pnTotalDue
+        lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl + pnDelivery + lnPartialBillRemaing) - lnTotalDuex
 
         builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
@@ -1455,6 +1463,9 @@ Public Class PRN_Receipt
             Else
                 builder.Append(" Table No.: " & Mid(p_sMergeTb, 1, Len(p_sMergeTb) - 1) & "".PadRight(12 - (Len(p_sMergeTb) - 4)) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
             End If
+        Else
+            builder.Append(" TAKE-OUT " & Environment.NewLine)
+
         End If
 
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
@@ -1675,7 +1686,9 @@ Public Class PRN_Receipt
                     builder.Append(" Add: VAT".PadRight(25) & " " & Format(regSales * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
                 End If
             Else
-                builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                If lnExVATDue * 0.12 > 0 Then
+                    builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                End If
             End If
             builder.Append(" Add: Service Charge".PadRight(25) & " " & Format((lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN) * 0.05, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
@@ -1696,9 +1709,9 @@ Public Class PRN_Receipt
 
                     End If
                 Else
-                    builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-
-
+                    If lnExVATDue * 0.12 > 0 Then
+                        builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                    End If
 
                     'pnTotalDue = lnExVATDue - lnDisctAmt - pnDiscAmtV
                 End If
@@ -1709,7 +1722,9 @@ Public Class PRN_Receipt
         If lsDelivery = "2" Then
             builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
             builder.Append(" Net Sales".PadRight(25) & " " & Format(lnExVATDue - pnDiscAmtV - pnAddDiscV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+            If lnExVATDue * 0.12 > 0 Then
+                builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+            End If
             'pnTotalDue = lnExVATDue - lnDisctAmt - pnDiscAmtV
         End If
         'Print Amount Due By subracting the discounts
@@ -1723,7 +1738,7 @@ Public Class PRN_Receipt
             xServCharge = 0
         End If
 
-        xnetSales = lnExVATDue - lnDisctAmt - pnDiscAmtV - pnDiscAmtN
+        xnetSales = lnExVATDue - (lnDisctAmt + pnDiscAmtV + pnDiscAmtN)
         If pnSChargex > 0 Then
             xServCharge = xnetSales * 0.05
         End If
@@ -1731,8 +1746,12 @@ Public Class PRN_Receipt
             xVAT = regSales * 0.12
 
         End If
-        builder.Append(" TOTAL AMOUNT DUE".PadRight(25) & " " & Format(xnetSales + xVAT + xServCharge, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-        pnTotalDue = Format(xnetSales + xVAT + xServCharge, xsDECIMAL)
+        Dim lnTotalDuex As Decimal = 0
+
+        lnTotalDuex = xnetSales + xVAT + xServCharge
+        builder.Append(" TOTAL AMOUNT DUE".PadRight(25) & " " & Format(lnTotalDuex, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+        'pnTotalDue = Format(xnetSales + xVAT + xServCharge, xsDECIMAL)
+
         If p_cSplitTyp <> 2 Then
             Dim lnCurSplit As Integer = 0
             Dim lnCtr As Integer
@@ -1823,7 +1842,7 @@ Public Class PRN_Receipt
             End If
         End If
         'it will update code above
-        lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl + pnDelivery + lnPartialBillRemaing) - pnTotalDue
+        lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl + pnDelivery + lnPartialBillRemaing) - lnTotalDuex
 
         builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 

@@ -284,20 +284,20 @@ Public Class PRN_TZ_Reading
 
         builder.Append(" Beginning Balance  : ".PadRight(24) & Format(lnPrevSale, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         ''builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt + lnSChargex) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
-        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt) - ((lnDiscount - lnPWDDiscx) + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
 
         'Print the Computation of NET Sales
         builder.Append(Environment.NewLine)
-        builder.Append(" GROSS SALES".PadRight(24) & Format(lnSalesAmt + lnSChargex + lnDiscount + lnVatDiscx + lnPWDDiscx + lnReturnsx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append(" GROSS SALES".PadRight(24) & Format(lnSalesAmt + lnSChargex + (lnDiscount - lnPWDDiscx) + lnVatDiscx + lnPWDDiscx + lnReturnsx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         'builder.Append(" GROSS SALES".PadRight(24) & Format(lnSalesAmt + lnSChargex, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         If lnSChargex > 0 Then
             builder.Append(" Less : Service Charge".PadRight(24) & Format(lnSChargex, xsDECIMAL).PadLeft(13) & Environment.NewLine)
-            builder.Append("        Regular Discnt".PadRight(24) & Format(lnDiscount, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+            builder.Append("        Regular Discnt".PadRight(24) & Format(lnDiscount - lnPWDDiscx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         Else
-            builder.Append(" Less : Regular Discnt".PadRight(24) & Format(lnDiscount, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+            builder.Append(" Less : Regular Discnt".PadRight(24) & Format(lnDiscount - lnPWDDiscx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         End If
 
-        builder.Append("        VAT SC/PWD".PadRight(24) & Format(lnVatDiscx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        'builder.Append("        VAT SC/PWD".PadRight(24) & Format(lnVatDiscx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         builder.Append("        20% SC/PWD Disc.".PadRight(24) & Format(lnPWDDiscx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         builder.Append("        Returns".PadRight(24) & Format(lnReturnsx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         builder.Append(" ".PadRight(24) & "-".PadLeft(13, "-") & Environment.NewLine)
@@ -308,7 +308,7 @@ Public Class PRN_TZ_Reading
         builder.Append(RawPrint.pxePRINT_EMP0)
 
         'Display a space in between NEW Sales and VAT Related Info
-        builder.Append(Environment.NewLine)
+        builder.Append(" ".PadRight(24) & "-".PadLeft(13, "-") & Environment.NewLine)
 
         builder.Append(" VATABLE Sales".PadRight(24) & Format(lnVATSales, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         builder.Append(" VAT Amount".PadRight(24) & Format(lnVATAmtxx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
@@ -324,7 +324,7 @@ Public Class PRN_TZ_Reading
         'builder.Append("           Less 12% VAT:".PadRight(24) & Format(lnVatDiscx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
 
         ''Display a space in between SENIOR/PWD Discount Info & Collection Info
-        builder.Append(Environment.NewLine)
+        builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
 
         builder.Append(" Collection Info:" & Environment.NewLine)
         builder.Append("  Petty Cash".PadRight(24) & Format(lnOpenBalx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
@@ -746,34 +746,35 @@ Public Class PRN_TZ_Reading
         'Print the begging and ending OR
         builder.Append(Environment.NewLine)
         builder.Append(" Beginning SI  :  " & lsORNoFrom & Environment.NewLine)
-        builder.Append(" Ending SI     :  " & lsORNoThru & Environment.NewLine)
+        builder.Append(" Ending SI     :  " & lsORNoThru & Environment.NewLine & Environment.NewLine)
 
-        builder.Append(Environment.NewLine)
         builder.Append(" Beginning Balance  : ".PadRight(24) & Format(lnPrevSale, xsDECIMAL).PadLeft(13) & Environment.NewLine)
-        'builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt + lnSChargex) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
-        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        ''builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt + lnSChargex) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt) - ((lnDiscount - lnPWDDiscx) + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
 
         'Print the Computation of NET Sales
         builder.Append(Environment.NewLine)
+        builder.Append(" GROSS SALES".PadRight(24) & Format(lnSalesAmt + lnSChargex + (lnDiscount - lnPWDDiscx) + lnVatDiscx + lnPWDDiscx + lnReturnsx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         'builder.Append(" GROSS SALES".PadRight(24) & Format(lnSalesAmt + lnSChargex, xsDECIMAL).PadLeft(13) & Environment.NewLine)
-        builder.Append(" GROSS SALES".PadRight(24) & Format(lnSalesAmt + lnSChargex + lnDiscount + lnVatDiscx + lnPWDDiscx + lnReturnsx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         If lnSChargex > 0 Then
             builder.Append(" Less : Service Charge".PadRight(24) & Format(lnSChargex, xsDECIMAL).PadLeft(13) & Environment.NewLine)
-            builder.Append("        Regular Discnt".PadRight(24) & Format(lnDiscount, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+            builder.Append("        Regular Discnt".PadRight(24) & Format(lnDiscount - lnPWDDiscx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         Else
-            builder.Append(" Less : Regular Discnt".PadRight(24) & Format(lnDiscount, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+            builder.Append(" Less : Regular Discnt".PadRight(24) & Format(lnDiscount - lnPWDDiscx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         End If
 
-        builder.Append("        VAT SC/PWD".PadRight(24) & Format(lnVatDiscx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        'builder.Append("        VAT SC/PWD".PadRight(24) & Format(lnVatDiscx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         builder.Append("        20% SC/PWD Disc.".PadRight(24) & Format(lnPWDDiscx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         builder.Append("        Returns".PadRight(24) & Format(lnReturnsx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         builder.Append(" ".PadRight(24) & "-".PadLeft(13, "-") & Environment.NewLine)
+        builder.Append(RawPrint.pxePRINT_EMP1)
 
         builder.Append(" NET SALES".PadRight(24) & Format(lnSalesAmt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         'builder.Append(" NET SALES".PadRight(24) & Format((lnSalesAmt + lnSChargex) - (lnDiscount + lnPWDDiscx + lnVatDiscx + lnSChargex), xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append(RawPrint.pxePRINT_EMP0)
 
         'Display a space in between NEW Sales and VAT Related Info
-        builder.Append(Environment.NewLine)
+        builder.Append(" ".PadRight(24) & "-".PadLeft(13, "-") & Environment.NewLine)
 
         builder.Append(" VATABLE Sales".PadRight(24) & Format(lnVATSales, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         builder.Append(" VAT Amount".PadRight(24) & Format(lnVATAmtxx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
