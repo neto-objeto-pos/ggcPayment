@@ -1142,7 +1142,8 @@ Public Class Receipt
             Debug.Print(loDT.Rows(0)("nSalesAmt"))
             Debug.Print(loDT.Rows(0)("nVATSales"))
             Debug.Print(loDT.Rows(0)("nVATAmtxx"))
-            p_nNonVATxx = loDT.Rows(0)("nSalesAmt") - ((loDT.Rows(0)("nVATSales") + IFNull(loDT.Rows(0)("nZeroRatd"), 0) + loDT.Rows(0)("nVATAmtxx") - (loDT.Rows(0)("nDiscount") + loDT.Rows(0)("nPWDDiscx"))))
+            Debug.Print(loDT.Rows(0)("nPWDDiscx"))
+            p_nNonVATxx = loDT.Rows(0)("nSalesAmt") - ((loDT.Rows(0)("nVATSales") + IFNull(loDT.Rows(0)("nZeroRatd"), 0) + loDT.Rows(0)("nVATAmtxx") - loDT.Rows(0)("nPWDDiscx")))
         End With
 
         Call computePaymentTotal()

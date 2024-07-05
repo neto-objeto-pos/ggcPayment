@@ -666,6 +666,7 @@ Public Class PRN_TZ_Reading
         builder.Append("TERMINAL  :" & p_sTermnl & Environment.NewLine)
         'builder.Append("TERMINAL #:" & p_sSerial & Environment.NewLine)
 
+        'Print Asterisk(*)
         builder.Append(Environment.NewLine)
         builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
 
@@ -790,7 +791,7 @@ Public Class PRN_TZ_Reading
         'builder.Append("           Less 12% VAT:".PadRight(24) & Format(lnVatDiscx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
 
         ''Display a space in between SENIOR/PWD Discount Info & Collection Info
-        builder.Append(Environment.NewLine)
+        builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
 
         builder.Append(" Collection Info:" & Environment.NewLine)
         builder.Append("  Petty Cash".PadRight(24) & Format(lnOpenBalx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
@@ -806,8 +807,10 @@ Public Class PRN_TZ_Reading
         builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
 
         builder.Append("              Z-COUNTER : ".PadRight(26) & p_nZRdCtr.ToString.PadLeft(11) & Environment.NewLine)
+        builder.Append(RawPrint.pxePRINT_EMP1)
         'builder.Append("ACCUMULATED GRAND TOTAL : ".PadRight(26) & Format(lnPrevSale + ((lnSalesAmt + lnSChargex) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
         'builder.Append("ACCUMULATED GRAND TOTAL : ".PadRight(26) & Format(lnPrevSale + ((lnSalesAmt) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append(RawPrint.pxePRINT_EMP0)
 
         builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
         builder.Append(" Void SI Count: ".PadRight(24) & Format(lnVoidCntx, xsINTEGER).PadLeft(13) & Environment.NewLine)

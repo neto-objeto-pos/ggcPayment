@@ -928,16 +928,19 @@ Public Class PRN_Billing
             builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
 
         Dim lnExVATDue = pnTotalDue / 1.12
+        lnExVATDue = Format(lnExVATDue, xsDECIMAL)
+        pnDiscAmtV = Format(pnDiscAmtV, xsDECIMAL)
         Dim lnAddVATAmt As Decimal = 0
         'Print Discounts
         If pnDiscAmtV > 0 Then
             'builder.Append(" Less: Discount(s)".PadRight(25) & " " & Format(pnDiscAmtV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            Dim lnVATExclsv = pnTotalDue / lnVatPerc
-            Dim lnRateAmntx = lnVATExclsv * (pnDiscRteV / 100)
-            Dim lnAddDiscxx = pnAddDiscV / lnVatPerc
+            Dim lnVATExclsv = Math.Round(pnTotalDue / lnVatPerc, 2)
+            Dim lnRateAmntx = lnVATExclsv * pnDiscRteV / 100
+            Dim lnAddDiscxx = Math.Round(pnAddDiscV / lnVatPerc, 2)
 
-            Dim lnAmountDue = pnTotalDue - pnDiscAmtV
-            Dim lnVATExWDsc = lnVATExclsv - (lnRateAmntx + lnAddDiscxx + pnDiscAmtN)
+            Dim lnAmountDue = Math.Round(pnTotalDue - pnDiscAmtV, 2)
+            Dim lnVATExWDsc = Math.Round(lnVATExclsv - (lnRateAmntx + lnAddDiscxx + pnDiscAmtN), 2)
+
 
             Dim lsLess As String = " Less: "
 
@@ -954,16 +957,16 @@ Public Class PRN_Billing
 
             builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
             builder.Append(" Net Sales".PadRight(25) & " " & Format(lnVATExWDsc, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            lnAddVATAmt = (lnExVATDue * 0.12)
+            lnAddVATAmt = Format((lnExVATDue - CDbl(pnDiscAmtV)) * 0.12, xsDECIMAL)
 
             If lnAddVATAmt > 0 Then
                 builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnAddVATAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             End If
 
             lnTotalDue = lnExVATDue + lnAddVATAmt
-            builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
+            'builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
 
-            ElseIf pnDiscAmtN > 0 Then
+        ElseIf pnDiscAmtN > 0 Then
                 'orig code
                 'builder.Append(" Less: Senior/PWD DSC".PadRight(25) & " " & Format(pnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
@@ -971,9 +974,9 @@ Public Class PRN_Billing
                 Dim lnNVATable As Decimal = 0
                 Dim lnDiscAmtN As Decimal = computePWDSC(lnVATablex, lnNVATable)
 
-                lnAddVATAmt = (((lnExVATDue / pnNoClient) * (pnNoClient - pnWithDisc)) * 0.12)
+            lnAddVATAmt = Format(((lnExVATDue / pnNoClient) * (pnNoClient - pnWithDisc)) * 0.12, xsDECIMAL)
 
-                builder.Append(" Net of VAT".PadRight(25) & " " & Format(lnExVATDue, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+            builder.Append(" Net of VAT".PadRight(25) & " " & Format(lnExVATDue, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
                 builder.Append(" Less: 20% SC/PWD Disc.".PadRight(25) & " " & Format(lnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
                 lnVATablex = Format(lnVATablex, xsDECIMAL)
@@ -994,7 +997,7 @@ Public Class PRN_Billing
             lnVATablex = Format(lnVATablex, xsDECIMAL)
             lnExVATDue = Format(lnExVATDue, xsDECIMAL)
 
-            lnAddVATAmt = (lnExVATDue * 0.12)
+            lnAddVATAmt = Format(lnExVATDue * 0.12, xsDECIMAL)
             lnTotalDue = lnExVATDue + lnAddVATAmt
             builder.Append(" Net Sales".PadRight(25) & " " & lnExVATDue.ToString.PadLeft(pxeREGLEN) & Environment.NewLine)
             If lnAddVATAmt > 0 Then
@@ -1004,7 +1007,7 @@ Public Class PRN_Billing
 
         End If
 
-            If pnSChargex > 0 Then
+        If pnSChargex > 0 Then
             builder.Append(" Service Charge(" & p_nSCRate & "%)".PadRight(8) & " " & Format(pnSChargex, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
         End If
@@ -1052,7 +1055,6 @@ Public Class PRN_Billing
     Private Function writeBill() As Boolean
         Dim lnVatPerc As Double = 1.12
         Dim lnTotalDue As Decimal = 0
-
         If Not AddHeader("REPRINT") Then
             MsgBox("Unable to Reprint!")
             Return False
@@ -1154,16 +1156,19 @@ Public Class PRN_Billing
         builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
 
         Dim lnExVATDue = pnTotalDue / 1.12
+        lnExVATDue = Format(lnExVATDue, xsDECIMAL)
+        pnDiscAmtV = Format(pnDiscAmtV, xsDECIMAL)
         Dim lnAddVATAmt As Decimal = 0
         'Print Discounts
         If pnDiscAmtV > 0 Then
             'builder.Append(" Less: Discount(s)".PadRight(25) & " " & Format(pnDiscAmtV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            Dim lnVATExclsv = pnTotalDue / lnVatPerc
-            Dim lnRateAmntx = lnVATExclsv * (pnDiscRteV / 100)
-            Dim lnAddDiscxx = pnAddDiscV / lnVatPerc
+            Dim lnVATExclsv = Math.Round(pnTotalDue / lnVatPerc, 2)
+            Dim lnRateAmntx = lnVATExclsv * pnDiscRteV / 100
+            Dim lnAddDiscxx = Math.Round(pnAddDiscV / lnVatPerc, 2)
 
-            Dim lnAmountDue = pnTotalDue - pnDiscAmtV
-            Dim lnVATExWDsc = lnVATExclsv - (lnRateAmntx + lnAddDiscxx + pnDiscAmtN)
+            Dim lnAmountDue = Math.Round(pnTotalDue - pnDiscAmtV, 2)
+            Dim lnVATExWDsc = Math.Round(lnVATExclsv - (lnRateAmntx + lnAddDiscxx + pnDiscAmtN), 2)
+
 
             Dim lsLess As String = " Less: "
 
@@ -1180,11 +1185,14 @@ Public Class PRN_Billing
 
             builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
             builder.Append(" Net Sales".PadRight(25) & " " & Format(lnVATExWDsc, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnExVATDue * 0.12, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-            lnAddVATAmt = (lnExVATDue * 0.12)
+            lnAddVATAmt = Format((lnExVATDue - CDbl(pnDiscAmtV)) * 0.12, xsDECIMAL)
+
+            If lnAddVATAmt > 0 Then
+                builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnAddVATAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+            End If
 
             lnTotalDue = lnExVATDue + lnAddVATAmt
-            builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
+            'builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
 
         ElseIf pnDiscAmtN > 0 Then
             'orig code
@@ -1194,7 +1202,7 @@ Public Class PRN_Billing
             Dim lnNVATable As Decimal = 0
             Dim lnDiscAmtN As Decimal = computePWDSC(lnVATablex, lnNVATable)
 
-            lnAddVATAmt = (((lnExVATDue / pnNoClient) * (pnNoClient - pnWithDisc)) * 0.12)
+            lnAddVATAmt = Format(((lnExVATDue / pnNoClient) * (pnNoClient - pnWithDisc)) * 0.12, xsDECIMAL)
 
             builder.Append(" Net of VAT".PadRight(25) & " " & Format(lnExVATDue, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             builder.Append(" Less: 20% SC/PWD Disc.".PadRight(25) & " " & Format(lnDiscAmtN, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
@@ -1216,8 +1224,9 @@ Public Class PRN_Billing
 
             lnVATablex = Format(lnVATablex, xsDECIMAL)
             lnExVATDue = Format(lnExVATDue, xsDECIMAL)
+
+            lnAddVATAmt = Format(lnExVATDue * 0.12, xsDECIMAL)
             lnTotalDue = lnExVATDue + lnAddVATAmt
-            lnAddVATAmt = (lnExVATDue * 0.12)
             builder.Append(" Net Sales".PadRight(25) & " " & lnExVATDue.ToString.PadLeft(pxeREGLEN) & Environment.NewLine)
             If lnAddVATAmt > 0 Then
                 builder.Append(" Add: VAT".PadRight(25) & " " & Format(lnAddVATAmt, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
