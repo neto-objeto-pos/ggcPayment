@@ -280,6 +280,23 @@ Public Class PRN_Order
         'Print the designation printer location...
         RawPrint.SendStringToPrinter(ordertk_printer, builder.ToString())
 
+        Dim cashier_printer As String = Environment.GetEnvironmentVariable("RMS_PRN_CS")
+        Dim cashier_printer1 As String = Environment.GetEnvironmentVariable("RMS_PRN_KN")
+        Dim cashier_printer2 As String = Environment.GetEnvironmentVariable("RMS_PRN_BR")
+        'Dim cashier_printer As String = "\\192.168.10.12\EPSON TM-U220 Receipt"
+
+        'Print the designation printer location...
+        If Not cashier_printer = ordertk_printer Then
+            If cashier_printer <> "" Then
+                RawPrint.SendStringToPrinter(cashier_printer, builder.ToString())
+            End If
+        End If
+        If cashier_printer1 <> "" Then
+            RawPrint.SendStringToPrinter(cashier_printer1, builder.ToString())
+        End If
+        If cashier_printer2 <> "" Then
+            RawPrint.SendStringToPrinter(cashier_printer2, builder.ToString())
+        End If
         'Dim kitchen_printer As String = Environment.GetEnvironmentVariable("RMS_PRN_KN")
         'If kitchen_printer <> "n/a" And kitchen_printer <> "" Then
         '    RawPrint.SendStringToPrinter(kitchen_printer, builder.ToString())
