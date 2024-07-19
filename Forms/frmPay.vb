@@ -91,7 +91,7 @@ Public Class frmPay
                     '    GoTo endProc
                     'End If
                 End If
-                If p_nCheck + p_nCreditCard + p_nGiftCert + p_nCash + p_nSchargex + p_nDelivery >= CDec(lblBill.Text) Then
+                If CDec(lblChange.Text) >= 0.00 Then
                     pbCancelled = False
                     Me.Close()
                     Me.Dispose()
