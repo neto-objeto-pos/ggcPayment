@@ -592,7 +592,7 @@ Public Class PRN_CancelledReceipt
         builder.Append(PadCenter("PTU No.: " & p_sPermit, 40) & Environment.NewLine)
         builder.Append(PadCenter("Serial No. : " & p_sSerial, 40) & Environment.NewLine & Environment.NewLine)
 
-        builder.Append(PadCenter("CANCELLED OFFICIAL RECEIPT", 40) & Environment.NewLine)
+        builder.Append(PadCenter("CANCELLED SALES INVOICE", 40) & Environment.NewLine)
         Select Case p_cTrnMde
             Case "D"
                 builder.Append(PadCenter("TRAINING MODE", 40) & Environment.NewLine)
@@ -609,7 +609,7 @@ Public Class PRN_CancelledReceipt
         builder.Append(" Cashier: " & p_sLogName & "/" & psCashierNm & Environment.NewLine)
         'builder.Append(" Table No.: " & p_sTermnl & Environment.NewLine)
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
-        builder.Append(" Ref. No.: " & "OR" & psReferNox & Environment.NewLine)
+        builder.Append(" Ref. No.: " & "SI" & psReferNox & Environment.NewLine)
         builder.Append(" Transaction No.: " & psTransNox & Environment.NewLine)
         builder.Append(" Date : " & pdTransact.Year & "-" & Format(pdTransact.Month, "00") & "-" & Format(pdTransact.Day, "00") & " " & Format(p_oApp.getSysDate, "hh:mm:ss tt") & Environment.NewLine)
 
@@ -852,7 +852,7 @@ Public Class PRN_CancelledReceipt
 
             For lnCtr = 0 To loDT.Rows.Count - 1
                 If loDT.Rows(lnCtr).Item("cTranStat") = xeTranStat.TRANS_POSTED Then
-                    lsPartial = " PAID " & "(OR" & loDT.Rows(lnCtr).Item("sORNumber") & ")"
+                    lsPartial = " PAID " & "(SI" & loDT.Rows(lnCtr).Item("sORNumber") & ")"
                     builder.Append(lsPartial.PadRight(28) & " " & "-" & Format(loDT.Rows(lnCtr).Item("nSalesAmt"), xsDECIMAL) & "".PadLeft(pxeREGLEN) & Environment.NewLine)
                     lnCurSplit = lnCurSplit + 1
                 End If
@@ -1022,7 +1022,7 @@ Public Class PRN_CancelledReceipt
         Next
 
         builder.Append(Environment.NewLine)
-        builder.Append(PadCenter("----- END OF RECEIPT -----", 40) & Environment.NewLine)
+        builder.Append(PadCenter("----- END OF SALES INVOICE -----", 40) & Environment.NewLine)
         'RawPrint.writeToFile(p_sPOSNo & " " & Format(p_oApp.getSysDate(), "yyyyMMdd"), builder.ToString())
         RawPrint.writeToFile(p_sPOSNo, builder.ToString())
         RawPrint.writeToFile(p_sPOSNo & " " & Format(p_dPOSDatex, "yyyyMMdd"), builder.ToString())
@@ -1098,7 +1098,7 @@ Public Class PRN_CancelledReceipt
         'builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1 + RawPrint.pxeESC_DBLH + RawPrint.pxeESC_DBLW + RawPrint.pxeESC_EMPH))
         builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1 + RawPrint.pxeESC_DBLH + RawPrint.pxeESC_EMPH))
         builder.Append(RawPrint.pxePRINT_CNTR)
-        builder.Append("CANCELLED OFFICIAL RECEIPT" & Environment.NewLine)
+        builder.Append("CANCELLED SALES INVOICE" & Environment.NewLine)
         Select Case p_cTrnMde
             Case "D"
                 builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1)) 'Condense
@@ -1120,7 +1120,7 @@ Public Class PRN_CancelledReceipt
         builder.Append(" Cashier: " & p_sLogName & "/" & psCashierNm & Environment.NewLine)
         'builder.Append(" Table No.: " & p_sTermnl & Environment.NewLine)
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
-        builder.Append(" Ref. No.: " & "OR" & psReferNox & Environment.NewLine)
+        builder.Append(" Ref. No.: " & "SI" & psReferNox & Environment.NewLine)
         builder.Append(" Transaction No.: " & psTransNox & Environment.NewLine)
         builder.Append(" Date : " & pdTransact.Year & "-" & Format(pdTransact.Month, "00") & "-" & Format(pdTransact.Day, "00") & " " & Format(p_oApp.getSysDate, "hh:mm:ss tt") & Environment.NewLine)
 
@@ -1378,7 +1378,7 @@ Public Class PRN_CancelledReceipt
 
             For lnCtr = 0 To loDT.Rows.Count - 1
                 If loDT.Rows(lnCtr).Item("cTranStat") = xeTranStat.TRANS_POSTED Then
-                    lsPartial = " PAID " & "(OR" & loDT.Rows(lnCtr).Item("sORNumber") & ")"
+                    lsPartial = " PAID " & "(SI" & loDT.Rows(lnCtr).Item("sORNumber") & ")"
                     builder.Append(lsPartial.PadRight(28) & " " & "-" & Format(loDT.Rows(lnCtr).Item("nSalesAmt"), xsDECIMAL) & "".PadLeft(pxeREGLEN) & Environment.NewLine)
                     lnCurSplit = lnCurSplit + 1
                 End If
@@ -1575,7 +1575,8 @@ Public Class PRN_CancelledReceipt
                                         ", b.nSalesAmt" &
                                         ", a.cTranStat" &
                                     " FROM Order_Split a" &
-                                        " LEFT JOIN Receipt_Master b" &
+                                        " LEFT JOIN 
+                                        _Master b" &
                                             " ON a.sTransNox = b.sSourceNo" &
                                             " AND b.sSourceCd = 'SOSp'" &
                                     " WHERE a.sReferNox = " & strParm(fsSourceNo) &

@@ -328,12 +328,12 @@ Public Class PRN_Charge
         End If
 
         Dim lsSQL As String
-        lsSQL = "SELECT" & _
-                       "  sAccredtn" & _
-                       ", sPermitNo" & _
-                       ", sSerialNo" & _
-                       ", nPOSNumbr" & _
-               " FROM Cash_Reg_Machine" & _
+        lsSQL = "SELECT" &
+                       "  sAccredtn" &
+                       ", sPermitNo" &
+                       ", sSerialNo" &
+                       ", nPOSNumbr" &
+               " FROM Cash_Reg_Machine" &
                " WHERE sIDNumber = " & strParm(p_sPOSNo)
 
         Dim loDta As DataTable
@@ -370,10 +370,10 @@ Public Class PRN_Charge
     'AddDetail(Quantity, Description, UnitPrice, isVatable)
     '   - Sets the info of the ITEMS bought...
     '+++++++++++++++++++++++++
-    Public Function AddDetail( _
-            ByVal Quantity As Integer, _
-            ByVal Description As String, _
-            ByVal UnitPrice As Decimal, _
+    Public Function AddDetail(
+            ByVal Quantity As Integer,
+            ByVal Description As String,
+            ByVal UnitPrice As Decimal,
             ByVal isVatable As Boolean,
             ByVal isDetail As Boolean,
             ByVal isCount As Boolean) As Boolean
@@ -415,10 +415,10 @@ Public Class PRN_Charge
     'AddDetail(Quantity, Description, UnitPrice, isVatable)
     '   - Sets the info of the ITEMS bought...
     '+++++++++++++++++++++++++
-    Public Function AddComplement( _
-            ByVal Quantity As Integer, _
-            ByVal Description As String, _
-            ByVal UnitPrice As Decimal, _
+    Public Function AddComplement(
+            ByVal Quantity As Integer,
+            ByVal Description As String,
+            ByVal UnitPrice As Decimal,
             ByVal isVatable As Boolean,
             Optional ByVal isDetail As Boolean = True) As Boolean
 
@@ -444,10 +444,10 @@ Public Class PRN_Charge
     'AddDiscount(IDNumber, DiscCard, Amount, isVatable)
     '   - Sets the info of the discounts for this sales...
     '+++++++++++++++++++++++++
-    Public Function AddDiscount( _
-            ByVal IDNumber As String, _
-            ByVal DiscCard As String, _
-            ByVal Amount As Decimal, _
+    Public Function AddDiscount(
+            ByVal IDNumber As String,
+            ByVal DiscCard As String,
+            ByVal Amount As Decimal,
             ByVal isVatable As Boolean) As Boolean
 
         With p_oDTDiscnt
@@ -485,15 +485,15 @@ Public Class PRN_Charge
     'AddDiscount(IDNumber, DiscCard, DiscRate, AddDiscx, Amount, isVatable)
     '   - Sets the info of the discounts for this sales...
     '+++++++++++++++++++++++++
-    Public Function AddDiscount( _
-            ByVal IDNumber As String, _
-            ByVal DiscCard As String, _
-            ByVal DiscRate As Decimal, _
-            ByVal AddDiscx As Decimal, _
-            ByVal Amount As Decimal, _
-            ByVal isVatable As Boolean, _
-            Optional ByVal NoClient As Integer = 1, _
-            Optional ByVal WithDisc As Integer = 1, _
+    Public Function AddDiscount(
+            ByVal IDNumber As String,
+            ByVal DiscCard As String,
+            ByVal DiscRate As Decimal,
+            ByVal AddDiscx As Decimal,
+            ByVal Amount As Decimal,
+            ByVal isVatable As Boolean,
+            Optional ByVal NoClient As Integer = 1,
+            Optional ByVal WithDisc As Integer = 1,
             Optional ByVal sClientNm As String = "") As Boolean
 
         With p_oDTDiscnt
@@ -560,8 +560,8 @@ Public Class PRN_Charge
     'AddGiftCoupon(GiftSource, Amount)
     '   - Sets the info of Gift Coupon(s) used as payment
     '+++++++++++++++++++++++++
-    Public Function AddGiftCoupon( _
-            ByVal GiftSource As String, _
+    Public Function AddGiftCoupon(
+            ByVal GiftSource As String,
             ByVal Amount As Decimal) As Boolean
 
         With p_oDTGftChk
@@ -583,10 +583,10 @@ Public Class PRN_Charge
     'AddCheck(Bank, CheckNo, CheckDate, Amount)
     '   - Sets the info of check(s) used as payment
     '+++++++++++++++++++++++++
-    Public Function AddCheck( _
-            ByVal Bank As String, _
-            ByVal CheckNo As String, _
-            ByVal CheckDate As Date, _
+    Public Function AddCheck(
+            ByVal Bank As String,
+            ByVal CheckNo As String,
+            ByVal CheckDate As Date,
             ByVal Amount As Decimal) As Boolean
 
         With p_oDTChkPym
@@ -611,10 +611,10 @@ Public Class PRN_Charge
     'AddCreditCard(Bank, CardNumber, ApprNo, Amount)
     '   - Sets the info of credit card used as payment
     '+++++++++++++++++++++++++
-    Public Function AddCreditCard( _
-            ByVal Bank As String, _
-            ByVal CardNumber As String, _
-            ByVal ApprNo As String, _
+    Public Function AddCreditCard(
+            ByVal Bank As String,
+            ByVal CardNumber As String,
+            ByVal ApprNo As String,
             ByVal Amount As Decimal)
 
         With p_oDTCredit
@@ -696,7 +696,7 @@ Public Class PRN_Charge
 
         Select Case p_cTrnMde
             Case "A"
-                builder.Append("OFFICIAL RECEIPT" & Environment.NewLine)
+                builder.Append("SALES INVOICE" & Environment.NewLine)
             Case "D"
                 builder.Append("TRAINING MODE" & Environment.NewLine)
         End Select
@@ -720,7 +720,7 @@ Public Class PRN_Charge
         End If
 
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
-        builder.Append(" OR No.: " & psReferNox & Environment.NewLine)
+        builder.Append(" SI No.: " & psReferNox & Environment.NewLine)
         builder.Append(" Transaction No.: " & psTransNox & Environment.NewLine)
         builder.Append(" Date : " & Format(pdTransact, "yyyy-mm-dd") & " " & Format(p_oApp.getSysDate, "hh:mm:ss") & Environment.NewLine)
 
@@ -738,15 +738,15 @@ Public Class PRN_Charge
             If p_oDTDetail(lnCtr).Item("nQuantity") > 0 Then
                 If p_oDTDetail(lnCtr).Item("cDetailxx") = "1" Then
                     If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
-                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
-                        ls4Print = String.Empty.PadLeft(pxeQTYLEN) + " " + _
+                        ls4Print = String.Empty.PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     End If
                 Else
                     If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
-                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
                         ls4Print = "   " & UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
@@ -754,7 +754,7 @@ Public Class PRN_Charge
                     End If
                 End If
             Else
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
             End If
 
@@ -791,7 +791,7 @@ Public Class PRN_Charge
             builder.Append("COMPLEMENT: " & Environment.NewLine)
             For lnCtr = 0 To p_oDTComplx.Rows.Count - 1
 
-                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTComplx(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -899,7 +899,7 @@ Public Class PRN_Charge
         'Print Credit Card Payments
         If p_oDTCredit.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTCredit.Rows.Count - 1
-                ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " & _
+                ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " &
                            Format(p_oDTCredit(lnCtr).Item("nCardAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -908,7 +908,7 @@ Public Class PRN_Charge
         'Print Check Payments
         If p_oDTChkPym.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTChkPym.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " &
                            Format(p_oDTChkPym(lnCtr).Item("nCheckAmt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -917,7 +917,7 @@ Public Class PRN_Charge
         'Print Gift Coupon
         If p_oDTGftChk.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTGftChk.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " &
                            Format(p_oDTGftChk(lnCtr).Item("nGiftAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -927,15 +927,15 @@ Public Class PRN_Charge
         builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
 
         'Print Change
-        Dim lnChange As Decimal = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
+        'Dim lnChange As Decimal = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
 
-        If pnGiftTotl > lnChange Then
-            lnChange = 0
-        Else
-            lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
-        End If
+        'If pnGiftTotl > lnChange Then
+        '    lnChange = 0
+        'Else
+        '    lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
+        'End If
 
-        builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+        'builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
         'Print Discount Information
         If Not IsNothing(p_oDTDiscnt) Then
@@ -1033,7 +1033,7 @@ Public Class PRN_Charge
 
         Call WriteOR()
 
-        p_oApp.SaveEvent("0016", "OR No. " & psReferNox, p_sTermnl)
+        p_oApp.SaveEvent("0016", "SI No. " & psReferNox, p_sTermnl)
 
         Return True
     End Function
@@ -1067,11 +1067,11 @@ Public Class PRN_Charge
 
         'Print Cashier
         builder.Append(" Cashier: " & p_sLogName & "/" & psCashierx & Environment.NewLine)
-        If p_nTableNo > 0 Then
-            builder.Append(" Table No.: " & p_nTableNo & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
-        Else
-            builder.Append(" TAKE-OUT " & Environment.NewLine)
-        End If
+        'If p_nTableNo > 0 Then
+        '    builder.Append(" Table No.: " & p_nTableNo & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
+        'Else
+        '    builder.Append(" TAKE-OUT " & Environment.NewLine)
+        'End If
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
         builder.Append(" CI No.: " & psReferNox & Environment.NewLine)
         builder.Append(" Transaction No.: " & psTransNox & Environment.NewLine)
@@ -1090,15 +1090,15 @@ Public Class PRN_Charge
             If p_oDTDetail(lnCtr).Item("nQuantity") > 0 Then
                 If p_oDTDetail(lnCtr).Item("cDetailxx") = "1" Then
                     If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
-                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
-                        ls4Print = String.Empty.PadLeft(pxeQTYLEN) + " " + _
+                        ls4Print = String.Empty.PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     End If
                 Else
                     If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
-                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
                         ls4Print = "   " & UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
@@ -1106,7 +1106,7 @@ Public Class PRN_Charge
                     End If
                 End If
             Else
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
             End If
 
@@ -1143,7 +1143,7 @@ Public Class PRN_Charge
             builder.Append("COMPLEMENT: " & Environment.NewLine)
             For lnCtr = 0 To p_oDTComplx.Rows.Count - 1
 
-                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTComplx(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -1251,7 +1251,7 @@ Public Class PRN_Charge
         'Print Credit Card Payments
         If p_oDTCredit.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTCredit.Rows.Count - 1
-                ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " & _
+                ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " &
                            Format(p_oDTCredit(lnCtr).Item("nCardAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -1260,7 +1260,7 @@ Public Class PRN_Charge
         'Print Check Payments
         If p_oDTChkPym.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTChkPym.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " &
                            Format(p_oDTChkPym(lnCtr).Item("nCheckAmt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -1269,7 +1269,7 @@ Public Class PRN_Charge
         'Print Gift Coupon
         If p_oDTGftChk.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTGftChk.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " &
                            Format(p_oDTGftChk(lnCtr).Item("nGiftAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -1279,15 +1279,15 @@ Public Class PRN_Charge
         builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
 
         'Print Change
-        Dim lnChange As Decimal = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
+        'Dim lnChange As Decimal = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
 
-        If pnGiftTotl > lnChange Then
-            lnChange = 0
-        Else
-            lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
-        End If
+        'If pnGiftTotl > lnChange Then
+        '    lnChange = 0
+        'Else
+        '    lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
+        'End If
 
-        builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+        'builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
         'Print Discount Information
         If Not IsNothing(p_oDTDiscnt) Then
@@ -1376,7 +1376,7 @@ Public Class PRN_Charge
         Next
 
         builder.Append(Environment.NewLine)
-        builder.Append(PadCenter("----- END OF RECEIPT -----", 40) & Environment.NewLine)
+        builder.Append(PadCenter("----- END OF SALES INVOICE -----", 40) & Environment.NewLine)
         RawPrint.writeToFile(p_sPOSNo & " " & Format(p_oApp.getSysDate, "yyyyMMdd"), builder.ToString())
 
         Return True
@@ -1430,10 +1430,10 @@ Public Class PRN_Charge
         'Print Detail of Sales
         For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
             If p_oDTDetail(lnCtr).Item("nQuantity") > 0 Then
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
             Else
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
             End If
 
@@ -1460,7 +1460,7 @@ Public Class PRN_Charge
             builder.Append("COMPLEMENT: " & Environment.NewLine)
             For lnCtr = 0 To p_oDTComplx.Rows.Count - 1
 
-                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTComplx(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -1563,7 +1563,7 @@ Public Class PRN_Charge
         'Print Credit Card Payments
         If p_oDTCredit.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTCredit.Rows.Count - 1
-                ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " & _
+                ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " &
                            Format(p_oDTCredit(lnCtr).Item("nCardAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -1572,7 +1572,7 @@ Public Class PRN_Charge
         'Print Check Payments
         If p_oDTChkPym.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTChkPym.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " &
                            Format(p_oDTChkPym(lnCtr).Item("nCheckAmt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -1581,7 +1581,7 @@ Public Class PRN_Charge
         'Print Gift Coupon
         If p_oDTGftChk.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTGftChk.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " &
                            Format(p_oDTGftChk(lnCtr).Item("nGiftAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -1672,7 +1672,7 @@ Public Class PRN_Charge
         Next
 
         builder.Append(Environment.NewLine)
-        builder.Append(PadCenter("----- END OF RECEIPT -----", 40) & Environment.NewLine)
+        builder.Append(PadCenter("----- END OF SALES INVOICE -----", 40) & Environment.NewLine)
         RawPrint.writeToFile(p_sPOSNo & " " & Format(p_oApp.getSysDate(), "yyyyMMdd"), builder.ToString())
 
         Return True
@@ -1708,10 +1708,10 @@ Public Class PRN_Charge
         'Print Detail of Sales
         For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
             If p_oDTDetail(lnCtr).Item("nQuantity") > 0 Then
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
             Else
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
             End If
 
@@ -1738,7 +1738,7 @@ Public Class PRN_Charge
             builder.Append("COMPLEMENT: " & Environment.NewLine)
             For lnCtr = 0 To p_oDTComplx.Rows.Count - 1
 
-                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTComplx(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -1827,7 +1827,7 @@ Public Class PRN_Charge
         'Print Credit Card Payments
         If p_oDTCredit.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTCredit.Rows.Count - 1
-                ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " & _
+                ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " &
                            Format(p_oDTCredit(lnCtr).Item("nCardAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -1836,7 +1836,7 @@ Public Class PRN_Charge
         'Print Check Payments
         If p_oDTChkPym.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTChkPym.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " &
                            Format(p_oDTChkPym(lnCtr).Item("nCheckAmt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -1845,7 +1845,7 @@ Public Class PRN_Charge
         'Print Gift Coupon
         If p_oDTGftChk.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTGftChk.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " &
                            Format(p_oDTGftChk(lnCtr).Item("nGiftAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -2052,10 +2052,10 @@ Public Class PRN_Charge
         'Print Detail of Sales
         For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
             If p_oDTDetail(lnCtr).Item("nQuantity") > 0 Then
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
             Else
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
             End If
 
@@ -2082,7 +2082,7 @@ Public Class PRN_Charge
             builder.Append("COMPLEMENT: " & Environment.NewLine)
             For lnCtr = 0 To p_oDTComplx.Rows.Count - 1
 
-                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTComplx(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -2185,7 +2185,7 @@ Public Class PRN_Charge
         'Print Credit Card Payments
         If p_oDTCredit.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTCredit.Rows.Count - 1
-                ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " & _
+                ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " &
                            Format(p_oDTCredit(lnCtr).Item("nCardAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -2194,7 +2194,7 @@ Public Class PRN_Charge
         'Print Check Payments
         If p_oDTChkPym.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTChkPym.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " &
                            Format(p_oDTChkPym(lnCtr).Item("nCheckAmt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -2203,7 +2203,7 @@ Public Class PRN_Charge
         'Print Gift Coupon
         If p_oDTGftChk.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTGftChk.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " &
                            Format(p_oDTGftChk(lnCtr).Item("nGiftAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -2303,7 +2303,7 @@ Public Class PRN_Charge
 
         Call WriteOR()
 
-        p_oApp.SaveEvent("0016", "OR No. " & psReferNox, p_sTermnl)
+        p_oApp.SaveEvent("0016", "SI No. " & psReferNox, p_sTermnl)
 
         Return True
     End Function
@@ -2385,11 +2385,11 @@ Public Class PRN_Charge
         'Print Cashier
         builder.Append(Environment.NewLine)
         builder.Append(" Cashier: " & p_sLogName & "/" & psCashierx & Environment.NewLine)
-        If p_nTableNo > 0 Then
-            builder.Append(" Table No.: " & p_nTableNo & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
-        Else
-            builder.Append(" TAKE-OUT " & Environment.NewLine)
-        End If
+        'If p_nTableNo > 0 Then
+        '    builder.Append(" Table No.: " & p_nTableNo & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
+        'Else
+        '    builder.Append(" TAKE-OUT " & Environment.NewLine)
+        'End If
 
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
         builder.Append(" CI No.: " & psReferNox & Environment.NewLine)
@@ -2410,15 +2410,15 @@ Public Class PRN_Charge
             If p_oDTDetail(lnCtr).Item("nQuantity") > 0 Then
                 If p_oDTDetail(lnCtr).Item("cDetailxx") = "1" Then
                     If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
-                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
-                        ls4Print = String.Empty.PadLeft(pxeQTYLEN) + " " + _
+                        ls4Print = String.Empty.PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     End If
                 Else
                     If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
-                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
                         ls4Print = "   " & UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
@@ -2426,7 +2426,7 @@ Public Class PRN_Charge
                     End If
                 End If
             Else
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
             End If
 
@@ -2463,7 +2463,7 @@ Public Class PRN_Charge
             builder.Append("COMPLEMENT: " & Environment.NewLine)
             For lnCtr = 0 To p_oDTComplx.Rows.Count - 1
 
-                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTComplx(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -2571,7 +2571,7 @@ Public Class PRN_Charge
         'Print Credit Card Payments
         If p_oDTCredit.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTCredit.Rows.Count - 1
-                ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " & _
+                ls4Print = " " & UCase(Left(p_oDTCredit(lnCtr).Item("sCardBank"), 17)).PadRight(24) & " " &
                            Format(p_oDTCredit(lnCtr).Item("nCardAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -2580,7 +2580,7 @@ Public Class PRN_Charge
         'Print Check Payments
         If p_oDTChkPym.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTChkPym.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTChkPym(lnCtr).Item("sCheckNox")).PadRight(24) & " " &
                            Format(p_oDTChkPym(lnCtr).Item("nCheckAmt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -2589,7 +2589,7 @@ Public Class PRN_Charge
         'Print Gift Coupon
         If p_oDTGftChk.Rows.Count > 0 Then
             For lnCtr = 0 To p_oDTGftChk.Rows.Count - 1
-                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " & _
+                ls4Print = " " & UCase(p_oDTGftChk(lnCtr).Item("sGiftSrce") & " GIFT CHEQUE").PadRight(24) & " " &
                            Format(p_oDTGftChk(lnCtr).Item("nGiftAmnt"), xsDECIMAL).PadLeft(pxeREGLEN)
                 builder.Append(ls4Print & Environment.NewLine)
             Next
@@ -2598,16 +2598,16 @@ Public Class PRN_Charge
         'Print Line Before change....
         builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
 
-        'Print Change
-        Dim lnChange As Decimal = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
+        ''Print Change
+        'Dim lnChange As Decimal = (pnTotalDue + pnSChargex) - (pnDiscAmtV + pnDiscAmtN)
 
-        If pnGiftTotl > lnChange Then
-            lnChange = 0
-        Else
-            lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
-        End If
+        ''If pnGiftTotl > lnChange Then
+        ''    lnChange = 0
+        ''Else
+        '    lnChange = (pnCashTotl + pnChckTotl + pnCrdtTotl + pnGiftTotl) - lnChange
+        'End If
 
-        builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+        'builder.Append(" CHANGE".PadRight(25) & " " & Format(lnChange, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
 
         'Print Discount Information
         If Not IsNothing(p_oDTDiscnt) Then
@@ -2688,12 +2688,12 @@ Public Class PRN_Charge
         End If
 
         'Print Asterisk(*)
-        builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
+        'builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
 
-        'Print the Footer
-        For lnCtr = 0 To p_oDTFooter.Rows.Count - 1
-            builder.Append(PadCenter(p_oDTFooter(lnCtr).Item("sFootName"), 40) & Environment.NewLine)
-        Next
+        ''Print the Footer
+        'For lnCtr = 0 To p_oDTFooter.Rows.Count - 1
+        '    builder.Append(PadCenter(p_oDTFooter(lnCtr).Item("sFootName"), 40) & Environment.NewLine)
+        'Next
 
         builder.Append(Chr(&H1D) & "V" & Chr(66) & Chr(0))
 
@@ -2705,7 +2705,7 @@ Public Class PRN_Charge
 
         Call WriteOR()
 
-        p_oApp.SaveEvent("0016", "OR No. " & psReferNox, p_sTermnl)
+        p_oApp.SaveEvent("0016", "SI No. " & psReferNox, p_sTermnl)
 
         Return True
     End Function
@@ -2794,10 +2794,10 @@ Public Class PRN_Charge
         'Print Detail of Sales
         For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
             If p_oDTDetail(lnCtr).Item("nQuantity") > 0 Then
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
             Else
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
             End If
 
@@ -2824,7 +2824,7 @@ Public Class PRN_Charge
             builder.Append("COMPLEMENT: " & Environment.NewLine)
             For lnCtr = 0 To p_oDTComplx.Rows.Count - 1
 
-                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                ls4Print = Format(p_oDTComplx(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTComplx(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                 builder.Append(ls4Print & Environment.NewLine)
             Next

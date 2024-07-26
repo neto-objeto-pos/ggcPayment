@@ -92,6 +92,8 @@ Public Class Receipt
     Private p_sTrantype As String
     Private p_sLogName As String
     Private pnBill As Decimal
+
+    Private pnBillSplitted As Decimal
     Private pnCharge As Decimal
 
 #Region "Properties"
@@ -427,12 +429,19 @@ Public Class Receipt
 
         If lbSuccess Then
             CheckPrinter("EPSON TM-U220 Receipt")
+            If (p_oAppDrvr.BranchCode = "P013") Then
+                Dim lnRep As Integer
+                lnRep = MsgBox("Do you want to print Bill?", vbQuestion & vbYesNo, "CONFIRMATION")
+                If lnRep = vbNo Then Return False
+                printBilling()
+            Else
+                printReciept()
+            End If
 
-            printReciept()
         End If
-        'MsgBox("Print Receipt")
+            'MsgBox("Print Receipt")
 
-        Return lbSuccess
+            Return lbSuccess
     End Function
 
     Function printBilling(Optional ByVal bReprint As Boolean = False) As Boolean
@@ -457,6 +466,7 @@ Public Class Receipt
             .BillingNo = p_sBillingNo
             .Reprint = bReprint
             .CashierName = getCashier(p_oAppDrvr.UserID)
+            Debug.Print(p_oDataTable.Rows(0)("nSChargex"))
             .ServiceCharge = p_oDataTable.Rows(0)("nSChargex")
             .LogName = p_sLogName
             .PosDate = p_dPOSDatex
@@ -586,9 +596,9 @@ Public Class Receipt
 
             Select Case p_cTrnMde
                 Case "A"
-                    .AddFooter("This serves as your OFFICIAL RECEIPT.")
+                    .AddFooter("This serves as your SALES INVOICE.")
                 Case "D"
-                    .AddFooter("This is not an OFFICIAL RECEIPT.")
+                    .AddFooter("This is not an SALES INVOICE.")
             End Select
             .AddFooter("Thank you, and please come again.")
             .AddFooter("")
@@ -635,6 +645,8 @@ Public Class Receipt
             .Reprint = bReprint
             .CashierName = getCashier(p_oAppDrvr.UserID)
             .LogName = p_sLogName
+
+            Debug.Print(p_oDataTable.Rows(0)("nSChargex"))
             .ServiceCharge = p_oDataTable.Rows(0)("nSChargex")
             .ClientNo = p_nNoClient
             .WithDisc = p_nWithDisc
@@ -873,6 +885,7 @@ Public Class Receipt
             .SourceNo = p_sSplitSrc
             .BillingNo = p_sBillingNo
 
+
             If Not IsNothing(p_oDtaOrder) Then
                 Dim lnSlPrc As Double
                 'If p_oDtaOrder.Rows.Count = 0 Then
@@ -1065,9 +1078,9 @@ Public Class Receipt
             .AddFooter("")
             Select Case p_cTrnMde
                 Case "A"
-                    .AddFooter("This serves as your OFFICIAL RECEIPT.")
+                    .AddFooter("This serves as your SALES INVOICE.")
                 Case "D"
-                    .AddFooter("This is not an OFFICIAL RECEIPT.")
+                    .AddFooter("This is not an SALES INVOICE.")
             End Select
             .AddFooter("Thank you, and please come again.")
             .AddFooter("")
@@ -1125,7 +1138,12 @@ Public Class Receipt
             p_nTendered = loDT.Rows(0)("nTendered")
             'p_nDiscAmtx = loDT.Rows(0)("nDiscount")
             'p_nNonVATxx = loDT.Rows(0)("nSalesAmt") + loDT.Rows(0)("nPWDDiscx")
-            p_nNonVATxx = loDT.Rows(0)("nSalesAmt") - ((loDT.Rows(0)("nVATSales") + IFNull(loDT.Rows(0)("nZeroRatd"), 0) + loDT.Rows(0)("nVATAmtxx")))
+
+            Debug.Print(loDT.Rows(0)("nSalesAmt"))
+            Debug.Print(loDT.Rows(0)("nVATSales"))
+            Debug.Print(loDT.Rows(0)("nVATAmtxx"))
+            Debug.Print(loDT.Rows(0)("nPWDDiscx"))
+            p_nNonVATxx = loDT.Rows(0)("nSalesAmt") - ((loDT.Rows(0)("nVATSales") + IFNull(loDT.Rows(0)("nZeroRatd"), 0) + loDT.Rows(0)("nVATAmtxx") - loDT.Rows(0)("nPWDDiscx")))
         End With
 
         Call computePaymentTotal()
@@ -1219,7 +1237,6 @@ Public Class Receipt
 
         With p_oDataTable
             Call ShowReceipt()
-
             If p_bCancelled = True Then Return False
 
             If p_oDataTable.Rows(0)("nTendered") > 0.0 Then
@@ -1352,7 +1369,7 @@ Public Class Receipt
         If p_bCancelled Then Return False
 
         p_oAppDrvr.SaveEvent("0015", "Order TN " & p_sSourceNo & "/" & p_sSourceCd & "/" &
-                                    "OR No. " & p_oDataTable.Rows(0)("sORNumber") & "/Amount " & p_nTendered + p_nCash, p_sSerial)
+                                    "SI No. " & p_oDataTable.Rows(0)("sORNumber") & "/Amount " & p_nTendered + p_nCash, p_sSerial)
         Return True
     End Function
 

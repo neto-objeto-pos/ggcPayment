@@ -91,7 +91,7 @@ Public Class frmPay
                     '    GoTo endProc
                     'End If
                 End If
-                If p_nCheck + p_nCreditCard + p_nGiftCert + p_nCash + p_nSchargex + p_nDelivery >= CDec(lblBill.Text) Then
+                If CDec(lblChange.Text) >= 0.00 Then
                     pbCancelled = False
                     Me.Close()
                     Me.Dispose()
@@ -174,7 +174,7 @@ endProc:
 
 
     Private Sub computeChange()
-        Dim lnBill As Decimal = CDec(lblBill.Text)
+        Dim lnBill As Decimal = CDec(lblBill.Text) + CDec(lblDiscount.Text)
 
         If p_nGiftCert > 0 And p_nTendered + p_nCheck + p_nCreditCard + p_nDelivery = 0 Then 'GC payment only
             lblChange.Text = "0.00"
@@ -185,10 +185,10 @@ endProc:
                 If p_nGiftCert > lnBill Then
                     lblChange.Text = "0.00"
                 Else
-                    lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery) - lnBill, 2)
+                    lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery + p_nDiscount) - lnBill, 2)
                 End If
             Else
-                lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery) - lnBill, 2)
+                lblChange.Text = FormatNumber((p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery + p_nDiscount) - lnBill, 2)
             End If
         Else
             lblChange.Text = "0.00"
@@ -199,7 +199,7 @@ endProc:
         lblCheck.Text = FormatNumber(p_nCheck, 2)
         lblGiftCheck.Text = FormatNumber(p_nGiftCert, 2)
         lblDelivery.Text = FormatNumber(p_nDelivery, 2)
-        lblTotal.Text = FormatNumber(p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery, 2)
+        lblTotal.Text = FormatNumber(p_nTendered + p_nCheck + p_nCreditCard + p_nGiftCert + p_nDelivery + p_nDiscount, 2)
     End Sub
 
     Private Sub clearFields()
@@ -208,6 +208,8 @@ endProc:
         p_nSchargex = FormatNumber(poReceipt.myCharge, 2)
         lblDiscount.Text = FormatNumber(poReceipt.Master("nDiscount") + poReceipt.Master("nVatDiscx") + poReceipt.Master("nPWDDiscx"), 2)
         txtAmount.Text = FormatNumber(poReceipt.Master("nTendered"), 2)
+        p_nDiscount = FormatNumber(lblDiscount.Text, 2)
+
 
         Call computeChange()
     End Sub
@@ -220,9 +222,14 @@ endProc:
     End Sub
 
     Private Sub txtAmount_KeyPress(sender As Object, e As System.Windows.Forms.KeyPressEventArgs) Handles txtAmount.KeyPress
-        If Not Char.IsNumber(e.KeyChar) AndAlso Not Char.IsControl(e.KeyChar) AndAlso Not e.KeyChar = "." Then
-            e.Handled = True
+
+        If e.KeyChar = vbCr Then
+            cmdButton00.Focus()
         End If
+        If Not Char.IsNumber(e.KeyChar) AndAlso Not Char.IsControl(e.KeyChar) AndAlso Not e.KeyChar = "." Then
+                e.Handled = True
+            End If
+
     End Sub
 
     Private Sub txtAmount_LostFocus(sender As Object, e As System.EventArgs) Handles txtAmount.LostFocus
@@ -269,5 +276,13 @@ endProc:
             .SetStyle(ControlStyles.AllPaintingInWmPaint, True)
             .UpdateStyles()
         End With
+    End Sub
+
+    Private Sub frmPay_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        Select Case e.KeyCode
+            Case Keys.Escape
+                pbCancelled = True
+                Me.Close()
+        End Select
     End Sub
 End Class

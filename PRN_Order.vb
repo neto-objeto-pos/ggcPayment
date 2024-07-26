@@ -43,6 +43,8 @@
 Imports ADODB
 Imports ggcAppDriver
 Imports System.Drawing
+Imports System.Reflection
+Imports System.Runtime.CompilerServices
 
 Public Class PRN_Order
     Private p_oApp As GRider
@@ -56,16 +58,21 @@ Public Class PRN_Order
     Private p_sTermnl As String     'Termnl No: 02
 
     Private p_oDTDetail As DataTable
+    Private p_oDTDetailKitchen As DataTable
+    Private p_oDTDetailBar As DataTable
     Private p_oDTHeader As DataTable
     Private p_oDTFooter As DataTable
-    Private p_oDT As DataTable
+    Private p_oDTCategory As DataTable
 
     Private pnTotalItm As Decimal
+    Private pnTotalItmCategory As Decimal
     Private psContrlNo As String
     Private psWaiterxx As String
     Private psDelivery As String
     Private psTableNox As String
     Private pdTransact As Date
+    Private pbisItemCount As Boolean
+
 
     Private p_sCashier As String
     Private p_sReferNox As String
@@ -179,7 +186,7 @@ Public Class PRN_Order
             .Rows(.Rows.Count - 1).Item("nTotlAmnt") = Quantity * UnitPrice
             .Rows(.Rows.Count - 1).Item("sPrntPath") = Printer
             .Rows(.Rows.Count - 1).Item("sDescript") = Left(FDescript, 50)
-
+            pbisItemCount = isCount
             If isCount Then
                 pnTotalItm = pnTotalItm + Quantity
             End If
@@ -280,6 +287,7 @@ Public Class PRN_Order
         'Print the designation printer location...
         RawPrint.SendStringToPrinter(ordertk_printer, builder.ToString())
 
+
         'Dim kitchen_printer As String = Environment.GetEnvironmentVariable("RMS_PRN_KN")
         'If kitchen_printer <> "n/a" And kitchen_printer <> "" Then
         '    RawPrint.SendStringToPrinter(kitchen_printer, builder.ToString())
@@ -290,54 +298,76 @@ Public Class PRN_Order
         Return True
     End Function
 
+
     Private Function processCategory() As Boolean
         Dim dt As DataTable = p_oDTDetail
 
         dt.DefaultView.Sort = "sPrntPath ASC"
         dt = dt.DefaultView.ToTable()
 
+
+
         createDT()
+        If p_oDTCategory.Rows.Count = 0 Then
+            pnTotalItmCategory = 0  'Initialize Total Item Sold
+        End If
+
         For lnCtr = 0 To dt.Rows.Count - 1
             If IFNull(dt.Rows(lnCtr).Item("sPrntPath"), "") <> "" Then
-                If lnCtr + 1 < dt.Rows.Count Then
-                    p_oDT.Rows.Add()
-                    p_oDT.Rows(p_oDT.Rows.Count - 1).Item("nQuantity") = dt.Rows(lnCtr).Item("nQuantity")
-                    p_oDT.Rows(p_oDT.Rows.Count - 1).Item("sDescript") = dt.Rows(lnCtr).Item("sDescript")
-                    p_oDT.Rows(p_oDT.Rows.Count - 1).Item("nUnitPrce") = dt.Rows(lnCtr).Item("nUnitPrce")
-                    p_oDT.Rows(p_oDT.Rows.Count - 1).Item("cDetailxx") = dt.Rows(lnCtr).Item("cDetailxx")
-                    p_oDT.Rows(p_oDT.Rows.Count - 1).Item("nTotlAmnt") = dt.Rows(lnCtr).Item("nTotlAmnt")
+                'If lnCtr + 1 < dt.Rows.Count Then
+                p_oDTCategory.Rows.Add()
+                    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("nQuantity") = dt.Rows(lnCtr).Item("nQuantity")
+                    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("sBriefDsc") = dt.Rows(lnCtr).Item("sBriefDsc")
+                    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("nUnitPrce") = dt.Rows(lnCtr).Item("nUnitPrce")
+                    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("cDetailxx") = dt.Rows(lnCtr).Item("cDetailxx")
+                    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("nTotlAmnt") = dt.Rows(lnCtr).Item("nTotlAmnt")
 
+                If pbisItemCount Then
+                    pnTotalItmCategory = pnTotalItmCategory + dt.Rows(lnCtr).Item("nQuantity")
+                End If
+                If lnCtr < dt.Rows.Count - 1 Then
                     If dt(lnCtr).Item("sPrntPath") <> dt(lnCtr + 1).Item("sPrntPath") Then
                         If dt(lnCtr).Item("sPrntPath") <> "" Then
                             PrintByCategory(dt(lnCtr).Item("sPrntPath"))
                             createDT()
+                            pnTotalItmCategory = 0
                         End If
                     End If
                 Else
-                    p_oDT.Rows.Add()
-                    p_oDT.Rows(p_oDT.Rows.Count - 1).Item("nQuantity") = dt.Rows(lnCtr).Item("nQuantity")
-                    p_oDT.Rows(p_oDT.Rows.Count - 1).Item("sDescript") = dt.Rows(lnCtr).Item("sDescript")
-                    p_oDT.Rows(p_oDT.Rows.Count - 1).Item("nUnitPrce") = dt.Rows(lnCtr).Item("nUnitPrce")
-                    p_oDT.Rows(p_oDT.Rows.Count - 1).Item("cDetailxx") = dt.Rows(lnCtr).Item("cDetailxx")
-                    p_oDT.Rows(p_oDT.Rows.Count - 1).Item("nTotlAmnt") = dt.Rows(lnCtr).Item("nTotlAmnt")
-                    If dt(lnCtr).Item("sPrntPath") <> "" Then
-                        PrintByCategory(dt(lnCtr).Item("sPrntPath"))
+                        If dt(lnCtr).Item("sPrntPath") <> "" Then
+                            PrintByCategory(dt(lnCtr).Item("sPrntPath"))
+                            createDT()
+                            pnTotalItmCategory = 0
+                        End If
+
+
                     End If
-                End If
+                'Else
+                '    p_oDTCategory.Rows.Add()
+                '    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("nQuantity") = dt.Rows(lnCtr).Item("nQuantity")
+                '    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("sBriefDsc") = dt.Rows(lnCtr).Item("sBriefDsc")
+                '    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("nUnitPrce") = dt.Rows(lnCtr).Item("nUnitPrce")
+                '    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("cDetailxx") = dt.Rows(lnCtr).Item("cDetailxx")
+                '    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("nTotlAmnt") = dt.Rows(lnCtr).Item("nTotlAmnt")
+                '    If dt(lnCtr).Item("sPrntPath") <> "" Then
+                '        PrintByCategory(dt(lnCtr).Item("sPrntPath"))
+
+                '    End If
             End If
+            'End If
         Next
 
         Return True
     End Function
 
     Private Sub createDT()
-        p_oDT = New DataTable("DT")
-        p_oDT.Columns.Add("nQuantity", System.Type.GetType("System.Int16"))
-        p_oDT.Columns.Add("sDescript", System.Type.GetType("System.String")).MaxLength = 128
-        p_oDT.Columns.Add("nUnitPrce", System.Type.GetType("System.Decimal"))
-        p_oDT.Columns.Add("nTotlAmnt", System.Type.GetType("System.Decimal"))
-        p_oDT.Columns.Add("cDetailxx", System.Type.GetType("System.String")).MaxLength = 1
-        p_oDT.Columns.Add("sPrntPath", System.Type.GetType("System.String")).MaxLength = 128
+        p_oDTCategory = New DataTable("DT")
+        p_oDTCategory.Columns.Add("nQuantity", System.Type.GetType("System.Int16"))
+        p_oDTCategory.Columns.Add("sBriefDsc", System.Type.GetType("System.String")).MaxLength = 128
+        p_oDTCategory.Columns.Add("nUnitPrce", System.Type.GetType("System.Decimal"))
+        p_oDTCategory.Columns.Add("nTotlAmnt", System.Type.GetType("System.Decimal"))
+        p_oDTCategory.Columns.Add("cDetailxx", System.Type.GetType("System.String")).MaxLength = 1
+        p_oDTCategory.Columns.Add("sPrntPath", System.Type.GetType("System.String")).MaxLength = 128
     End Sub
 
     Private Function PrintByCategory(ByVal fsPrinter As String) As Boolean
@@ -362,6 +392,7 @@ Public Class PRN_Order
             Return False
         End If
 
+
         Dim builder As New System.Text.StringBuilder()
 
         builder.Append(RawPrint.pxePRINT_INIT)          'Initialize Printer
@@ -384,34 +415,29 @@ Public Class PRN_Order
         builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
 
         Dim ls4Print As String
-        ls4Print = " QTY" & " " & "DESCRIPTION".PadRight(pxeDSCLEN)
+        ls4Print = " QTY" & " " & "DESCRIPTION".PadRight(pxeDSCLEN) & " " & "UPRICE".PadLeft(pxePRCLEN) & " " & "AMOUNT".PadLeft(pxeTTLLEN)
         builder.Append(ls4Print & Environment.NewLine)
 
-        'Print Detail of Sale
-        pnTotalItm = 0
+        'Print Detail of Sales
+        For lnCtr = 0 To p_oDTCategory.Rows.Count - 1
+            ls4Print = Format(p_oDTCategory(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
+                       UCase(p_oDTCategory(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
 
-        For lnCtr = 0 To p_oDT.Rows.Count - 1
-            ls4Print = Format(p_oDT(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
-                       UCase(p_oDT(lnCtr).Item("sDescript")).PadRight(pxeDSCLEN + pxePRCLEN + pxeTTLLEN) + " "
-
-            If p_oDT(lnCtr).Item("nUnitPrce") > 0 Then
-                'ls4Print = ls4Print + Format(p_oDT(lnCtr).Item("nUnitPrce"), xsDECIMAL).PadLeft(pxePRCLEN) + " "
-                'ls4Print = ls4Print + Format(p_oDT(lnCtr).Item("nTotlAmnt"), xsDECIMAL).PadLeft(pxeTTLLEN) + " "
+            If p_oDTCategory(lnCtr).Item("nUnitPrce") > 0 Then
+                ls4Print = ls4Print + Format(p_oDTCategory(lnCtr).Item("nUnitPrce"), xsDECIMAL).PadLeft(pxePRCLEN) + " "
+                ls4Print = ls4Print + Format(p_oDTCategory(lnCtr).Item("nTotlAmnt"), xsDECIMAL).PadLeft(pxeTTLLEN) + " "
             End If
             builder.Append(ls4Print & Environment.NewLine)
-
-            pnTotalItm = pnTotalItm + p_oDT(lnCtr).Item("nQuantity")
         Next
 
         'Print Dash Separator(-)
         builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
 
         builder.Append(" Terminal No: " & p_sTermnl & Environment.NewLine)
-        builder.Append(" No of Items: " & pnTotalItm & Environment.NewLine & Environment.NewLine)
+        builder.Append(" No of Items: " & pnTotalItmCategory & Environment.NewLine & Environment.NewLine)
         If psDelivery = "2" Then
             builder.Append(" ** DELIVERY SERVICE ** " & Environment.NewLine & Environment.NewLine)
         End If
-
         ''Print Asterisk(*)
         'builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
 
@@ -424,9 +450,9 @@ Public Class PRN_Order
 
         'Dim ordertk_printer As String = "\\192.168.10.12\EPSON TM-U220 Receipt"
 
-        Dim ordertk_printer As String = fsPrinter
+        Dim order_printer As String = Environment.GetEnvironmentVariable(fsPrinter)
         'Print the designation printer location...
-        RawPrint.SendStringToPrinter(ordertk_printer, builder.ToString())
+        RawPrint.SendStringToPrinter(order_printer, builder.ToString())
 
         'If kitchen_printer <> "n/a" And kitchen_printer <> "" Then
         '    RawPrint.SendStringToPrinter(kitchen_printer, builder.ToString())

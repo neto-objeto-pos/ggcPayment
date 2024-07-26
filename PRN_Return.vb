@@ -302,7 +302,7 @@ Public Class PRN_Return
         'Print Cashier
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
         builder.Append(" Return Slip No.: " & psReturnNo & Environment.NewLine)
-        builder.Append(" Reference OR No.: " & psReferNox & Environment.NewLine)
+        builder.Append(" Reference SI No.: " & psReferNox & Environment.NewLine)
         builder.Append(" Date : " & Format(pdTransact, "yyyy-mm-dd") & " " & Format(p_oApp.getSysDate, "hh:mm:ss") & Environment.NewLine)
         builder.Append(" Cashier: " & p_sLogName & "/" & CashierName & Environment.NewLine)
 
@@ -345,7 +345,7 @@ Public Class PRN_Return
         builder.Append(" Cashier: " & p_sLogName & "/" & psCashierx & Environment.NewLine)
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
         builder.Append(" Return Slip No.: " & psReturnNo & Environment.NewLine)
-        builder.Append(" Reference OR No.: " & psReferNox & Environment.NewLine)
+        builder.Append(" Reference SI No.: " & psReferNox & Environment.NewLine)
         builder.Append(" Date : " & Format(pdTransact, "yyyy-mm-dd") & " " & Format(p_oApp.getSysDate, "hh:mm:ss") & Environment.NewLine)
 
         'Print Asterisk(*)
@@ -390,7 +390,7 @@ Public Class PRN_Return
         Next
 
         builder.Append(Environment.NewLine)
-        builder.Append(PadCenter("----- END OF RECEIPT -----", 40) & Environment.NewLine)
+        builder.Append(PadCenter("----- END OF SALES INVOICE -----", 40) & Environment.NewLine)
         RawPrint.writeToFile(p_sPOSNo & " " & Format(p_oApp.getSysDate(), "yyyyMMdd"), builder.ToString())
 
         Return True

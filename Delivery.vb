@@ -264,6 +264,7 @@ Public Class Delivery
                     Throw ex
                 End Try
 
+
                 lnTotal += CDec(.Rows(lnCtr)("nAmountxx"))
             Next lnCtr
             p_nDelivery = lnTotal
@@ -431,23 +432,23 @@ Public Class Delivery
     End Function
 
     Private Function getSQL_Master() As String
-        Return " SELECT a.sTransNox ," &
-                   " a.sRiderIDx," &
-                   " a.sRemarksx," &
-                   " a.nAmountxx," &
-                   " a.sSourceCd," &
-                   " a.sSourceNo," &
-                   " a.cCollectd," &
-                   " a.cBilledxx," &
-                   " a.dBilledxx," &
-                   " a.cPaidxxxx," &
-                   " a.dPaidxxxx," &
-                   " a.cWaivexxx," &
-                   " a.dWaivexxx," &
-                   " a.sWaivexxx," &
-                   " a.cTranStat," &
-                   " b.sDescript," &
-                   " b.sBriefDsc" &
+        Return " SELECT a.sTransNox," &
+                   " a.sRiderIDx, " &
+                   " a.sRemarksx, " &
+                   " a.nAmountxx, " &
+                   " a.sSourceCd, " &
+                   " a.sSourceNo, " &
+                   " a.cCollectd, " &
+                   " a.cBilledxx, " &
+                   " a.dBilledxx, " &
+                   " a.cPaidxxxx, " &
+                   " a.dPaidxxxx, " &
+                   " a.cWaivexxx, " &
+                   " a.dWaivexxx, " &
+                   " a.sWaivexxx, " &
+                   " a.cTranStat, " &
+                   " b.sDescript, " &
+                   " b.sBriefDsc, " &
                    " b.sClientID" &
                 " FROM " & pxeMasterTble & " a" &
                 ", Delivery_Service b " &
