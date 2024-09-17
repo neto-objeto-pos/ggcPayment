@@ -353,7 +353,9 @@ Public Class GiftCerticate
 
         With p_oDataTable
             .Rows.Add()
-            .Rows(lnRow)("sTransNox") = GetNextCode(pxeMasterTble, "sTransNox", True, p_oAppDrvr.Connection, True, p_sBranchCd)
+            'kalyptus - 2024.09.17 10:43am
+            'Include terminal number on the value sTransNox
+            .Rows(lnRow)("sTransNox") = GetNextCode(pxeMasterTble, "sTransNox", True, p_oAppDrvr.Connection, True, p_sBranchCd + p_oAppDrvr.POSTerminal)
             .Rows(lnRow)("sCompnyCd") = ""
             .Rows(lnRow)("sReferNox") = ""
             .Rows(lnRow)("dValidity") = p_oAppDrvr.SysDate

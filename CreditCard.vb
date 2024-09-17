@@ -373,7 +373,9 @@ Public Class CreditCard
 
         With p_oDataTable
             .Rows.Add()
-            .Rows(lnRow)("sTransNox") = GetNextCode(pxeMasterTble, "sTransNox", True, p_oAppDrvr.Connection, True, p_sBranchCd)
+            'kalyptus - 2024.09.17 10:32am
+            'Include terminal number on the sTransNox
+            .Rows(lnRow)("sTransNox") = GetNextCode(pxeMasterTble, "sTransNox", True, p_oAppDrvr.Connection, True, p_sBranchCd + p_oAppDrvr.POSTerminal)
             .Rows(lnRow)("sTermnlID") = ""
             .Rows(lnRow)("sTermnlNm") = ""
             .Rows(lnRow)("sBankIDxx") = ""
@@ -541,7 +543,10 @@ Public Class CreditCard
     Private Sub initMaster()
         With p_oDataTable
             .Rows.Add()
-            .Rows(0)("sTransNox") = getNextTransNo()
+            'kalyptus - 2024.09.17 10:33am
+            'Include terminal number on the sTransNox
+            '.Rows(0)("sTransNox") = getNextTransNo()
+            .Rows(0)("sTransNox") = GetNextCode(pxeMasterTble, "sTransNox", True, p_oAppDrvr.Connection, True, p_sBranchCd + p_oAppDrvr.POSTerminal)
             .Rows(0)("sTermnlID") = ""
             .Rows(0)("sBankIDxx") = ""
             .Rows(0)("sCardNoxx") = ""

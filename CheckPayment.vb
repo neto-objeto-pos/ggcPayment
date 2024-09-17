@@ -266,7 +266,9 @@ Public Class CheckPayment
 
         With p_oDataTable
             .Rows.Add()
-            .Rows(lnRow)("sTransNox") = GetNextCode(pxeMasterTble, "sTransNox", True, p_oAppDrvr.Connection, True, p_sBranchCd)
+            'Kalyptus - 2024.09.17 09:46am
+            'Add Terminal to the transaction no
+            .Rows(lnRow)("sTransNox") = GetNextCode(pxeMasterTble, "sTransNox", True, p_oAppDrvr.Connection, True, p_sBranchCd + p_oAppDrvr.POSTerminal)
             .Rows(lnRow)("dTransact") = p_oAppDrvr.SysDate
             .Rows(lnRow)("sBankIDxx") = ""
             .Rows(lnRow)("sCheckNox") = ""
@@ -459,7 +461,8 @@ Public Class CheckPayment
     Private Sub initMaster()
         With p_oDataTable
             .Rows.Add()
-            .Rows(0)("sTransNox") = getNextTransNo()
+            '.Rows(0)("sTransNox") = getNextTransNo()
+            .Rows(0)("sTransNox") = GetNextCode(pxeMasterTble, "sTransNox", True, p_oAppDrvr.Connection, True, p_sBranchCd + p_oAppDrvr.POSTerminal)
             .Rows(0)("sCustName") = ""
             .Rows(0)("dTransact") = p_oAppDrvr.SysDate
             .Rows(0)("sBankIDxx") = ""

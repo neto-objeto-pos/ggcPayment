@@ -178,8 +178,10 @@ Public Class Delivery
                 If Not isLimitOK() Then
                     Return False
                 End If
-
-                .Rows(lnCtr)("sTransNox") = getNextTransNo()
+                'kalyptus - 2024.09.17 10:37am
+                'Include terminal number on the sTransNox
+                '.Rows(lnCtr)("sTransNox") = getNextTransNo()
+                .Rows(lnCtr)("sTransNox") = GetNextCode(pxeMasterTble, "sTransNox", True, p_oAppDrvr.Connection, True, p_sBranchCd + p_oAppDrvr.POSTerminal)
                 Debug.Print("TransNo = " + .Rows(lnCtr)("sTransNox"))
                 lsSQL = "INSERT INTO " & pxeMasterTble & " SET" &
                             "  sTransNox = " & strParm(.Rows(lnCtr)("sTransNox")) &
@@ -407,7 +409,10 @@ Public Class Delivery
 
         With p_oDataTable
             .Rows.Add()
-            .Rows(lnRow)("sTransNox") = getNextTransNo()
+            'kalyptus - 2024.09.17 10:38am
+            'Include terminal number on the sTransNox
+            '.Rows(lnRow)("sTransNox") = getNextTransNo()
+            .Rows(lnRow)("sTransNox") = GetNextCode(pxeMasterTble, "sTransNox", True, p_oAppDrvr.Connection, True, p_sBranchCd + p_oAppDrvr.POSTerminal)
 
             Debug.Print("transno open bysource = " + .Rows(lnRow)("sTransNox"))
             .Rows(lnRow)("sRiderIDx") = ""
@@ -520,8 +525,10 @@ Public Class Delivery
         With p_oDataTable
             .Rows.Add()
 
-            .Rows(0)("sTransNox") = getNextTransNo()
-
+            'kalyptus - 2024.09.17 10:41am
+            'Include terminal number on the sTransNox
+            '.Rows(0)("sTransNox") = getNextTransNo()
+            .Rows(0)("sTransNox") = GetNextCode(pxeMasterTble, "sTransNox", True, p_oAppDrvr.Connection, True, p_sBranchCd + p_oAppDrvr.POSTerminal)
             Debug.Print("TransNo initmaster= " + .Rows(0)("sTransNox"))
             .Rows(0)("sRiderIDx") = ""
             .Rows(0)("sRemarksx") = ""

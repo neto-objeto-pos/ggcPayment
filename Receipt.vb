@@ -1496,7 +1496,10 @@ Public Class Receipt
     Private Sub initMaster()
         With p_oDataTable
             .Rows.Add()
-            .Rows(0)("sTransNox") = getNextTransNo()
+            'kalyptus - 2024.09.17 11:12am
+            'Include terminal number on the sTransNox
+            '.Rows(0)("sTransNox") = getNextTransNo()
+            .Rows(0)("sTransNox") = GetNextCode(pxeMasterTble, "sTransNox", True, p_oAppDrvr.Connection, True, p_sBranchCd + p_oAppDrvr.POSTerminal)
             .Rows(0)("dTransact") = p_oAppDrvr.SysDate
             .Rows(0)("sORNumber") = Strings.Right("000000000000000" & getNextORNumber().ToString(), 15)
             .Rows(0)("nSalesAmt") = 0.0

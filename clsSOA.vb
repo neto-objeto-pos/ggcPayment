@@ -388,7 +388,10 @@ Public Class clsSOA
 
         If p_nEditMode = xeEditMode.MODE_ADDNEW Then
 
-            p_oDTMaster(0).Item("sTransNox") = GetNextCode(p_sMasTable, "sTransNox", True, p_oApp.Connection, True, p_sBranchCD)
+            'kalyptus - 2024.09.17 10:30am
+            'Include terminal number on the sTransNox
+            p_oDTMaster(0).Item("sTransNox") = GetNextCode(p_sMasTable, "sTransNox", True, p_oApp.Connection, True, p_sBranchCD + p_oApp.POSTerminal
+                                                           )
             p_oDTMaster(0).Item("dModified") = Format(p_oApp.SysDate, "yyyy-MM-dd HH:mm:ss")
 
             p_oApp.BeginTransaction()
@@ -576,7 +579,9 @@ Public Class clsSOA
         For lnCtr = 0 To p_oDTMaster.Columns.Count - 1
             Select Case LCase(p_oDTMaster.Columns(lnCtr).ColumnName)
                 Case "stransnox"
-                    p_oDTMaster(0).Item(lnCtr) = GetNextCode(p_sMasTable, "sTransNox", True, p_oApp.Connection, True, p_oApp.BranchCode)
+                    'kalyptus - 2024.09.17 10:31am
+                    'Include the terminal Number on the sTransNox
+                    p_oDTMaster(0).Item(lnCtr) = GetNextCode(p_sMasTable, "sTransNox", True, p_oApp.Connection, True, p_oApp.BranchCode + p_oApp.POSTerminal)
 
                 Case "dtransact", "dmodified", "dtimestmp"
                     p_oDTMaster(0).Item(lnCtr) = p_oApp.SysDate
