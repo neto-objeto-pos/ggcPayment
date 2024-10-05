@@ -305,56 +305,40 @@ Public Class PRN_Order
         dt.DefaultView.Sort = "sPrntPath ASC"
         dt = dt.DefaultView.ToTable()
 
-
-
         createDT()
         If p_oDTCategory.Rows.Count = 0 Then
             pnTotalItmCategory = 0  'Initialize Total Item Sold
         End If
 
         For lnCtr = 0 To dt.Rows.Count - 1
-            If IFNull(dt.Rows(lnCtr).Item("sPrntPath"), "") <> "" Then
-                'If lnCtr + 1 < dt.Rows.Count Then
-                p_oDTCategory.Rows.Add()
+            Dim sPrntPaths As String() = IFNull(dt.Rows(lnCtr).Item("sPrntPath"), "").ToString().Split(";"c)
+
+            For Each sPrntPath As String In sPrntPaths
+                If sPrntPath <> "" Then
+                    p_oDTCategory.Rows.Add()
                     p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("nQuantity") = dt.Rows(lnCtr).Item("nQuantity")
                     p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("sBriefDsc") = dt.Rows(lnCtr).Item("sBriefDsc")
                     p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("nUnitPrce") = dt.Rows(lnCtr).Item("nUnitPrce")
                     p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("cDetailxx") = dt.Rows(lnCtr).Item("cDetailxx")
                     p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("nTotlAmnt") = dt.Rows(lnCtr).Item("nTotlAmnt")
 
-                If pbisItemCount Then
-                    pnTotalItmCategory = pnTotalItmCategory + dt.Rows(lnCtr).Item("nQuantity")
+                    If pbisItemCount Then
+                        pnTotalItmCategory = pnTotalItmCategory + dt.Rows(lnCtr).Item("nQuantity")
+                    End If
+
+                    If lnCtr < dt.Rows.Count - 1 Then
+                        If sPrntPath <> IFNull(dt(lnCtr + 1).Item("sPrntPath"), "").ToString().Split(";"c)(0) Then
+                            PrintByCategory(sPrntPath)
+                            createDT()
+                            pnTotalItmCategory = 0
+                        End If
+                    Else
+                        PrintByCategory(sPrntPath)
+                        createDT()
+                        pnTotalItmCategory = 0
+                    End If
                 End If
-                If lnCtr < dt.Rows.Count - 1 Then
-                    If dt(lnCtr).Item("sPrntPath") <> dt(lnCtr + 1).Item("sPrntPath") Then
-                        If dt(lnCtr).Item("sPrntPath") <> "" Then
-                            PrintByCategory(dt(lnCtr).Item("sPrntPath"))
-                            createDT()
-                            pnTotalItmCategory = 0
-                        End If
-                    End If
-                Else
-                        If dt(lnCtr).Item("sPrntPath") <> "" Then
-                            PrintByCategory(dt(lnCtr).Item("sPrntPath"))
-                            createDT()
-                            pnTotalItmCategory = 0
-                        End If
-
-
-                    End If
-                'Else
-                '    p_oDTCategory.Rows.Add()
-                '    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("nQuantity") = dt.Rows(lnCtr).Item("nQuantity")
-                '    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("sBriefDsc") = dt.Rows(lnCtr).Item("sBriefDsc")
-                '    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("nUnitPrce") = dt.Rows(lnCtr).Item("nUnitPrce")
-                '    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("cDetailxx") = dt.Rows(lnCtr).Item("cDetailxx")
-                '    p_oDTCategory.Rows(p_oDTCategory.Rows.Count - 1).Item("nTotlAmnt") = dt.Rows(lnCtr).Item("nTotlAmnt")
-                '    If dt(lnCtr).Item("sPrntPath") <> "" Then
-                '        PrintByCategory(dt(lnCtr).Item("sPrntPath"))
-
-                '    End If
-            End If
-            'End If
+            Next
         Next
 
         Return True

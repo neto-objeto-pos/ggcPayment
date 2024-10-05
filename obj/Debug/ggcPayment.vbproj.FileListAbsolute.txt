@@ -91,3 +91,43 @@ C:\Users\Maynard\Documents\GitHub\ggcPayment\obj\Debug\ggcPayment.vbproj.CopyCom
 C:\Users\Maynard\Documents\GitHub\ggcPayment\obj\Debug\ggcReceipt.dll
 C:\Users\Maynard\Documents\GitHub\ggcPayment\obj\Debug\ggcReceipt.xml
 C:\Users\Maynard\Documents\GitHub\ggcPayment\obj\Debug\ggcReceipt.pdb
+D:\GGC_Systems\vb.net\RetMgtSys\WinSCP.exe
+D:\GGC_Systems\vb.net\RetMgtSys\ggcReceipt.dll
+D:\GGC_Systems\vb.net\RetMgtSys\ggcReceipt.pdb
+D:\GGC_Systems\vb.net\RetMgtSys\ggcReceipt.xml
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcPayment.vbproj.AssemblyReference.cache
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmPayCheck.resources
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmPayCredit.resources
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmPayCreditNeo.resources
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmPayDelivery.resources
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmPayGC.resources
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmPay.resources
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmRLC.resources
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmRLCUploaded.resources
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.Resources.resources
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcPayment.vbproj.GenerateResource.cache
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcPayment.vbproj.CoreCompileInputs.cache
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcPayment.vbproj.CopyComplete
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.dll
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.xml
+D:\000MNVProject\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.pdb
+C:\GGC_Systems\vb.net\RetMgtSys\WinSCP.exe
+C:\GGC_Systems\vb.net\RetMgtSys\ggcReceipt.dll
+C:\GGC_Systems\vb.net\RetMgtSys\ggcReceipt.pdb
+C:\GGC_Systems\vb.net\RetMgtSys\ggcReceipt.xml
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcPayment.vbproj.AssemblyReference.cache
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmPayCheck.resources
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmPayCredit.resources
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmPayCreditNeo.resources
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmPayDelivery.resources
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmPayGC.resources
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmPay.resources
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmRLC.resources
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.frmRLCUploaded.resources
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.Resources.resources
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcPayment.vbproj.GenerateResource.cache
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcPayment.vbproj.CoreCompileInputs.cache
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcPayment.vbproj.CopyComplete
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.dll
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.xml
+C:\Users\Maynard\Documents\GitHub\Los Pedritos Cafeteria IntegSys - VB.net\ggcPayment\obj\Debug\ggcReceipt.pdb
