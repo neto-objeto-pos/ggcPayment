@@ -17,10 +17,10 @@ Public Class RawPrint
     'Public Shared Function OpenPrinter(ByVal src As String, ByRef hPrinter As IntPtr, ByVal pd As Long) As Boolean
     'End Function
 
-    <DllImport("winspool.Drv", EntryPoint:="OpenPrinterW", _
-    SetLastError:=True, CharSet:=CharSet.Unicode, _
-    ExactSpelling:=False, CallingConvention:=CallingConvention.StdCall)> _
-    Public Shared Function OpenPrinter(ByVal src As String, ByRef hPrinter As Integer, ByVal pd As Integer) As Boolean
+    <DllImport("winspool.Drv", EntryPoint:="OpenPrinterW",
+    SetLastError:=True, CharSet:=CharSet.Unicode,
+    ExactSpelling:=False, CallingConvention:=CallingConvention.StdCall)>
+    Public Shared Function OpenPrinter(ByVal src As String, ByRef hPrinter As IntPtr, ByVal pd As Integer) As Boolean
     End Function
 
     <DllImport("winspool.Drv", EntryPoint:="ClosePrinter", _
