@@ -2319,19 +2319,19 @@ Public Class PRN_Charge
         End If
 
         If Not AddHeader(p_oApp.BranchName) Then
-            MsgBox("Invalid Client Name!")
+            MsgBox("Invalid Branch Name!")
             Return False
         End If
 
-        If Not AddHeader(p_oApp.Address) Then
-            MsgBox("Invalid Client Address!")
-            Return False
-        End If
+        'If Not AddHeader(p_oApp.Address) Then
+        '    MsgBox("Invalid Client Address!")
+        '    Return False
+        'End If
 
-        If Not AddHeader(p_oApp.TownCity & ", " & p_oApp.Province) Then
-            MsgBox("Invalid Town and Address!")
-            Return False
-        End If
+        'If Not AddHeader(p_oApp.TownCity & ", " & p_oApp.Province) Then
+        '    MsgBox("Invalid Town and Address!")
+        '    Return False
+        'End If
 
         'Add Additional Info To the header
         '---------------------------------
@@ -2664,27 +2664,27 @@ Public Class PRN_Charge
         'VAT is 12 % of sales
         'TODO: load VAT percent of sales from CONFIG
         'pnVatblSle = (pnTotalDue - (pnDiscAmtV + pnDiscAmtN + pnZroRtSle + pnVatExSle)) / lnVatPerc
-        'pnVatAmntx = (pnTotalDue - (pnDiscAmtV + pnDiscAmtN + pnZroRtSle + pnVatExSle)) - pnVatblSle
+        ''pnVatAmntx = (pnTotalDue - (pnDiscAmtV + pnDiscAmtN + pnZroRtSle + pnVatExSle)) - pnVatblSle
 
-        pnVatblSle = ((pnTotalDue + pnSChargex) - (pnDiscAmtV + pnZroRtSle + pnVatExSle + pnDiscAmtN)) / lnVatPerc
-        pnVatAmntx = ((pnTotalDue + pnSChargex) - (pnDiscAmtV + pnZroRtSle + pnVatExSle + pnDiscAmtN)) - pnVatblSle
+        'pnVatblSle = ((pnTotalDue + pnSChargex) - (pnDiscAmtV + pnZroRtSle + pnVatExSle + pnDiscAmtN)) / lnVatPerc
+        'pnVatAmntx = ((pnTotalDue + pnSChargex) - (pnDiscAmtV + pnZroRtSle + pnVatExSle + pnDiscAmtN)) - pnVatblSle
 
-        'Print VAT Related info
-        builder.Append("  VAT Exempt Sales      " & Format(pnVatExSle, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-        builder.Append("  Zero-Rated Sales      " & Format(pnZroRtSle, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-        builder.Append("  VATable Sales         " & Format(pnVatblSle, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
-        builder.Append("  VAT Amount            " & Format(pnVatAmntx, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine & Environment.NewLine)
+        ''Print VAT Related info
+        'builder.Append("  VAT Exempt Sales      " & Format(pnVatExSle, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+        'builder.Append("  Zero-Rated Sales      " & Format(pnZroRtSle, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+        'builder.Append("  VATable Sales         " & Format(pnVatblSle, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+        'builder.Append("  VAT Amount            " & Format(pnVatAmntx, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine & Environment.NewLine)
 
         If psCustName <> "" Then
             builder.Append(" Cust Name: " & psCustName & Environment.NewLine)
-            builder.Append(" Address  : " & psCustAddx & Environment.NewLine)
-            builder.Append(" TIN      : " & psCustTINx & Environment.NewLine)
-            builder.Append(" Bus Style: " & psCustBusx & Environment.NewLine & Environment.NewLine)
+            'builder.Append(" Address  : " & psCustAddx & Environment.NewLine)
+            'builder.Append(" TIN      : " & psCustTINx & Environment.NewLine)
+            'builder.Append(" Bus Style: " & psCustBusx & Environment.NewLine & Environment.NewLine)
         Else
             builder.Append(" Cust Name: ____________________________" & Environment.NewLine)
-            builder.Append(" Address  : ____________________________" & Environment.NewLine)
-            builder.Append(" TIN      : ____________________________" & Environment.NewLine)
-            builder.Append(" Bus Style: ____________________________" & Environment.NewLine & Environment.NewLine)
+            'builder.Append(" Address  : ____________________________" & Environment.NewLine)
+            'builder.Append(" TIN      : ____________________________" & Environment.NewLine)
+            'builder.Append(" Bus Style: ____________________________" & Environment.NewLine & Environment.NewLine)
         End If
 
         'Print Asterisk(*)

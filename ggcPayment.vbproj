@@ -81,6 +81,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\GGC_Systems\vb.net\RetMgtSys\MySql.Data.Entity.dll</HintPath>
     </Reference>
+    <Reference Include="Renci.SshNet, Version=2020.0.2.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\GGC_Systems\vb.net\RetMgtSys\Renci.SshNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -89,9 +93,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="WinSCPnet, Version=1.12.0.12963, Culture=neutral, PublicKeyToken=2271ec4a3c56d0bf, processorArchitecture=MSIL">
+    <Reference Include="WinSCPnet, Version=1.15.0.14991, Culture=neutral, PublicKeyToken=2271ec4a3c56d0bf, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\GGC_Systems\vb.net\RetMgtSys\WinSCPnet.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\GGC_Systems\vb.net\RetMgtSys\WinSCPnet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -221,6 +225,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -272,9 +277,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\RetailPOS\packages\WinSCP.5.19.3\build\WinSCP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\RetailPOS\packages\WinSCP.5.19.3\build\WinSCP.targets'))" />
-    <Error Condition="!Exists('..\RetailPOS\packages\WinSCP.6.2.2-beta\build\WinSCP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\RetailPOS\packages\WinSCP.6.2.2-beta\build\WinSCP.targets'))" />
+    <Error Condition="!Exists('..\RetailPOS\packages\WinSCP.6.3.5\build\WinSCP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\RetailPOS\packages\WinSCP.6.3.5\build\WinSCP.targets'))" />
   </Target>
-  <Import Project="..\RetailPOS\packages\WinSCP.6.2.2-beta\build\WinSCP.targets" Condition="Exists('..\RetailPOS\packages\WinSCP.6.2.2-beta\build\WinSCP.targets')" />
+  <Import Project="..\RetailPOS\packages\WinSCP.6.3.5\build\WinSCP.targets" Condition="Exists('..\RetailPOS\packages\WinSCP.6.3.5\build\WinSCP.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
