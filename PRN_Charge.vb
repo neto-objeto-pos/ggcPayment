@@ -1128,13 +1128,13 @@ Public Class PRN_Charge
 
                 builder.Append(ls4Print & Environment.NewLine)
             Else
-                If p_oDTDetail(lnCtr).Item("cWthPromo") = "1" Then
-                    ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce") * p_oDTDetail(lnCtr).Item("nQuantity"), xsDECIMAL).PadLeft(pxePRCLEN) + " "
-                    ls4Print = "  " & ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce") * p_oDTDetail(lnCtr).Item("nQuantity"), xsDECIMAL).PadLeft(pxeTTLLEN)
-                    builder.Append(ls4Print & Environment.NewLine)
-                Else
-                    builder.Append(Space(2) & ls4Print & Environment.NewLine)
-                End If
+                'If p_oDTDetail(lnCtr).Item("cWthPromo") = "1" Then
+                ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce") * p_oDTDetail(lnCtr).Item("nQuantity"), xsDECIMAL).PadLeft(pxePRCLEN) + " "
+                ls4Print = " " & ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce") * p_oDTDetail(lnCtr).Item("nQuantity"), xsDECIMAL).PadLeft(pxeTTLLEN)
+                builder.Append(ls4Print & Environment.NewLine)
+                'Else
+                '    builder.Append(Space(2) & ls4Print & Environment.NewLine)
+                'End If
             End If
         Next
 
@@ -2448,13 +2448,13 @@ Public Class PRN_Charge
 
                 builder.Append(ls4Print & Environment.NewLine)
             Else
-                If p_oDTDetail(lnCtr).Item("cWthPromo") = "1" Then
-                    ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce") * p_oDTDetail(lnCtr).Item("nQuantity"), xsDECIMAL).PadLeft(pxePRCLEN) + " "
+                'If p_oDTDetail(lnCtr).Item("cWthPromo") <> "1" Then
+                '    builder.Append(Space(2) & ls4Print & Environment.NewLine)
+                'Else
+                ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce") * p_oDTDetail(lnCtr).Item("nQuantity"), xsDECIMAL).PadLeft(pxePRCLEN) + " "
                     ls4Print = "  " & ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce") * p_oDTDetail(lnCtr).Item("nQuantity"), xsDECIMAL).PadLeft(pxeTTLLEN)
                     builder.Append(ls4Print & Environment.NewLine)
-                Else
-                    builder.Append(Space(2) & ls4Print & Environment.NewLine)
-                End If
+                'End If
             End If
         Next
 
@@ -3379,6 +3379,7 @@ Public Class PRN_Charge
         p_oDTDetail.Columns.Add("nUnitPrce", System.Type.GetType("System.Decimal"))
         p_oDTDetail.Columns.Add("nTotlAmnt", System.Type.GetType("System.Decimal"))
         p_oDTDetail.Columns.Add("cDetailxx", System.Type.GetType("System.String")).MaxLength = 1
+        p_oDTDetail.Columns.Add("cWthPromo", System.Type.GetType("System.String")).MaxLength = 1
         'Consider All Sales to be VATABLE
         p_oDTDetail.Columns.Add("cVatablex", System.Type.GetType("System.String")).MaxLength = 1
 
