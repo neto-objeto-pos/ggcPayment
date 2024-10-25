@@ -869,14 +869,26 @@ Public Class PRN_Billing
         'Print Detail of Sales
         For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
             If p_oDTDetail(lnCtr).Item("nQuantity") > 0 Then
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " + _
+                If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
+                    ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                             UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                Else
+                    ls4Print = " ".PadLeft(pxeQTYLEN) + " " +
+                            UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                End If
+
             Else
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " + _
+                    If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
+                    ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                Else
+                    ls4Print = " ".PadLeft(pxeQTYLEN) + " " +
+                           UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                End If
             End If
 
             If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
+
                 If p_oDTDetail(lnCtr).Item("cDetailxx") = "1" Then
                     ls4Print = "  " & Left(ls4Print, pxeQTYLEN + 1 + pxeDSCLEN - 2)
                 End If
@@ -890,7 +902,8 @@ Public Class PRN_Billing
 
                 builder.Append(ls4Print & Environment.NewLine)
             Else
-                builder.Append(Space(2) & ls4Print & Environment.NewLine)
+
+                builder.Append(ls4Print & Environment.NewLine)
             End If
         Next
 
@@ -952,7 +965,12 @@ Public Class PRN_Billing
             End If
 
             If pnAddDiscV > 0 Then
-                builder.Append((lsLess & "P" & Math.Round(pnAddDiscV) & " Discount").PadRight(25) & " " & Format(lnAddDiscxx, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                If p_oApp.BranchCode = "P013" Then
+                    builder.Append((lsLess & "Guanzon Subsidy").PadRight(25) & " " & Format(pnAddDiscV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                Else
+                    builder.Append((lsLess & "P" & Math.Round(pnAddDiscV) & " Discount").PadRight(25) & " " & Format(pnAddDiscV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+
+                End If
                 lsLess = "       "
             End If
 
@@ -1102,14 +1120,26 @@ Public Class PRN_Billing
         'Print Detail of Sales
         For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
             If p_oDTDetail(lnCtr).Item("nQuantity") > 0 Then
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
+                If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
+                    ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                             UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                Else
+                    ls4Print = " ".PadLeft(pxeQTYLEN) + " " +
+                            UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                End If
+
             Else
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
+                If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
+                    ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                Else
+                    ls4Print = " ".PadLeft(pxeQTYLEN) + " " +
+                           UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                End If
             End If
 
             If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
+
                 If p_oDTDetail(lnCtr).Item("cDetailxx") = "1" Then
                     ls4Print = "  " & Left(ls4Print, pxeQTYLEN + 1 + pxeDSCLEN - 2)
                 End If
@@ -1123,7 +1153,8 @@ Public Class PRN_Billing
 
                 builder.Append(ls4Print & Environment.NewLine)
             Else
-                builder.Append(Space(2) & ls4Print & Environment.NewLine)
+
+                builder.Append(ls4Print & Environment.NewLine)
             End If
         Next
 
@@ -1185,7 +1216,12 @@ Public Class PRN_Billing
             End If
 
             If pnAddDiscV > 0 Then
-                builder.Append((lsLess & "P" & Math.Round(pnAddDiscV) & " Discount").PadRight(25) & " " & Format(lnAddDiscxx, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                If p_oApp.BranchCode = "P013" Then
+                    builder.Append((lsLess & "Guanzon Subsidy").PadRight(25) & " " & Format(pnAddDiscV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                Else
+                    builder.Append((lsLess & "P" & Math.Round(pnAddDiscV) & " Discount").PadRight(25) & " " & Format(pnAddDiscV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+
+                End If
                 lsLess = "       "
             End If
 
