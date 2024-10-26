@@ -254,8 +254,15 @@ Public Class PRN_Order
 
         'Print Detail of Sales
         For lnCtr = 0 To p_oDTDetail.Rows.Count - 1
-            ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
+
+            If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
+                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                        UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+            Else
+                ls4Print = " ".PadLeft(pxeQTYLEN) + " " +
+                       UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+            End If
+
 
             If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
                 ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce"), xsDECIMAL).PadLeft(pxePRCLEN) + " "

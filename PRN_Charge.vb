@@ -375,6 +375,7 @@ Public Class PRN_Charge
             ByVal Description As String,
             ByVal UnitPrice As Decimal,
             ByVal isVatable As Boolean,
+            ByVal isWthPromo As Boolean,
             ByVal isDetail As Boolean,
             ByVal isCount As Boolean) As Boolean
 
@@ -392,6 +393,7 @@ Public Class PRN_Charge
             .Rows(.Rows.Count - 1).Item("nUnitPrce") = UnitPrice
             .Rows(.Rows.Count - 1).Item("nTotlAmnt") = Quantity * UnitPrice
             .Rows(.Rows.Count - 1).Item("cVatablex") = IIf(isVatable = True, 1, 0)
+            .Rows(.Rows.Count - 1).Item("cWthPromo") = IIf(isWthPromo = True, 1, 0)
             .Rows(.Rows.Count - 1).Item("cDetailxx") = IIf(isDetail = True, 1, 0)
 
             pnTotalDue = pnTotalDue + (Quantity * UnitPrice)
@@ -749,7 +751,7 @@ Public Class PRN_Charge
                         ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
-                        ls4Print = "   " & UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                        ls4Print = UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                         lnDeducQTY = lnDeducQTY + p_oDTDetail(lnCtr).Item("nQuantity")
                     End If
                 End If
@@ -841,7 +843,7 @@ Public Class PRN_Charge
             If pnAddDiscV > 0 Then
                 builder.Append((lsLess & "P" & Math.Round(pnAddDiscV) & " Discount").PadRight(25) & " " & Format(lnAddDiscxx, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
                 lsLess = "       "
-            End If
+                End If
 
             builder.Append(" ".PadRight(25) & " " & "-".PadLeft(pxeREGLEN, "-") & Environment.NewLine)
             builder.Append(" Net Sales (w/o VAT)".PadRight(25) & " " & Format(lnVATExWDsc, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
@@ -1093,21 +1095,30 @@ Public Class PRN_Charge
                         ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
-                        ls4Print = String.Empty.PadLeft(pxeQTYLEN) + " " +
-                           UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                        ls4Print = " ".PadLeft(pxeQTYLEN) + " " +
+                           UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     End If
                 Else
                     If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
                         ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
-                        ls4Print = "   " & UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                        ls4Print = " ".PadLeft(pxeQTYLEN) + " " +
+                           UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+
                         lnDeducQTY = lnDeducQTY + p_oDTDetail(lnCtr).Item("nQuantity")
                     End If
                 End If
             Else
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
-                           UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+
+                If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
+                    ls4Print = " ".PadLeft(pxeQTYLEN) + " " +
+                           UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                Else
+                    ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
+                           UCase("  " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+
+                End If
             End If
 
             If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
@@ -1128,13 +1139,20 @@ Public Class PRN_Charge
 
                 builder.Append(ls4Print & Environment.NewLine)
             Else
-                'If p_oDTDetail(lnCtr).Item("cWthPromo") = "1" Then
-                ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce") * p_oDTDetail(lnCtr).Item("nQuantity"), xsDECIMAL).PadLeft(pxePRCLEN) + " "
-                ls4Print = " " & ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce") * p_oDTDetail(lnCtr).Item("nQuantity"), xsDECIMAL).PadLeft(pxeTTLLEN)
-                builder.Append(ls4Print & Environment.NewLine)
-                'Else
-                '    builder.Append(Space(2) & ls4Print & Environment.NewLine)
-                'End If
+                If p_oDTDetail(lnCtr).Item("cWthPromo") <> "1" Then
+
+                    ls4Print = ls4Print + "    ".PadLeft(pxePRCLEN) + " "
+                    ls4Print = ls4Print + "    ".PadLeft(pxeTTLLEN)
+                    builder.Append(ls4Print & Environment.NewLine)
+                ElseIf p_oDTDetail(lnCtr).Item("cDetailxx") = "1" Then
+                    ls4Print = ls4Print + "    ".PadLeft(pxePRCLEN) + " "
+                    ls4Print = ls4Print + "    ".PadLeft(pxeTTLLEN)
+                    builder.Append(ls4Print & Environment.NewLine)
+                Else
+                    ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce"), xsDECIMAL).PadLeft(pxePRCLEN) + " "
+                    ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nTotlAmnt"), xsDECIMAL).PadLeft(pxeTTLLEN)
+                    builder.Append(ls4Print & Environment.NewLine)
+                End If
             End If
         Next
 
@@ -1176,7 +1194,7 @@ Public Class PRN_Charge
             'builder.Append(" Less: Discount(s)".PadRight(25) & " " & Format(pnDiscAmtV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             Dim lnVATExclsv = pnTotalDue / lnVatPerc
             Dim lnRateAmntx = lnVATExclsv * (pnDiscRteV / 100)
-            Dim lnAddDiscxx = pnAddDiscV / lnVatPerc
+            Dim lnAddDiscxx = Math.Round((pnAddDiscV / lnVatPerc) + 0.00001, 2)
 
             Dim lnAmountDue = pnTotalDue - pnDiscAmtV
             Dim lnVATExWDsc = lnVATExclsv - (lnRateAmntx + lnAddDiscxx + pnDiscAmtN)
@@ -1191,7 +1209,12 @@ Public Class PRN_Charge
             End If
 
             If pnAddDiscV > 0 Then
-                builder.Append((lsLess & "P" & Math.Round(pnAddDiscV) & " Discount").PadRight(25) & " " & Format(lnAddDiscxx, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                If p_oApp.BranchCode = "P013" Then
+                    builder.Append((lsLess & "Guanzon Subsidy").PadRight(25) & " " & Format(pnAddDiscV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                Else
+                    builder.Append((lsLess & "P" & Math.Round(pnAddDiscV) & " Discount").PadRight(25) & " " & Format(pnAddDiscV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                End If
+
                 lsLess = "       "
             End If
 
@@ -2113,7 +2136,8 @@ Public Class PRN_Charge
             'builder.Append(" Less: Discount(s)".PadRight(25) & " " & Format(pnDiscAmtV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             Dim lnVATExclsv = pnTotalDue / lnVatPerc
             Dim lnRateAmntx = lnVATExclsv * (pnDiscRteV / 100)
-            Dim lnAddDiscxx = pnAddDiscV / lnVatPerc
+            Dim lnAddDiscxx = pnAddDiscV
+
 
             Dim lnAmountDue = pnTotalDue - pnDiscAmtV
             Dim lnVATExWDsc = lnVATExclsv - (lnRateAmntx + lnAddDiscxx + pnDiscAmtN)
@@ -2413,24 +2437,33 @@ Public Class PRN_Charge
                         ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
-                        ls4Print = String.Empty.PadLeft(pxeQTYLEN) + " " +
-                           UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                        ls4Print = " ".PadLeft(pxeQTYLEN) + " " +
+                           UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     End If
                 Else
                     If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
                         ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
-                        ls4Print = "   " & UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                        ls4Print = " ".PadLeft(pxeQTYLEN) + " " +
+                           UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+
                         lnDeducQTY = lnDeducQTY + p_oDTDetail(lnCtr).Item("nQuantity")
                     End If
                 End If
             Else
-                ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
-                           UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+
+                If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
+                    ls4Print = " ".PadLeft(pxeQTYLEN) + " " +
+                           UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                Else
+                    ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
+                           UCase("  " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+
+                End If
             End If
 
-            If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
+                If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
                 If p_oDTDetail(lnCtr).Item("cDetailxx") = "1" Then
                     'If p_oDTDetail(lnCtr).Item("nQuantity") < 10 Then
                     '    ls4Print = "  " & Left(ls4Print, pxeQTYLEN + 1 + pxeDSCLEN - 2)
@@ -2448,13 +2481,20 @@ Public Class PRN_Charge
 
                 builder.Append(ls4Print & Environment.NewLine)
             Else
-                'If p_oDTDetail(lnCtr).Item("cWthPromo") <> "1" Then
-                '    builder.Append(Space(2) & ls4Print & Environment.NewLine)
-                'Else
-                ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce") * p_oDTDetail(lnCtr).Item("nQuantity"), xsDECIMAL).PadLeft(pxePRCLEN) + " "
-                    ls4Print = "  " & ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce") * p_oDTDetail(lnCtr).Item("nQuantity"), xsDECIMAL).PadLeft(pxeTTLLEN)
+                If p_oDTDetail(lnCtr).Item("cWthPromo") <> "1" Then
+
+                    ls4Print = ls4Print + "    ".PadLeft(pxePRCLEN) + " "
+                    ls4Print = ls4Print + "    ".PadLeft(pxeTTLLEN)
                     builder.Append(ls4Print & Environment.NewLine)
-                'End If
+                ElseIf p_oDTDetail(lnCtr).Item("cDetailxx") = "1" Then
+                    ls4Print = ls4Print + "    ".PadLeft(pxePRCLEN) + " "
+                    ls4Print = ls4Print + "    ".PadLeft(pxeTTLLEN)
+                    builder.Append(ls4Print & Environment.NewLine)
+                Else
+                    ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nUnitPrce"), xsDECIMAL).PadLeft(pxePRCLEN) + " "
+                    ls4Print = ls4Print + Format(p_oDTDetail(lnCtr).Item("nTotlAmnt"), xsDECIMAL).PadLeft(pxeTTLLEN)
+                    builder.Append(ls4Print & Environment.NewLine)
+                End If
             End If
         Next
 
@@ -2496,7 +2536,7 @@ Public Class PRN_Charge
             'builder.Append(" Less: Discount(s)".PadRight(25) & " " & Format(pnDiscAmtV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
             Dim lnVATExclsv = pnTotalDue / lnVatPerc
             Dim lnRateAmntx = lnVATExclsv * (pnDiscRteV / 100)
-            Dim lnAddDiscxx = pnAddDiscV / lnVatPerc
+            Dim lnAddDiscxx = Math.Round((pnAddDiscV / lnVatPerc) + 0.00001, 2)
 
             Dim lnAmountDue = pnTotalDue - pnDiscAmtV
             Dim lnVATExWDsc = lnVATExclsv - (lnRateAmntx + lnAddDiscxx + pnDiscAmtN)
@@ -2511,7 +2551,12 @@ Public Class PRN_Charge
             End If
 
             If pnAddDiscV > 0 Then
-                builder.Append((lsLess & "P" & Math.Round(pnAddDiscV) & " Discount").PadRight(25) & " " & Format(lnAddDiscxx, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                If p_oApp.BranchCode = "P013" Then
+                    builder.Append((lsLess & "Guanzon Subsidy").PadRight(25) & " " & Format(pnAddDiscV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                Else
+                    builder.Append((lsLess & "P" & Math.Round(pnAddDiscV) & " Discount").PadRight(25) & " " & Format(pnAddDiscV, xsDECIMAL).PadLeft(pxeREGLEN) & Environment.NewLine)
+                End If
+
                 lsLess = "       "
             End If
 

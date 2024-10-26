@@ -124,9 +124,14 @@ Public Class PRN_TZ_Reading
 
     'Prints the result of Terminal Reading/DAILY SALES SUMMARY
     Private Function doPrintTZReading(ByVal sFromDate As String, ByVal sThruDate As String, ByVal sCRMNumbr As String) As Boolean
+
+
+        If p_oApp.BranchCode = "P013" Then
+            Return True
+        End If
         Dim lsSQL As String
-        lsSQL = AddCondition(getSQ_Master, "sTranDate BETWEEN " & strParm(sFromDate) & " AND " & strParm(sThruDate) & _
-                                      " AND sCRMNumbr = " & strParm(sCRMNumbr) & _
+        lsSQL = AddCondition(getSQ_Master, "sTranDate BETWEEN " & strParm(sFromDate) & " AND " & strParm(sThruDate) &
+                                      " AND sCRMNumbr = " & strParm(sCRMNumbr) &
                                       " AND cTranStat IN ('1', '2')")
 
         Dim loDta As DataTable
@@ -139,10 +144,10 @@ Public Class PRN_TZ_Reading
 
         'iMac 2018.02.10
         'get previous day accumulated sale
-        lsSQL = "SELECT nAccuSale FROM Daily_Summary" & _
-                " WHERE sTranDate < " & strParm(sFromDate) & _
-                    " AND sCRMNumbr = " & strParm(sCRMNumbr) & _
-                    " AND cTranStat IN ('1', '2')" & _
+        lsSQL = "SELECT nAccuSale FROM Daily_Summary" &
+                " WHERE sTranDate < " & strParm(sFromDate) &
+                    " AND sCRMNumbr = " & strParm(sCRMNumbr) &
+                    " AND cTranStat IN ('1', '2')" &
                 " ORDER BY dClosedxx DESC LIMIT 1"
 
         Dim loDT As DataTable
