@@ -466,7 +466,6 @@ Public Class Receipt
             .BillingNo = p_sBillingNo
             .Reprint = bReprint
             .CashierName = getCashier(p_oAppDrvr.UserID)
-            Debug.Print(p_oDataTable.Rows(0)("nSChargex"))
             .ServiceCharge = p_oDataTable.Rows(0)("nSChargex")
             .LogName = p_sLogName
             .PosDate = p_dPOSDatex

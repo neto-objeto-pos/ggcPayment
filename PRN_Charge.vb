@@ -751,7 +751,8 @@ Public Class PRN_Charge
                         ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
-                        ls4Print = UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
+                           UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                         lnDeducQTY = lnDeducQTY + p_oDTDetail(lnCtr).Item("nQuantity")
                     End If
                 End If
@@ -1068,18 +1069,21 @@ Public Class PRN_Charge
         builder.Append(Environment.NewLine)
 
         'Print Cashier
+        builder.Append(Environment.NewLine)
         builder.Append(" Cashier: " & p_sLogName & "/" & psCashierx & Environment.NewLine)
         'If p_nTableNo > 0 Then
         '    builder.Append(" Table No.: " & p_nTableNo & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
         'Else
         '    builder.Append(" TAKE-OUT " & Environment.NewLine)
         'End If
+
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
         builder.Append(" CI No.: " & psReferNox & Environment.NewLine)
         builder.Append(" Transaction No.: " & psTransNox & Environment.NewLine)
-        builder.Append(" Date : " & Format(CDate(pdTransact), "yyyy-mm-dd") & " " & Format(p_oApp.getSysDate, "hh:mm:ss") & Environment.NewLine)
+        builder.Append(" Date : " & Format(CDate(pdTransact), "yyyy-MM-dd") & " " & Format(p_oApp.getSysDate, "hh:mm:ss") & Environment.NewLine)
 
         'Print Asterisk(*)
+        builder.Append(Environment.NewLine)
         builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
 
         Dim ls4Print As String
@@ -1103,9 +1107,8 @@ Public Class PRN_Charge
                         ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
-                        ls4Print = " ".PadLeft(pxeQTYLEN) + " " +
-                           UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
-
+                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
+                           UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                         lnDeducQTY = lnDeducQTY + p_oDTDetail(lnCtr).Item("nQuantity")
                     End If
                 End If
@@ -1116,7 +1119,7 @@ Public Class PRN_Charge
                            UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                 Else
                     ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
-                           UCase("  " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                           UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
 
                 End If
             End If
@@ -2418,7 +2421,8 @@ Public Class PRN_Charge
         builder.Append(" Terminal No.: " & p_sTermnl & Environment.NewLine)
         builder.Append(" CI No.: " & psReferNox & Environment.NewLine)
         builder.Append(" Transaction No.: " & psTransNox & Environment.NewLine)
-        builder.Append(" Date : " & Format(CDate(pdTransact), "yyyy-mm-dd") & " " & Format(p_oApp.getSysDate, "hh:mm:ss") & Environment.NewLine)
+        'Debug.Print("Date" & Format(CDate(pdTransact), "yyyy-MM-dd") & " " & Format(p_oApp.getSysDate, "hh:mm:ss"))
+        builder.Append(" Date : " & Format(CDate(pdTransact), "yyyy-MM-dd") & " " & Format(p_oApp.getSysDate, "hh:mm:ss") & Environment.NewLine)
 
         'Print Asterisk(*)
         builder.Append(Environment.NewLine)
@@ -2445,9 +2449,8 @@ Public Class PRN_Charge
                         ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
                            UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                     Else
-                        ls4Print = " ".PadLeft(pxeQTYLEN) + " " +
-                           UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
-
+                        ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity"), "0").PadLeft(pxeQTYLEN) + " " +
+                           UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                         lnDeducQTY = lnDeducQTY + p_oDTDetail(lnCtr).Item("nQuantity")
                     End If
                 End If
@@ -2458,12 +2461,12 @@ Public Class PRN_Charge
                            UCase(Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0") & " " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
                 Else
                     ls4Print = Format(p_oDTDetail(lnCtr).Item("nQuantity") * -1, "0").PadLeft(pxeQTYLEN) + " " +
-                           UCase("  " & p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
+                           UCase(p_oDTDetail(lnCtr).Item("sBriefDsc")).PadRight(pxeDSCLEN) + " "
 
                 End If
             End If
 
-                If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
+            If p_oDTDetail(lnCtr).Item("nUnitPrce") > 0 Then
                 If p_oDTDetail(lnCtr).Item("cDetailxx") = "1" Then
                     'If p_oDTDetail(lnCtr).Item("nQuantity") < 10 Then
                     '    ls4Print = "  " & Left(ls4Print, pxeQTYLEN + 1 + pxeDSCLEN - 2)
