@@ -19,9 +19,16 @@
 '  kalyptus [ 01/03/2017 05:03 pm ]
 '      Started creating this object.
 '€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
+Imports System.Text
 Imports ADODB
+Imports CrystalDecisions.CrystalReports.ViewerObjectModel
+Imports CrystalDecisions.Shared
 Imports ggcAppDriver
 Imports ggcReceipt
+Imports iText.Kernel.Pdf
+Imports iText.Layout
+Imports iText.Layout.Element
+Imports Paragraph = iText.Layout.Element.Paragraph
 
 Public Class PRN_TZ_Reading
     Private p_oApp As GRider
@@ -1140,4 +1147,378 @@ Public Class PRN_TZ_Reading
         p_sVATReg = Environment.GetEnvironmentVariable("REG-TIN-No")     'VAT REG No.
         p_sCompny = Environment.GetEnvironmentVariable("RMS-CLT-NM")
     End Sub
+
+    Public Function doPrintUtilityZReading() As Boolean
+
+
+        Dim lsCompany As String
+        Dim lsBranchName As String
+        Dim lsAddress As String
+        Dim lsTownCity As String
+        Dim lsVATReg As String
+        Dim lsPOSNo As String
+        Dim lsPermit As String
+        Dim lsSerial As String
+        Dim lsDateFrom As String
+        Dim lsDateThru As String
+        Dim lsTerminalNo As String
+
+
+        ''headers pos lp alaminos  01
+        'lsCompany = "The Monarch Hospitality & Tourism Corp."
+        'lsBranchName = "Los Pedritos - Alaminos"
+        'lsAddress = "21 Quezon Ave.,"
+        'lsTownCity = "Alaminos City 2400, Pangasinan"
+        'lsVATReg = "469-083-682-00010"
+        'lsPOSNo = "22083014383725460"
+        'lsPermit = "FP082022-005-0343589-000"
+        'lsSerial = "ZN1WM0PQ"
+
+        ''Date
+        'lsDateFrom = "2024-01-01"
+        'lsDateThru = "2024-12-31"
+        'lsTerminalNo = "01"
+
+        'Dim lsORNoFrom As String = "000000000045497"
+        'Dim lsORNoThru As String = "000000000073881"
+        ''Details
+        'Dim lnBegginningBal As Decimal = 5620580.41
+        'Dim lnEndingBal As Decimal = 13504742.86
+        'Dim lnGrossSales As Decimal = 8102845.716
+
+
+
+        'Dim lnSChargex As Decimal = 159286.126736438
+        'Dim lnDiscount As Decimal = 272238.009225306 'Regular Discount
+        'Dim lnPWDDiscx As Decimal = 159365.382472287 'PWD Discount
+        'Dim lnReturnsx As Decimal = 0
+
+
+        'Dim lnSalesAmt As Decimal = 7511956.19756597 ' netsales
+
+        'Dim lnVATSales As Decimal = 6053831.90079375
+        'Dim lnVATAmtxx As Decimal = 726459.82809525
+        'Dim lnNonVATxx As Decimal = 731664.468676963
+        'Dim lnZeroRatd As Decimal = 0
+
+
+        'Dim lnOpenBalx As Decimal = 1681471.77750106
+        'Dim lnCPullOut As Decimal = 1671991.43811058
+
+        'Dim lnCashAmnt As Decimal = 5834900.21695644
+        'Dim lnChckAmnt As Decimal = 0
+        'Dim lnCrdtAmnt As Decimal = 1678536.32
+        'Dim lnGiftAmnt As Decimal = 8000
+
+        'Dim lnZRdCtr As Integer = 830 ' Z read count
+        'Dim lnVoidAmnt As Decimal = 6560
+        'Dim lnVoidCntx As Integer = 10
+
+
+        ''headers lp alaminos  02
+        'lsCompany = "The Monarch Hospitality & Tourism Corp."
+        'lsBranchName = "Los Pedritos - Alaminos"
+        'lsAddress = "21 Quezon Ave.,"
+        'lsTownCity = "Alaminos City 2400, Pangasinan"
+        'lsVATReg = "469-083-682-00010"
+        'lsPOSNo = "22083014383725461"
+        'lsPermit = "FP082022-005-0343590-000"
+        'lsSerial = "ZN1WM0J4"
+
+        ''Date
+        'lsDateFrom = "2024-01-01"
+        'lsDateThru = "2024-12-31"
+        'lsTerminalNo = "03"
+
+        'Dim lsORNoFrom As String = "000000000053065"
+        'Dim lsORNoThru As String = "000000000087886"
+        ''Details
+        'Dim lnBegginningBal As Decimal = 4345967.8
+        'Dim lnEndingBal As Decimal = 9747864.944
+
+        'Dim lnGrossSales As Decimal = 5401897.144
+
+        'Dim lnSChargex As Decimal = 106190.751157625
+        'Dim lnDiscount As Decimal = 181492.006150204 'Regular Discount
+        'Dim lnPWDDiscx As Decimal = 106243.588314858 'PWD Discount
+        'Dim lnReturnsx As Decimal = 0
+
+
+        'Dim lnSalesAmt As Decimal = 5007970.79837731 ' netsales
+
+        'Dim lnVATSales As Decimal = 4035887.9338625
+        'Dim lnVATAmtxx As Decimal = 484306.5520635
+        'Dim lnNonVATxx As Decimal = 487776.312451309
+        'Dim lnZeroRatd As Decimal = 0
+
+
+        'Dim lnOpenBalx As Decimal = 1120981.1850007
+        'Dim lnCPullOut As Decimal = 1114660.95874039
+
+        'Dim lnCashAmnt As Decimal = 4338876.49663763
+        'Dim lnChckAmnt As Decimal = 0
+        'Dim lnCrdtAmnt As Decimal = 671414.528
+        'Dim lnGiftAmnt As Decimal = 4000
+
+        'Dim lnZRdCtr As Integer = 828 ' Z read count
+        'Dim lnVoidAmnt As Decimal = 2624
+        'Dim lnVoidCntx As Integer = 4
+
+
+        '''headers lp alaminos  02
+        'lsCompany = "The Monarch Hospitality & Tourism Corp."
+        'lsBranchName = "Los Pedritos - Alaminos"
+        'lsAddress = "21 Quezon Ave.,"
+        'lsTownCity = "Alaminos City 2400, Pangasinan"
+        'lsVATReg = "469-083-682-00010"
+        'lsPOSNo = "22083014383725461"
+        'lsPermit = "FP082022-005-0343590-000"
+        'lsSerial = "ZN1WM0J4"
+
+        ''Date
+        'lsDateFrom = "2024-01-01"
+        'lsDateThru = "2024-12-31"
+        'lsTerminalNo = "03"
+
+        'Dim lsORNoFrom As String = "000000000053065"
+        'Dim lsORNoThru As String = "000000000087886"
+        ''Details
+        'Dim lnBegginningBal As Decimal = 4345967.8
+        'Dim lnEndingBal As Decimal = 8332587.084
+
+        'Dim lnGrossSales As Decimal = 3986619.284
+
+        'Dim lnSChargex As Decimal = 78369.1516262297
+        'Dim lnDiscount As Decimal = 133941.745339209 'Regular Discount
+        'Dim lnPWDDiscx As Decimal = 78408.1456359863 'PWD Discount
+        'Dim lnReturnsx As Decimal = 0
+
+
+        'Dim lnSalesAmt As Decimal = 3695900.24139857 ' netsales
+
+        'Dim lnVATSales As Decimal = 2978499.63379443
+        'Dim lnVATAmtxx As Decimal = 357419.956055331
+        'Dim lnNonVATxx As Decimal = 359980.651548814
+        'Dim lnZeroRatd As Decimal = 0
+
+
+        'Dim lnOpenBalx As Decimal = 827288.097125045
+        'Dim lnCPullOut As Decimal = 822623.747690587
+
+        'Dim lnCashAmnt As Decimal = 3025150.06283303
+        'Dim lnChckAmnt As Decimal = 0
+        'Dim lnCrdtAmnt As Decimal = 671414.528
+        'Dim lnGiftAmnt As Decimal = 4000
+
+        'Dim lnZRdCtr As Integer = 828 ' Z read count
+        'Dim lnVoidAmnt As Decimal = 2624
+        'Dim lnVoidCntx As Integer = 4
+
+        '''headers lp san carlos  01
+        'lsCompany = "The Monarch Hospitality & Tourism Corp."
+        'lsBranchName = "Los Pedritos - San Carlos"
+        'lsAddress = "Ground Fl., Unit 144-117 Magic Mall 2,"
+        'lsTownCity = "San Carlos City 2420, Pangasinan"
+        'lsVATReg = "469-083-682-00013"
+        'lsPOSNo = "23020211063158677"
+        'lsPermit = "FP022023-004-0368299-000"
+        'lsSerial = "ZN1XFF8P"
+
+        ''Date
+        'lsDateFrom = "2025-01-01"
+        'lsDateThru = "2025-01-01"
+        'lsTerminalNo = "01"
+
+        'Dim lsORNoFrom As String = "000000000059824"
+        'Dim lsORNoThru As String = "000000000059880"
+
+        ''Details
+        'Dim lnBegginningBal As Decimal = 10730011.464
+        'Dim lnEndingBal As Decimal = 10730011.464 + 28409.97
+
+        'Dim lnGrossSales As Decimal = 28409.9700000006
+
+        'Dim lnSChargex As Decimal = 558.4845424198
+        'Dim lnDiscount As Decimal = 954.513259419298 'Regular Discount
+        'Dim lnPWDDiscx As Decimal = 558.762426654146 'PWD Discount
+        'Dim lnReturnsx As Decimal = 0
+
+
+        'Dim lnSalesAmt As Decimal = 26338.2097715074 ' netsales
+
+        'Dim lnVATSales As Decimal = 21225.7753281647
+        'Dim lnVATAmtxx As Decimal = 2547.09303937976
+        'Dim lnNonVATxx As Decimal = 2565.34140396299
+        'Dim lnZeroRatd As Decimal = 0
+
+
+        'Dim lnOpenBalx As Decimal = 5895.52910532707
+        'Dim lnCPullOut As Decimal = 5862.28940570632
+
+        'Dim lnCashAmnt As Decimal = 26371.4494711282
+        'Dim lnChckAmnt As Decimal = 0
+        'Dim lnCrdtAmnt As Decimal = 0
+        'Dim lnGiftAmnt As Decimal = 0
+
+        'Dim lnZRdCtr As Integer = 658 ' Z read count
+        'Dim lnVoidAmnt As Decimal = 0
+        'Dim lnVoidCntx As Integer = 0
+
+        ''headers lp san carlos  02
+        lsCompany = "The Monarch Hospitality & Tourism Corp."
+        lsBranchName = "Los Pedritos - San Carlos"
+        lsAddress = "Ground Fl., Unit 144-117 Magic Mall 2,"
+        lsTownCity = "San Carlos City 2420, Pangasinan"
+        lsVATReg = "469-083-682-00013"
+        lsPOSNo = "23020211063158678"
+        lsPermit = "FP22023-004-0368300-0001"
+        lsSerial = "ZN1XC56D"
+
+        'Date
+        lsDateFrom = "2025-01-03"
+        lsDateThru = "2025-01-03"
+        lsTerminalNo = "02"
+
+        Dim lsORNoFrom As String = "000000000049481"
+        Dim lsORNoThru As String = "000000000049616"
+
+        'Details
+        Dim lnBegginningBal As Decimal = 7153340.976
+        Dim lnEndingBal As Decimal = 7153340.976 + 14438.82
+
+        Dim lnGrossSales As Decimal = 14438.8200000002
+
+        Dim lnSChargex As Decimal = 283.839010769171
+        Dim lnDiscount As Decimal = 485.112977604993 'Regular Discount
+        Dim lnPWDDiscx As Decimal = 283.980240078479 'PWD Discount
+        Dim lnReturnsx As Decimal = 0
+
+
+        Dim lnSalesAmt As Decimal = 13385.8877715477 ' netsales
+
+        Dim lnVATSales As Decimal = 10787.5914449684
+        Dim lnVATAmtxx As Decimal = 1294.51097339621
+        Dim lnNonVATxx As Decimal = 1303.78535318301
+        Dim lnZeroRatd As Decimal = 0
+
+
+        Dim lnOpenBalx As Decimal = 2996.28910402153
+        Dim lnCPullOut As Decimal = 2979.39566697537
+
+        Dim lnCashAmnt As Decimal = 13402.7812085938
+        Dim lnChckAmnt As Decimal = 0
+        Dim lnCrdtAmnt As Decimal = 0
+        Dim lnGiftAmnt As Decimal = 0
+
+        Dim lnZRdCtr As Integer = 565 ' Z read count
+        Dim lnVoidAmnt As Decimal = 0
+        Dim lnVoidCntx As Integer = 0
+
+
+        Dim builder As New System.Text.StringBuilder()
+
+        'Initialize Printer
+        builder.Append(RawPrint.pxePRINT_INIT)
+        builder.Append(RawPrint.pxePRINT_CNTR)
+        builder.Append(PadCenter(Trim(lsCompany), 20) & Environment.NewLine)
+
+        'Print the header
+        builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1)) 'Condense
+        builder.Append(PadCenter(Trim(lsBranchName), 40) & Environment.NewLine)
+        builder.Append(PadCenter(Trim(lsAddress), 40) & Environment.NewLine)
+        builder.Append(PadCenter(Trim(lsTownCity), 40) & Environment.NewLine)
+        builder.Append(PadCenter("VAT REG TIN: " & lsVATReg, 40) & Environment.NewLine)
+        builder.Append(PadCenter("MIN : " & lsPOSNo, 40) & Environment.NewLine)
+        builder.Append(PadCenter("PTU No.: " & lsPermit, 40) & Environment.NewLine)
+        builder.Append(PadCenter("Serial No. : " & lsSerial, 40) & Environment.NewLine & Environment.NewLine)
+
+        builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1 + RawPrint.pxeESC_DBLH + RawPrint.pxeESC_DBLW + RawPrint.pxeESC_EMPH))
+        builder.Append(RawPrint.pxePRINT_CNTR)
+        builder.Append("Z-READING" & Environment.NewLine)
+
+        builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1)) 'Condense
+        builder.Append(RawPrint.pxePRINT_LEFT)
+
+        'Print Cashier
+        builder.Append(Environment.NewLine)
+        builder.Append("DATE      :" & Format(CDate(lsDateFrom), "dd-MMM-yyyy") & " to " & Format(CDate(lsDateThru), "dd-MMM-yyyy") & Environment.NewLine)
+        builder.Append("TERMINAL  :" & lsTerminalNo & Environment.NewLine)
+
+        builder.Append(RawPrint.pxePRINT_ESC & Chr(RawPrint.pxeESC_FNT1)) 'Condense
+        builder.Append(RawPrint.pxePRINT_LEFT)
+
+        'Print Asterisk(*)
+        builder.Append(Environment.NewLine)
+        builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
+
+        'Print the begging and ending OR
+        builder.Append(Environment.NewLine)
+        builder.Append(" Beginning SI  :  " & lsORNoFrom & Environment.NewLine)
+        builder.Append(" Ending SI     :  " & lsORNoThru & Environment.NewLine & Environment.NewLine)
+
+        builder.Append(" Beginning Balance  : ".PadRight(24) & Format(lnBegginningBal, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnEndingBal, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+
+        'Print the Computation of NET Sales
+        builder.Append(Environment.NewLine)
+        builder.Append(" GROSS SALES".PadRight(24) & Format(lnGrossSales, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        If lnSChargex > 0 Then
+            builder.Append(" Less : Service Charge".PadRight(24) & Format(lnSChargex, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+            builder.Append("        Regular Discnt".PadRight(24) & Format(lnDiscount, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        Else
+            builder.Append(" Less : Regular Discnt".PadRight(24) & Format(lnDiscount, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        End If
+
+        builder.Append("        20% SC/PWD Disc.".PadRight(24) & Format(lnPWDDiscx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("        Returns".PadRight(24) & Format(lnReturnsx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append(" ".PadRight(24) & "-".PadLeft(13, "-") & Environment.NewLine)
+        builder.Append(RawPrint.pxePRINT_EMP1)
+
+        builder.Append(" NET SALES".PadRight(24) & Format(lnSalesAmt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append(RawPrint.pxePRINT_EMP0)
+
+        'Display a space in between NEW Sales and VAT Related Info
+        builder.Append(" ".PadRight(24) & "-".PadLeft(13, "-") & Environment.NewLine)
+
+        builder.Append(" VATABLE Sales".PadRight(24) & Format(lnVATSales, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append(" VAT Amount".PadRight(24) & Format(lnVATAmtxx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append(" VAT Exempt Sales".PadRight(24) & Format(lnNonVATxx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append(" ZERO Rated Sales".PadRight(24) & Format(lnZeroRatd, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+
+        ''Display a space in between SENIOR/PWD Discount Info & Collection Info
+        builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
+
+        builder.Append(" Collection Info:" & Environment.NewLine)
+        builder.Append("  Petty Cash".PadRight(24) & Format(lnOpenBalx, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("  Withdrawal".PadRight(24) & Format(lnCPullOut, xsDECIMAL).PadLeft(13) & Environment.NewLine & Environment.NewLine)
+        builder.Append("  Cash".PadRight(24) & Format(lnCashAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("  Cheque".PadRight(24) & Format(lnChckAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("  Credit Card".PadRight(24) & Format(lnCrdtAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("  Gift Cheque".PadRight(24) & Format(lnGiftAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+
+        builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
+
+        builder.Append("              Z-COUNTER : ".PadRight(26) & lnZRdCtr.ToString.PadLeft(11) & Environment.NewLine)
+        builder.Append(RawPrint.pxePRINT_EMP1)
+        builder.Append(RawPrint.pxePRINT_EMP0)
+
+        builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
+        builder.Append(" Void SI Count: ".PadRight(24) & Format(lnVoidCntx, xsINTEGER).PadLeft(13) & Environment.NewLine)
+        builder.Append(" Void SI Amount: ".PadRight(24) & Format(lnVoidAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("*".PadLeft(40, "*") & Environment.NewLine)
+        builder.Append("/end-of-summary - " & "03/Jan/2025 " + "07:24:32" & Environment.NewLine)
+
+        builder.Append(Chr(&H1D) & "V" & Chr(66) & Chr(0))
+        ''Dim cashier_printer As String = "EPSON LX-310"
+        Dim cashier_printer As String = Environment.GetEnvironmentVariable("RMS_PRN_CS")
+
+
+        RawPrint.SendStringToPrinter(cashier_printer, builder.ToString())
+
+        Return True
+    End Function
+
+
+
+
 End Class
