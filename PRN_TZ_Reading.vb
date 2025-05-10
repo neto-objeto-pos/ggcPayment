@@ -132,6 +132,7 @@ Public Class PRN_TZ_Reading
     'Prints the result of Terminal Reading/DAILY SALES SUMMARY
     Private Function doPrintTZReading(ByVal sFromDate As String, ByVal sThruDate As String, ByVal sCRMNumbr As String) As Boolean
 
+        Dim lsTranDate As String
 
         If p_oApp.BranchCode = "P013" Then
             Return True
@@ -143,6 +144,8 @@ Public Class PRN_TZ_Reading
 
         Dim loDta As DataTable
         loDta = p_oApp.ExecuteQuery(lsSQL)
+
+        lsTranDate = loDta(0)("sTranDate")
 
         If loDta.Rows.Count = 0 Then
             MsgBox("There are no transaction for this date....", , p_sMsgHeadr)
@@ -165,6 +168,21 @@ Public Class PRN_TZ_Reading
         Else
             lnPrevSale = loDT(0)("nAccuSale")
         End If
+
+        'maynard printSales by Category
+
+        lsSQL = "SELECT a.sCategrID" &
+                        ", b.sDescript" &
+                        ", SUM(a.nTotalAmt) nTotalAmt" &
+                " FROM Daily_Summary_Others a" &
+                " LEFT JOIN Product_Category b ON a.sCategrID = b.sCategrCd" &
+                " WHERE a.sTranDate = " & strParm(lsTranDate) &
+                    " AND a.sCRMNumbr = " & strParm(sCRMNumbr) &
+                "  GROUP BY a.sTranDate,a.sCRMNumbr,a.sCategrID  ORDER BY a.sCategrID"
+
+        Dim loDTCategory As DataTable
+        loDTCategory = p_oApp.ExecuteQuery(lsSQL)
+
 
         'Dim Printer_Name As String = "\\192.168.10.14\EPSON LX-310 ESC/P"
         Dim builder As New System.Text.StringBuilder()
@@ -349,6 +367,14 @@ Public Class PRN_TZ_Reading
         builder.Append("  Gift Cheque".PadRight(24) & Format(lnGiftAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         'builder.Append("  Company Accounts".PadRight(24) & Format(lnChrgAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
 
+        If loDTCategory.Rows.Count > 0 Then
+            builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
+
+            For lnCtr = 0 To loDTCategory.Rows.Count - 1
+                builder.Append(("  " & loDTCategory(lnCtr).Item("sDescript")).PadRight(24) & Format(loDTCategory(lnCtr).Item("nTotalAmt"), xsDECIMAL).PadLeft(13) & Environment.NewLine)
+
+            Next
+        End If
         builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
 
         builder.Append("              Z-COUNTER : ".PadRight(26) & p_nZRdCtr.ToString.PadLeft(11) & Environment.NewLine)
@@ -617,13 +643,21 @@ Public Class PRN_TZ_Reading
     End Function
 
     Private Function doWriteTZReading(ByVal sFromDate As String, ByVal sThruDate As String, ByVal sCRMNumbr As String) As Boolean
+
+        Dim lsTranDate As String
+
+        If p_oApp.BranchCode = "P013" Then
+            Return True
+        End If
         Dim lsSQL As String
-        lsSQL = AddCondition(getSQ_Master, "sTranDate BETWEEN " & strParm(sFromDate) & " AND " & strParm(sThruDate) & _
-                                      " AND sCRMNumbr = " & strParm(sCRMNumbr) & _
+        lsSQL = AddCondition(getSQ_Master, "sTranDate BETWEEN " & strParm(sFromDate) & " AND " & strParm(sThruDate) &
+                                      " AND sCRMNumbr = " & strParm(sCRMNumbr) &
                                       " AND cTranStat IN ('1', '2')")
 
         Dim loDta As DataTable
         loDta = p_oApp.ExecuteQuery(lsSQL)
+
+        lsTranDate = loDta(0)("sTranDate")
 
         If loDta.Rows.Count = 0 Then
             MsgBox("There are no transaction for this date....", , p_sMsgHeadr)
@@ -647,6 +681,22 @@ Public Class PRN_TZ_Reading
         Else
             lnPrevSale = loDT(0)("nAccuSale")
         End If
+
+        'maynard printSales by Category
+
+        lsSQL = "SELECT a.sCategrID" &
+                        ", b.sDescript" &
+                        ", SUM(a.nTotalAmt) nTotalAmt" &
+                " FROM Daily_Summary_Others a" &
+                " LEFT JOIN Product_Category b ON a.sCategrID = b.sCategrCd" &
+                " WHERE a.sTranDate = " & strParm(lsTranDate) &
+                    " AND a.sCRMNumbr = " & strParm(sCRMNumbr) &
+                "  GROUP BY a.sTranDate,a.sCRMNumbr,a.sCategrID  ORDER BY a.sCategrID"
+
+        Dim loDTCategory As DataTable
+        loDTCategory = p_oApp.ExecuteQuery(lsSQL)
+
+
 
         'Dim Printer_Name As String = "\\192.168.10.14\EPSON LX-310 ESC/P"
         Dim builder As New System.Text.StringBuilder()
@@ -816,6 +866,14 @@ Public Class PRN_TZ_Reading
         builder.Append("  Gift Cheque".PadRight(24) & Format(lnGiftAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         'builder.Append("  Company Accounts".PadRight(24) & Format(lnChrgAmnt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
 
+        If loDTCategory.Rows.Count > 0 Then
+            builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
+
+            For lnCtr = 0 To loDTCategory.Rows.Count - 1
+                builder.Append(("  " & loDTCategory(lnCtr).Item("sDescript")).PadRight(24) & Format(loDTCategory(lnCtr).Item("nTotalAmt"), xsDECIMAL).PadLeft(13) & Environment.NewLine)
+
+            Next
+        End If
         builder.Append("-".PadLeft(40, "-") & Environment.NewLine)
 
         builder.Append("              Z-COUNTER : ".PadRight(26) & p_nZRdCtr.ToString.PadLeft(11) & Environment.NewLine)
