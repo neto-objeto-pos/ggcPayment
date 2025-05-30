@@ -79,6 +79,13 @@ Public Class frmPay
         Select Case lnIndex
             Case 0 'OK
                 'printerManager.Print()
+
+                poReceipt.Master("nTendered") = CDec(txtAmount.Text)
+                p_nTendered = poReceipt.Master("nTendered")
+                poReceipt.Master("nSChargex") = p_nSchargex
+                poReceipt.Master("nSalesAmt") = p_nSalesAmt
+                computeChange()
+
                 If Not IsNumeric(txtAmount.Text) Then
                     MsgBox("Invalid Amount Tendered..." & vbCrLf &
                             "Please Verify your entry then try again...", MsgBoxStyle.Critical, "WARNING")
@@ -92,9 +99,18 @@ Public Class frmPay
                     'End If
                 End If
                 If CDec(lblChange.Text) >= 0.00 Then
+                    If CDec(lblChange.Text) = 0.0 Then
+                        If Not CDbl(txtAmount.Text) >= pnBill Then
+                            MsgBox("Invalid Amount Paid..." & vbCrLf &
+                                        "Please Verify your entry then try again...", MsgBoxStyle.Critical, "WARNING")
+                            GoTo endProc
+                        End If
+                    End If
+                    'If CDec(txtAmount.Text) >= pnBill Then
                     pbCancelled = False
                     Me.Close()
                     Me.Dispose()
+                    'End If
                 Else
                     MsgBox("Invalid Amount Paid..." & vbCrLf &
                                 "Please Verify your entry then try again...", MsgBoxStyle.Critical, "WARNING")
