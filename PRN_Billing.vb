@@ -854,6 +854,15 @@ Public Class PRN_Billing
 
         'Print Cashier
         builder.Append(Environment.NewLine)
+        If p_nTableNo > 0 Then
+            If p_sMergeTb = "" Then
+                builder.Append(" Table No.: " & p_nTableNo.ToString.PadLeft(2, "0") & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
+            Else
+                builder.Append(" Table No.: " & Mid(p_sMergeTb, 1, Len(p_sMergeTb) - 1) & "".PadRight(12) & " " & "DINE-IN".PadLeft(pxeREGLEN) & Environment.NewLine)
+            End If
+        Else
+            builder.Append(" TAKE-OUT " & Environment.NewLine)
+        End If
         builder.Append(" Billing No.: " & psBillNoxx & Environment.NewLine)
         builder.Append(" Transaction No.: " & psReferNox & Environment.NewLine)
         builder.Append(" Date : " & pdTransact.Year & "-" & Format(pdTransact.Month, "00") & "-" & Format(pdTransact.Day, "00") & " " & Format(p_oApp.getSysDate, "hh:mm:ss tt") & Environment.NewLine)

@@ -314,7 +314,8 @@ Public Class PRN_TZ_Reading
 
         builder.Append(" Beginning Balance  : ".PadRight(24) & Format(lnPrevSale, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         ''builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt + lnSChargex) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
-        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt) - ((lnDiscount - lnPWDDiscx) + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        'builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt) - ((lnDiscount - lnPWDDiscx) + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
 
         'Print the Computation of NET Sales
         builder.Append(Environment.NewLine)

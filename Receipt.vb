@@ -93,10 +93,34 @@ Public Class Receipt
     Private p_sLogName As String
     Private pnBill As Decimal
 
+    'Loke added this private variable to print at billing
+    Private p_sTransNo1 As String
+    Private p_sTableNo1 As String
+
+    Public p_sTableNo2 As String
     Private pnBillSplitted As Decimal
     Private pnCharge As Decimal
 
 #Region "Properties"
+
+    Public Property TransNo1() As String
+        Get
+            Return p_sTransNo1
+        End Get
+        Set(ByVal value As String)
+            p_sTransNo1 = value
+        End Set
+    End Property
+    Public Property TableNo1() As String
+        Get
+            Return p_sTableNo1
+        End Get
+        Set(ByVal value As String)
+            p_sTableNo1 = value
+            Debug.Print("dwadwadd " & p_sTableNo1)
+        End Set
+
+    End Property
 
     Property TableNo As Integer
         Get
@@ -470,6 +494,7 @@ Public Class Receipt
             .LogName = p_sLogName
             .PosDate = p_dPOSDatex
             .SplitType = p_cSplitTyp
+            .TableNo = p_sTableNo1
 
             If Not IsNothing(p_oDtaOrder) Then
                 Dim lnSlPrc As Double
@@ -850,6 +875,19 @@ Public Class Receipt
         Catch ex As System.Exception
             Return False
         End Try
+    End Function
+
+    Public Function getTableNox1() As String
+        Dim lsSQL1 As String
+        lsSQL1 = "SELECT sTableNox FROM SO_Master" &
+                 " WHERE sTransNox = " & strParm(p_sTransNo1)
+
+        Dim loDT1 As DataTable
+        loDT1 = p_oAppDrvr.ExecuteQuery(lsSQL1)
+        If loDT1.Rows.Count = 0 Then
+            Return loDT1(0).Item("sTableNox")
+        End If
+
     End Function
 
     Function printReciept(Optional ByVal bReprint As Boolean = False) As Boolean
@@ -1514,6 +1552,10 @@ Public Class Receipt
         End With
         pnBill = myBill
         pnCharge = myCharge
+        p_sTableNo1 = TableNo1
+
+        Debug.Print("dwadwadwa " & p_sTableNo2)
+        TableNo1 = p_sTableNo2
     End Sub
 
     Private Sub ShowReceipt()
