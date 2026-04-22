@@ -314,8 +314,7 @@ Public Class PRN_TZ_Reading
 
         builder.Append(" Beginning Balance  : ".PadRight(24) & Format(lnPrevSale, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         ''builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt + lnSChargex) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
-        'builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt) - ((lnDiscount - lnPWDDiscx) + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
-        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + lnSalesAmt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
 
         'Print the Computation of NET Sales
         builder.Append(Environment.NewLine)
@@ -567,7 +566,7 @@ Public Class PRN_TZ_Reading
 
         builder.Append(" Beginning Balance  : ".PadRight(24) & Format(lnPrevSale, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         ''builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt + lnSChargex) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
-        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + lnSalesAmt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
 
         'Print the Computation of NET Sales
         builder.Append(Environment.NewLine)
@@ -667,10 +666,10 @@ Public Class PRN_TZ_Reading
 
         'iMac 2018.02.10
         'get previous day accumulated sale
-        lsSQL = "SELECT sTranDate, nAccuSale FROM Daily_Summary" & _
-                " WHERE sTranDate < " & strParm(sFromDate) & _
-                    " AND sCRMNumbr = " & strParm(sCRMNumbr) & _
-                    " AND cTranStat IN ('1', '2')" & _
+        lsSQL = "SELECT sTranDate, nAccuSale FROM Daily_Summary" &
+                " WHERE sTranDate < " & strParm(sFromDate) &
+                    " AND sCRMNumbr = " & strParm(sCRMNumbr) &
+                    " AND cTranStat IN ('1', '2')" &
                 " ORDER BY dClosedxx DESC LIMIT 1"
 
         Dim loDT As DataTable
@@ -814,7 +813,7 @@ Public Class PRN_TZ_Reading
 
         builder.Append(" Beginning Balance  : ".PadRight(24) & Format(lnPrevSale, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         ''builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt + lnSChargex) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
-        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt) - ((lnDiscount - lnPWDDiscx) + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + lnSalesAmt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
 
         'Print the Computation of NET Sales
         builder.Append(Environment.NewLine)
@@ -1057,7 +1056,7 @@ Public Class PRN_TZ_Reading
         builder.Append(Environment.NewLine)
         builder.Append(" Beginning Balance  : ".PadRight(24) & Format(lnPrevSale, xsDECIMAL).PadLeft(13) & Environment.NewLine)
         'builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt + lnSChargex) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
-        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + ((lnSalesAmt) - (lnDiscount + lnPWDDiscx + lnVatDiscx)), xsDECIMAL).PadLeft(13) & Environment.NewLine)
+        builder.Append("    Ending Balance  : ".PadRight(24) & Format(lnPrevSale + lnSalesAmt, xsDECIMAL).PadLeft(13) & Environment.NewLine)
 
         'Print the Computation of NET Sales
         builder.Append(Environment.NewLine)
@@ -1165,34 +1164,34 @@ Public Class PRN_TZ_Reading
     End Function
 
     Private Function getSQ_Master() As String
-        Return "SELECT a.sTranDate" & _
-                    ", a.sCRMNumbr" & _
-                    ", a.sCashierx" & _
-                    ", a.nOpenBalx" & _
-                    ", a.nCPullOut" & _
-                    ", a.nSalesAmt" & _
-                    ", a.nVATSales" & _
-                    ", a.nVATAmtxx" & _
-                    ", a.nNonVATxx" & _
-                    ", a.nZeroRatd" & _
-                    ", a.nDiscount" & _
-                    ", a.nPWDDiscx" & _
-                    ", a.nVatDiscx" & _
-                    ", a.nReturnsx" & _
-                    ", a.nVoidAmnt" & _
-                    ", a.nAccuSale" & _
-                    ", a.nCashAmnt" & _
-                    ", a.nChckAmnt" & _
-                    ", a.nCrdtAmnt" & _
-                    ", a.nChrgAmnt" & _
-                    ", a.nSChargex" & _
-                    ", a.sORNoFrom" & _
-                    ", a.sORNoThru" & _
-                    ", a.nZReadCtr" & _
-                    ", a.nGiftAmnt" & _
-                    ", a.cTranStat" & _
-                    ", a.nVoidCntx" & _
-                " FROM " & p_sMasTable & " a" & _
+        Return "SELECT a.sTranDate" &
+                    ", a.sCRMNumbr" &
+                    ", a.sCashierx" &
+                    ", a.nOpenBalx" &
+                    ", a.nCPullOut" &
+                    ", a.nSalesAmt" &
+                    ", a.nVATSales" &
+                    ", a.nVATAmtxx" &
+                    ", a.nNonVATxx" &
+                    ", a.nZeroRatd" &
+                    ", a.nDiscount" &
+                    ", a.nPWDDiscx" &
+                    ", a.nVatDiscx" &
+                    ", a.nReturnsx" &
+                    ", a.nVoidAmnt" &
+                    ", a.nAccuSale" &
+                    ", a.nCashAmnt" &
+                    ", a.nChckAmnt" &
+                    ", a.nCrdtAmnt" &
+                    ", a.nChrgAmnt" &
+                    ", a.nSChargex" &
+                    ", a.sORNoFrom" &
+                    ", a.sORNoThru" &
+                    ", a.nZReadCtr" &
+                    ", a.nGiftAmnt" &
+                    ", a.cTranStat" &
+                    ", a.nVoidCntx" &
+                " FROM " & p_sMasTable & " a" &
                 " ORDER BY sTranDate ASC"
 
     End Function
